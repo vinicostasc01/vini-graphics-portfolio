@@ -5,495 +5,200 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vini Graphics — Designer Gráfico</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #0a0a0a; --white: #f5f3ef; --accent: #e8e0d0;
+  --border: rgba(255,255,255,0.08); --card-bg: #111;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
 
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f3ef;
-    --accent: #e8e0d0;
-    --muted: #555;
-    --border: rgba(255,255,255,0.08);
-    --card-bg: #111;
-  }
+/* CURSOR */
+.cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--white); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .25s, height .25s; }
+.cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .35s ease, height .35s ease, border-color .35s; }
+.cursor-dot.big { width: 16px; height: 16px; }
+.cursor-ring.big { width: 64px; height: 64px; border-color: rgba(255,255,255,.15); }
 
-  html { scroll-behavior: smooth; }
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 22px 56px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(10,10,10,.65); border-bottom: 1px solid var(--border); transition: padding .4s; }
+nav.scrolled { padding: 13px 56px; }
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .15em; color: var(--white); text-decoration: none; }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { color: var(--white); text-decoration: none; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .55; transition: opacity .3s; }
+.nav-links a:hover { opacity: 1; }
+.nav-cta { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; border: 1px solid rgba(255,255,255,.3); padding: 9px 22px; border-radius: 2px; color: var(--white); text-decoration: none; transition: background .3s, color .3s; }
+.nav-cta:hover { background: var(--white); color: var(--black); }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 24px; height: 1px; background: var(--white); transition: all .3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mobile-menu { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(10,10,10,.97); flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: .08em; color: var(--white); text-decoration: none; opacity: .7; transition: opacity .2s; }
+.mobile-menu a:hover { opacity: 1; }
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    overflow-x: hidden;
-    width: 1440px;
-    margin: 0 auto;
-      }
+/* PARTICLES */
+#particles-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-  
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 56px 72px; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 55% at 68% 38%, #181818 0%, var(--black) 68%); }
+#three-canvas { position: absolute; right: -40px; top: 50%; transform: translateY(-50%); width: 600px; height: 600px; z-index: 1; pointer-events: none; opacity: .82; }
+.hero-tag { font-size: 11px; letter-spacing: .35em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 18px; position: relative; z-index: 2; opacity: 0; animation: fadeUp .9s .2s ease forwards; }
+.hero-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px,11vw,172px); line-height: .88; letter-spacing: -.01em; position: relative; z-index: 2; opacity: 0; animation: fadeUp .9s .35s ease forwards; }
+.hero-name span { color: rgba(255,255,255,.13); }
+.hero-sub { margin-top: 26px; font-size: 15px; color: rgba(255,255,255,.48); max-width: 380px; line-height: 1.65; position: relative; z-index: 2; opacity: 0; animation: fadeUp .9s .5s ease forwards; }
+.hero-scroll { position: absolute; bottom: 40px; right: 56px; display: flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.28); z-index: 2; opacity: 0; animation: fadeUp .9s .8s ease forwards; }
+.scroll-line { width: 40px; height: 1px; background: rgba(255,255,255,.2); position: relative; overflow: hidden; }
+.scroll-line::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: var(--white); animation: scrollLine 2s 1.2s ease-in-out infinite; }
+@keyframes scrollLine { to { left: 100%; } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+@keyframes glitch {
+  0%   { text-shadow: none; transform: none; }
+  20%  { text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff; transform: skewX(-2deg); }
+  40%  { text-shadow: 3px 0 #ff00ff, -3px 0 #00ffff; transform: skewX(2deg); }
+  60%  { text-shadow: -2px 0 #ff00ff; transform: skewX(0); }
+  80%  { text-shadow: 2px 0 #00ffff; transform: skewX(-1deg); }
+  100% { text-shadow: none; transform: none; }
+}
+.glitch-active { animation: glitch .45s steps(1) forwards !important; }
 
-  /* NAV */
-  nav {
-    position: relative; top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 24px 48px;
-    mix-blend-mode: difference;
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 0.15em;
-    color: var(--white);
-    text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a {
-    color: var(--white); text-decoration: none;
-    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
-    opacity: 0.6; transition: opacity 0.3s;
-  }
-  .nav-links a:hover { opacity: 1; }
-  .nav-cta {
-    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 8px 20px; border-radius: 2px;
-    color: var(--white); text-decoration: none;
-    transition: background 0.3s, color 0.3s;
-  }
-  .nav-cta:hover { background: var(--white); color: var(--black); }
+/* MARQUEE */
+.marquee-wrap { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; padding: 18px 0; background: #0d0d0d; position: relative; z-index: 2; }
+.marquee-track { display: flex; gap: 60px; width: max-content; animation: marquee 28s linear infinite; }
+.marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: .3em; color: rgba(255,255,255,.22); white-space: nowrap; display: flex; align-items: center; gap: 60px; }
+.marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,.18); }
+@keyframes marquee { to { transform: translateX(-50%); } }
 
-  
-  
+/* SECTIONS */
+section { padding: 120px 56px; position: relative; z-index: 2; }
+.section-label { font-size: 10px; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-bottom: 64px; display: flex; align-items: center; gap: 16px; }
+.section-label::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,.18); }
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 48px 64px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 70% 40%, #1a1a1a 0%, var(--black) 70%);
-  }
-  .hero-noise {
-    position: absolute; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    opacity: 0.4; pointer-events: none;
-  }
-  .hero-photo {
-    position: absolute; right: 0; bottom: 0;
-    height: 90%; width: auto;
-    object-fit: cover;
-    object-position: top;
-    opacity: 0.55;
-    mask-image: linear-gradient(to left, rgba(0,0,0,0.8) 60%, transparent 100%),
-                linear-gradient(to top, transparent 0%, black 20%);
-    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 60%, transparent 100%),
-                        linear-gradient(to top, transparent 0%, black 20%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-  }
-  .hero-tag {
-    font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
-    color: rgba(255,255,255,0.4); margin-bottom: 20px;
-    position: relative; z-index: 2;
-    animation: fadeUp 1s ease both;
-  }
-  .hero-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(80px, 12vw, 180px);
-    line-height: 0.9;
-    letter-spacing: -0.01em;
-    position: relative; z-index: 2;
-    animation: fadeUp 1s 0.15s ease both;
-  }
-  .hero-name span { color: rgba(255,255,255,0.15); }
-  .hero-sub {
-    margin-top: 24px;
-    font-size: 15px; color: rgba(255,255,255,0.5);
-    max-width: 360px; line-height: 1.6;
-    position: relative; z-index: 2;
-    animation: fadeUp 1s 0.3s ease both;
-  }
-  .hero-scroll {
-    position: absolute; bottom: 40px; right: 48px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    animation: fadeUp 1s 0.6s ease both;
-  }
-  .scroll-line {
-    width: 40px; height: 1px; background: rgba(255,255,255,0.2);
-    position: relative; overflow: hidden;
-  }
-  .scroll-line::after {
-    content: ''; position: absolute;
-    left: -100%; top: 0; width: 100%; height: 100%;
-    background: var(--white);
-    animation: scrollLine 2s 1s ease-in-out infinite;
-  }
-   }
-  
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* ABOUT */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.about-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px,5vw,70px); line-height: 1; margin-bottom: 32px; color: var(--white); }
+.about-text { font-size: 16px; line-height: 1.78; color: rgba(255,255,255,.48); margin-bottom: 48px; }
+.about-stats { display: flex; gap: 48px; flex-wrap: wrap; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; color: var(--white); }
+.stat-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-top: 6px; }
+.about-right { display: flex; flex-direction: column; padding-top: 80px; }
+.skill-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); }
+.skill-name { font-size: 14px; color: rgba(255,255,255,.68); }
+.skill-bar { width: 130px; height: 1px; background: rgba(255,255,255,.1); }
+.skill-fill { height: 100%; background: var(--white); width: 0; transition: width 1.2s ease; }
 
-  /* MARQUEE */
-  .marquee-wrap {
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden; padding: 18px 0;
-    background: #0d0d0d;
-  }
-  .marquee-track {
-    display: flex; gap: 60px; width: max-content;
-    animation: marquee 25s linear infinite;
-  }
-  .marquee-item {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px; letter-spacing: 0.3em;
-    color: rgba(255,255,255,0.25);
-    white-space: nowrap; display: flex; align-items: center; gap: 60px;
-  }
-  .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); }
-   }
+/* PORTFOLIO */
+.portfolio-cat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.proj-cat-card { position: relative; overflow: hidden; background: var(--card-bg); aspect-ratio: 1/1; border-radius: 4px; cursor: pointer; transition: transform .4s cubic-bezier(.25,.46,.45,.94); }
+.proj-cat-card:hover { transform: translateY(-6px); }
+.proj-cat-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .55s cubic-bezier(.25,.46,.45,.94), opacity .3s; opacity: .88; }
+.proj-cat-card:hover img { transform: scale(1.07); opacity: 1; }
+.proj-cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 58%); display: flex; flex-direction: column; justify-content: flex-end; padding: 22px; opacity: 0; transition: opacity .4s; }
+.proj-cat-card:hover .proj-cat-overlay { opacity: 1; }
+.proj-cat-tag { font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: rgba(255,255,255,.48); margin-bottom: 5px; }
+.proj-cat-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .06em; color: var(--white); }
+.proj-cat-arrow { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 13px; opacity: 0; transform: scale(.75); transition: opacity .3s, transform .3s; }
+.proj-cat-card:hover .proj-cat-arrow { opacity: 1; transform: scale(1); }
 
-  /* SECTIONS */
-  section { padding: 120px 48px; }
+/* LIGHTBOX */
+.lightbox-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.93); backdrop-filter: blur(10px); flex-direction: column; align-items: center; overflow-y: auto; padding: 64px 48px 80px; }
+.lightbox-overlay.open { display: flex; }
+.lightbox-header { width: 100%; max-width: 1100px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
+.lightbox-title { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: .07em; }
+.lightbox-close { width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: transparent; color: rgba(255,255,255,.7); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .3s; }
+.lightbox-close:hover { background: rgba(255,255,255,.1); }
+.lightbox-arts-grid { width: 100%; max-width: 1100px; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.lightbox-art { border-radius: 3px; overflow: hidden; background: #111; aspect-ratio: 4/3; animation: artIn .4s ease both; }
+.lightbox-art img { width: 100%; height: 100%; object-fit: cover; opacity: .82; transition: opacity .3s; }
+.lightbox-art:hover img { opacity: 1; }
+.lightbox-empty { color: rgba(255,255,255,.2); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; padding: 80px 0; }
+@keyframes artIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
 
-  .section-label {
-    font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3); margin-bottom: 64px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .section-label::before {
-    content: ''; width: 30px; height: 1px; background: rgba(255,255,255,0.2);
-  }
+/* SERVICES */
+.services-section { background: #0d0d0d; }
+.services-grid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--border); }
+.service-card { padding: 48px 40px; border-right: 1px solid var(--border); position: relative; overflow: hidden; transition: background .3s; }
+.service-card:last-child { border-right: none; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--white); transform: scaleX(0); transform-origin: left; transition: transform .4s ease; }
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { background: rgba(255,255,255,.03); }
+.service-num { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: .2em; color: rgba(255,255,255,.18); margin-bottom: 32px; }
+.service-icon { font-size: 28px; margin-bottom: 20px; }
+.service-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .05em; color: var(--white); margin-bottom: 16px; }
+.service-desc { font-size: 14px; line-height: 1.72; color: rgba(255,255,255,.38); }
 
-  /* ABOUT */
-  .about {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-    align-items: start;
-  }
-  .about-left {}
-  .about-headline {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 5vw, 72px);
-    line-height: 1; margin-bottom: 32px;
-    color: var(--white);
-  }
-  .about-text {
-    font-size: 16px; line-height: 1.75;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 48px;
-  }
-  .about-stats {
-    display: flex; gap: 48px; flex-wrap: wrap;
-  }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 52px; line-height: 1;
-    color: var(--white);
-  }
-  .stat-label {
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3); margin-top: 6px;
-  }
-  .about-right {
-    display: flex; flex-direction: column; gap: 2px; padding-top: 80px;
-  }
-  .skill-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 0; border-bottom: 1px solid var(--border);
-  }
-  .skill-name { font-size: 14px; color: rgba(255,255,255,0.7); }
-  .skill-bar { width: 120px; height: 1px; background: rgba(255,255,255,0.1); position: relative; }
-  .skill-fill { height: 100%; background: var(--white); transition: width 1s ease; }
+/* CONTACT */
+.contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.contact-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px,6vw,88px); line-height: .95; color: var(--white); margin-bottom: 32px; }
+.contact-sub { font-size: 15px; color: rgba(255,255,255,.38); line-height: 1.72; margin-bottom: 48px; }
+.contact-links { display: flex; flex-direction: column; }
+.contact-link { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--border); color: var(--white); text-decoration: none; font-size: 14px; letter-spacing: .05em; transition: padding-left .3s; }
+.contact-link:hover { padding-left: 10px; }
+.contact-link-arrow { font-size: 18px; color: rgba(255,255,255,.28); }
+.contact-form { display: flex; flex-direction: column; gap: 24px; }
+.form-group input, .form-group textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 14px 0; outline: none; resize: none; transition: border-color .3s; }
+.form-group input:focus, .form-group textarea:focus { border-color: rgba(255,255,255,.45); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,.22); }
+.form-group textarea { height: 100px; }
+.btn-send { align-self: flex-start; background: var(--white); color: var(--black); border: none; padding: 16px 42px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background .3s, transform .2s; }
+.btn-send:hover { background: var(--accent); transform: translateY(-2px); }
 
-  /* PORTFOLIO — GRADE DE CATEGORIAS */
-  .portfolio-cat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 40px 56px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: .2em; color: rgba(255,255,255,.38); }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.18); letter-spacing: .1em; }
+.footer-socials { display: flex; gap: 24px; }
+.footer-socials a { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.28); text-decoration: none; transition: color .3s; }
+.footer-socials a:hover { color: var(--white); }
 
-  .proj-cat-card {
-    position: relative;
-    overflow: hidden;
-    background: var(--card-bg);
-    aspect-ratio: 1 / 1;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-
-  .proj-cat-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s;
-    opacity: 0.88;
-  }
-  .proj-cat-card:hover img {
-    transform: scale(1.06);
-    opacity: 1;
-  }
-
-  .proj-cat-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 55%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 24px;
-    opacity: 1;
-  }
-  .proj-cat-card:hover .proj-cat-overlay { opacity: 1; }
-
-  .proj-cat-tag {
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 6px;
-  }
-  .proj-cat-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 0.06em;
-    color: var(--white);
-  }
-
-  .proj-cat-arrow {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 34px;
-    height: 34px;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 13px;
-    opacity: 1;
-    transform: scale(0.8);
-    
-  }
-  .proj-cat-card:hover .proj-cat-arrow {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  @media (max-width: 900px) {
-    .portfolio-cat-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 560px) {
-    .portfolio-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  }
-
-  .proj img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s;
-    opacity: 0.75;
-  }
-  .proj:hover img { transform: scale(1.06); opacity: 0.9; }
-  .proj-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 24px;
-    opacity: 0; transition: opacity 0.4s;
-  }
-  .proj:hover .proj-overlay { opacity: 1; }
-  .proj-cat {
-    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-    color: rgba(255,255,255,0.5); margin-bottom: 6px;
-  }
-  .proj-title { font-size: 16px; color: var(--white); font-weight: 400; }
-  .proj-link {
-    position: absolute; top: 20px; right: 20px;
-    width: 36px; height: 36px;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--white); text-decoration: none;
-    font-size: 14px;
-    opacity: 0; transform: scale(0.8);
-    transition: opacity 0.3s, transform 0.3s;
-  }
-  .proj:hover .proj-link { opacity: 1; transform: scale(1); }
-
-  .proj-placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 11px; letter-spacing: 0.3em;
-    color: rgba(255,255,255,0.12);
-  }
-
-  /* SERVICES */
-  .services-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-    border: 1px solid var(--border);
-  }
-  .service-card {
-    padding: 48px 40px;
-    border-right: 1px solid var(--border);
-    transition: background 0.3s;
-    position: relative; overflow: hidden;
-  }
-  .service-card:last-child { border-right: none; }
-  .service-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px; background: var(--white);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s ease;
-  }
-  .service-card:hover::before { transform: scaleX(1); }
-  .service-card:hover { background: rgba(255,255,255,0.03); }
-  .service-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px; letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.2); margin-bottom: 32px;
-  }
-  .service-icon { font-size: 28px; margin-bottom: 20px; }
-  .service-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 0.05em;
-    color: var(--white); margin-bottom: 16px;
-  }
-  .service-desc {
-    font-size: 14px; line-height: 1.7;
-    color: rgba(255,255,255,0.4);
-  }
-
-  /* CONTACT */
-  .contact-inner {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-    align-items: start;
-  }
-  .contact-headline {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 6vw, 88px);
-    line-height: 0.95; color: var(--white);
-    margin-bottom: 32px;
-  }
-  .contact-sub {
-    font-size: 15px; color: rgba(255,255,255,0.4);
-    line-height: 1.7; margin-bottom: 48px;
-  }
-  .contact-links { display: flex; flex-direction: column; gap: 2px; }
-  .contact-link {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 0; border-bottom: 1px solid var(--border);
-    color: var(--white); text-decoration: none;
-    font-size: 14px; letter-spacing: 0.05em;
-    transition: padding-left 0.3s;
-  }
-  .contact-link:hover { padding-left: 8px; }
-  .contact-link-arrow { font-size: 18px; color: rgba(255,255,255,0.3); }
-  .contact-form { display: flex; flex-direction: column; gap: 24px; }
-  .form-group { position: relative; }
-  .form-group input,
-  .form-group textarea {
-    width: 100%; background: transparent;
-    border: none; border-bottom: 1px solid var(--border);
-    color: var(--white); font-family: 'DM Sans', sans-serif;
-    font-size: 15px; font-weight: 300;
-    padding: 14px 0;
-    outline: none; resize: none;
-    transition: border-color 0.3s;
-  }
-  .form-group input:focus,
-  .form-group textarea:focus { border-color: rgba(255,255,255,0.5); }
-  .form-group input::placeholder,
-  .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-  .form-group textarea { height: 100px; }
-  .btn-send {
-    align-self: flex-start;
-    background: var(--white); color: var(--black);
-    border: none; padding: 16px 40px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    cursor: pointer; border-radius: 2px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .btn-send:hover { background: var(--accent); transform: translateY(-2px); }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 48px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px; letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.4);
-  }
-  .footer-copy {
-    font-size: 12px; color: rgba(255,255,255,0.2);
-    letter-spacing: 0.1em;
-  }
-  .footer-socials { display: flex; gap: 24px; }
-  .footer-socials a {
-    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3); text-decoration: none;
-    transition: color 0.3s;
-  }
-  .footer-socials a:hover { color: var(--white); }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links, .nav-cta { display: none; }
-    
-    section { padding: 80px 24px; }
-    .hero { padding: 0 24px 48px; }
-    .hero-photo { right: -20%; opacity: 0.3; }
-    .hero-scroll { right: 24px; }
-    .about { grid-template-columns: 1fr; gap: 48px; }
-    .about-right { padding-top: 0; }
-    .portfolio-grid { grid-template-columns: 1fr 1fr; }
-    .proj:nth-child(n) { grid-column: span 1; }
-    .proj:nth-child(1) { grid-column: span 2; }
-    .services-grid { grid-template-columns: 1fr; }
-    .service-card { border-right: none; border-bottom: 1px solid var(--border); }
-    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
-    footer { flex-direction: column; gap: 24px; text-align: center; }
-    .footer-socials { flex-wrap: wrap; justify-content: center; }
-  }
-
-  @media (max-width: 560px) {
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .proj:nth-child(n) { grid-column: span 1; }
-    .about-stats { gap: 32px; }
-  }
-
-  /* SCROLL REVEAL */
-  .reveal { opacity: 1; transform: none; }
-  
-
-      
-    
-  }
-  @media (max-width: 560px) {
-    
-  }
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  nav { padding: 18px 24px; } nav.scrolled { padding: 12px 24px; }
+  .nav-links, .nav-cta { display: none; } .hamburger { display: flex; }
+  section { padding: 80px 24px; }
+  .hero { padding: 0 24px 56px; }
+  #three-canvas { width: 280px; height: 280px; right: -50px; opacity: .3; }
+  .hero-scroll { right: 24px; }
+  .about { grid-template-columns: 1fr; gap: 48px; } .about-right { padding-top: 0; }
+  .portfolio-cat-grid { grid-template-columns: repeat(2,1fr); }
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+  footer { flex-direction: column; gap: 20px; text-align: center; }
+  .footer-socials { flex-wrap: wrap; justify-content: center; }
+  .lightbox-arts-grid { grid-template-columns: repeat(2,1fr); }
+  .lightbox-overlay { padding: 40px 20px 60px; }
+  .cursor-dot, .cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+@media (max-width: 560px) {
+  .portfolio-cat-grid { gap: 10px; }
+  .about-stats { gap: 32px; }
+  .lightbox-arts-grid { grid-template-columns: 1fr; }
+  #three-canvas { width: 200px; height: 200px; opacity: .2; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<canvas id="particles-canvas"></canvas>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre" onclick="closeMenu()">Sobre</a>
+  <a href="#portfolio" onclick="closeMenu()">Portfólio</a>
+  <a href="#servicos" onclick="closeMenu()">Serviços</a>
+  <a href="#contato" onclick="closeMenu()">Contato</a>
+</div>
+
+<nav id="mainNav">
   <a href="#" class="nav-logo">VINI GRAPHICS</a>
   <ul class="nav-links">
     <li><a href="#sobre">Sobre</a></li>
@@ -502,24 +207,18 @@
     <li><a href="#contato">Contato</a></li>
   </ul>
   <a href="#contato" class="nav-cta">Trabalhar Juntos</a>
-  
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<section class="hero" id="home">
   <div class="hero-bg"></div>
-  <div class="hero-noise"></div>
-  <img class="hero-photo" src="FOTO_PERFIL.png" alt="Vinícius Santos">
+  <canvas id="three-canvas"></canvas>
   <p class="hero-tag">Designer Gráfico · Lagarto, Brasil</p>
-  <h1 class="hero-name">VINI<br><span>GRAPHICS</span></h1>
+  <h1 class="hero-name" id="heroName">VINI<br><span>GRAPHICS</span></h1>
   <p class="hero-sub">Identidade visual, branding e design gráfico que transforma ideias em experiências visuais memoráveis.</p>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Scroll
-  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Scroll</div>
 </section>
 
-<!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
     <div class="marquee-item">Identidade Visual <div class="marquee-dot"></div></div>
@@ -537,186 +236,63 @@
   </div>
 </div>
 
-<!-- ABOUT -->
 <section id="sobre">
   <div class="section-label">Sobre mim</div>
   <div class="about reveal">
     <div class="about-left">
       <h2 class="about-headline">Design é<br>comunicação<br>sem ruído.</h2>
-      <p class="about-text">
-        Sou Vinícius Santos, designer gráfico com anos de experiência criando identidades visuais, materiais de branding e peças digitais que conectam marcas às pessoas. Baseado em Lagarto, Brasil, disponível para projetos freelance e tempo integral.
-      </p>
+      <p class="about-text">Sou Vinícius Santos, designer gráfico com anos de experiência criando identidades visuais, materiais de branding e peças digitais que conectam marcas às pessoas. Baseado em Lagarto, Brasil, disponível para projetos freelance e tempo integral.</p>
       <div class="about-stats">
-        <div>
-          <div class="stat-num">7+</div>
-          <div class="stat-label">Anos de exp.</div>
-        </div>
-        <div>
-          <div class="stat-num">50+</div>
-          <div class="stat-label">Projetos</div>
-        </div>
-        <div>
-          <div class="stat-num">∞</div>
-          <div class="stat-label">Criatividade</div>
-        </div>
+        <div><div class="stat-num">7+</div><div class="stat-label">Anos de exp.</div></div>
+        <div><div class="stat-num">50+</div><div class="stat-label">Projetos</div></div>
+        <div><div class="stat-num">∞</div><div class="stat-label">Criatividade</div></div>
       </div>
     </div>
     <div class="about-right">
-      <div class="skill-row">
-        <span class="skill-name">Identidade Visual</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
-      </div>
-      <div class="skill-row">
-        <span class="skill-name">Branding</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
-      </div>
-      <div class="skill-row">
-        <span class="skill-name">Social Media Design</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
-      </div>
-      <div class="skill-row">
-        <span class="skill-name">Motion Design</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
-      </div>
-      <div class="skill-row">
-        <span class="skill-name">Tipografia</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
-      </div>
-      <div class="skill-row">
-        <span class="skill-name">Composição Visual</span>
-        <div class="skill-bar"><div class="skill-fill" style="width:93%"></div></div>
-      </div>
+      <div class="skill-row"><span class="skill-name">Identidade Visual</span><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Branding</span><div class="skill-bar"><div class="skill-fill" data-w="90"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Social Media Design</span><div class="skill-bar"><div class="skill-fill" data-w="92"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Motion Design</span><div class="skill-bar"><div class="skill-fill" data-w="75"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Tipografia</span><div class="skill-bar"><div class="skill-fill" data-w="88"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Composição Visual</span><div class="skill-bar"><div class="skill-fill" data-w="93"></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- PORTFOLIO -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <div class="lightbox-header">
+    <div class="lightbox-title" id="lightboxTitle">Categoria</div>
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+  </div>
+  <div class="lightbox-arts-grid" id="lightboxGrid"></div>
+</div>
+
 <section id="portfolio">
   <div class="section-label">Portfólio Selecionado</div>
-
-  <div class="portfolio-cat-grid reveal" id="portfolioGrid">
-
-    <!-- Social Media -->
-    <div class="proj-cat-card" data-skill="social-media" data-titulo="Social Media">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_01.png" alt="Social Media">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Social Media</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Identidade Visual -->
-    <div class="proj-cat-card" data-skill="identidade-visual" data-titulo="Identidade Visual">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_02.png" alt="Identidade Visual">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Identidade Visual</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Logotipo -->
-    <div class="proj-cat-card" data-skill="logotipos" data-titulo="Logotipo">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_03.png" alt="Logotipo">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Logotipo</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Motion Design -->
-    <div class="proj-cat-card" data-skill="motion-vfx" data-titulo="Motion Design">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_04.png" alt="Motion Design">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Motion Design</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- VFX -->
-    <div class="proj-cat-card" data-skill="vfx" data-titulo="VFX">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_05.png" alt="VFX">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">VFX</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Branding -->
-    <div class="proj-cat-card" data-skill="branding" data-titulo="Branding">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_06.png" alt="Branding">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Branding</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Landing Page -->
-    <div class="proj-cat-card" data-skill="landing-page" data-titulo="Landing Page">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_07.png" alt="Landing Page">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Landing Page</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
-
-    <!-- Geral -->
-    <div class="proj-cat-card" data-skill="geral" data-titulo="Geral">
-      <img src="https://vinicostasc01.github.io/vini-graphics-portfolio/images/SKILS-SITE_08.png" alt="Geral">
-      <div class="proj-cat-overlay">
-        <div class="proj-cat-tag">Ver projetos</div>
-        <div class="proj-cat-name">Geral</div>
-      </div>
-      <div class="proj-cat-arrow">↗</div>
-    </div>
+  <div class="portfolio-cat-grid reveal">
+    <div class="proj-cat-card" data-skill="social-media" data-titulo="Social Media"><img src="images/SKILS-SITE_01.png" alt="Social Media"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Social Media</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="identidade-visual" data-titulo="Identidade Visual"><img src="images/SKILS-SITE_02.png" alt="Identidade Visual"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Identidade Visual</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="logotipos" data-titulo="Logotipo"><img src="images/SKILS-SITE_03.png" alt="Logotipo"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Logotipo</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="motion-vfx" data-titulo="Motion Design"><img src="images/SKILS-SITE_04.png" alt="Motion Design"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Motion Design</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="vfx" data-titulo="VFX"><img src="images/SKILS-SITE_05.png" alt="VFX"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">VFX</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="branding" data-titulo="Branding"><img src="images/SKILS-SITE_06.png" alt="Branding"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Branding</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="landing-page" data-titulo="Landing Page"><img src="images/SKILS-SITE_07.png" alt="Landing Page"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Landing Page</div></div><div class="proj-cat-arrow">↗</div></div>
+    <div class="proj-cat-card" data-skill="geral" data-titulo="Geral"><img src="images/SKILS-SITE_08.png" alt="Geral"><div class="proj-cat-overlay"><div class="proj-cat-tag">Ver projetos</div><div class="proj-cat-name">Geral</div></div><div class="proj-cat-arrow">↗</div></div>
   </div>
-
-  <div style="text-align:center; margin-top:56px;">
-    <a href="https://www.behance.net/vini_graphics" target="_blank" style="
-      display:inline-flex; align-items:center; gap:12px;
-      border: 1px solid var(--border); padding: 16px 36px; border-radius: 2px;
-      color: rgba(255,255,255,0.6); text-decoration: none;
-      font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
-      transition: border-color 0.3s, color 0.3s;
-    " onmouseover="this.style.borderColor='rgba(255,255,255,0.4)';this.style.color='#fff'"
-       onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.6)'">
-      Ver todos os projetos no Behance ↗
-    </a>
+  <div style="text-align:center;margin-top:56px;">
+    <a href="https://www.behance.net/vini_graphics" target="_blank" style="display:inline-flex;align-items:center;gap:12px;border:1px solid var(--border);padding:16px 36px;border-radius:2px;color:rgba(255,255,255,.6);text-decoration:none;font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:border-color .3s,color .3s;" onmouseover="this.style.borderColor='rgba(255,255,255,.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.color='rgba(255,255,255,.6)'">Ver todos os projetos no Behance ↗</a>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="servicos" style="background:#0d0d0d; margin: 0 -48px; padding: 120px 48px;">
+<section id="servicos" class="services-section">
   <div class="section-label">O que ofereço</div>
   <div class="services-grid reveal">
-    <div class="service-card">
-      <div class="service-num">01</div>
-      <div class="service-icon">◈</div>
-      <div class="service-name">Identidade Visual</div>
-      <p class="service-desc">Criação de sistemas visuais completos: logo, paleta de cores, tipografia e brand guidelines que definem a personalidade da sua marca.</p>
-    </div>
-    <div class="service-card">
-      <div class="service-num">02</div>
-      <div class="service-icon">◐</div>
-      <div class="service-name">Social Media</div>
-      <p class="service-desc">Pacotes de posts, stories e templates personalizados para manter sua presença digital consistente e visualmente impactante.</p>
-    </div>
-    <div class="service-card">
-      <div class="service-num">03</div>
-      <div class="service-icon">◎</div>
-      <div class="service-name">Motion & VFX</div>
-      <p class="service-desc">Animações e efeitos visuais para redes sociais e apresentações, dando vida às marcas com movimento e dinâmica.</p>
-    </div>
+    <div class="service-card"><div class="service-num">01</div><div class="service-icon">◈</div><div class="service-name">Identidade Visual</div><p class="service-desc">Criação de sistemas visuais completos: logo, paleta de cores, tipografia e brand guidelines que definem a personalidade da sua marca.</p></div>
+    <div class="service-card"><div class="service-num">02</div><div class="service-icon">◐</div><div class="service-name">Social Media</div><p class="service-desc">Pacotes de posts, stories e templates personalizados para manter sua presença digital consistente e visualmente impactante.</p></div>
+    <div class="service-card"><div class="service-num">03</div><div class="service-icon">◎</div><div class="service-name">Motion & VFX</div><p class="service-desc">Animações e efeitos visuais para redes sociais e apresentações, dando vida às marcas com movimento e dinâmica.</p></div>
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contato">
   <div class="section-label">Vamos trabalhar juntos</div>
   <div class="contact-inner reveal">
@@ -724,36 +300,21 @@
       <h2 class="contact-headline">PRONTO<br>PARA<br>CRIAR?</h2>
       <p class="contact-sub">Disponível para projetos freelance e posições de tempo integral. Entre em contato e vamos conversar sobre o seu projeto.</p>
       <div class="contact-links">
-        <a href="https://www.linkedin.com/in/vini-graphics/" target="_blank" class="contact-link">
-          LinkedIn <span class="contact-link-arrow">↗</span>
-        </a>
-        <a href="https://www.behance.net/vini_graphics" target="_blank" class="contact-link">
-          Behance <span class="contact-link-arrow">↗</span>
-        </a>
-        <a href="https://www.instagram.com/vini_graphics/" target="_blank" class="contact-link">
-          Instagram <span class="contact-link-arrow">↗</span>
-        </a>
+        <a href="https://www.linkedin.com/in/vini-graphics/" target="_blank" class="contact-link">LinkedIn <span class="contact-link-arrow">↗</span></a>
+        <a href="https://www.behance.net/vini_graphics" target="_blank" class="contact-link">Behance <span class="contact-link-arrow">↗</span></a>
+        <a href="https://www.instagram.com/vini_graphics/" target="_blank" class="contact-link">Instagram <span class="contact-link-arrow">↗</span></a>
       </div>
     </div>
     <div class="contact-form">
-      <div class="form-group">
-        <input type="text" placeholder="Seu nome">
-      </div>
-      <div class="form-group">
-        <input type="email" placeholder="Seu e-mail">
-      </div>
-      <div class="form-group">
-        <input type="text" placeholder="Assunto do projeto">
-      </div>
-      <div class="form-group">
-        <textarea placeholder="Conte-me sobre o seu projeto..."></textarea>
-      </div>
-      <button class="btn-send">Enviar mensagem</button>
+      <div class="form-group"><input type="text" placeholder="Seu nome"></div>
+      <div class="form-group"><input type="email" placeholder="Seu e-mail"></div>
+      <div class="form-group"><input type="text" placeholder="Assunto do projeto"></div>
+      <div class="form-group"><textarea placeholder="Conte-me sobre o seu projeto..."></textarea></div>
+      <button class="btn-send" id="btnSend">Enviar mensagem</button>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-logo">VINI GRAPHICS</div>
   <div class="footer-copy">© 2026 — Vinícius Santos. Todos os direitos reservados.</div>
@@ -764,5 +325,194 @@
   </div>
 </footer>
 
+<script>
+// ── 1. CURSOR ──
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function animCursor(){
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
+  rx+=(mx-rx)*0.13; ry+=(my-ry)*0.13;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('a,button,.proj-cat-card,.service-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.classList.add('big');ring.classList.add('big');});
+  el.addEventListener('mouseleave',()=>{dot.classList.remove('big');ring.classList.remove('big');});
+});
+
+// ── 2. NAV ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);
+});
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+// ── 3. THREE.JS SPHERE ──
+(function(){
+  const canvas=document.getElementById('three-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(canvas.clientWidth,canvas.clientHeight);
+  renderer.setClearColor(0x000000,0);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,0.1,100);
+  camera.position.z=3.2;
+
+  // Outer wireframe
+  const m1=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1,1),
+    new THREE.MeshBasicMaterial({color:0xf5f3ef,wireframe:true,transparent:true,opacity:0.18})
+  );
+  // Inner sphere
+  const m2=new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.7,2),
+    new THREE.MeshBasicMaterial({color:0xbbbbbb,wireframe:true,transparent:true,opacity:0.11})
+  );
+  // Point cloud on surface
+  const ptGeo=new THREE.BufferGeometry();
+  const pos=new Float32Array(320*3);
+  for(let i=0;i<320;i++){
+    const phi=Math.acos(-1+(2*i)/320);
+    const theta=Math.sqrt(320*Math.PI)*phi;
+    pos[i*3]=1.05*Math.sin(phi)*Math.cos(theta);
+    pos[i*3+1]=1.05*Math.sin(phi)*Math.sin(theta);
+    pos[i*3+2]=1.05*Math.cos(phi);
+  }
+  ptGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const pts=new THREE.Points(ptGeo,new THREE.PointsMaterial({color:0xffffff,size:0.02,transparent:true,opacity:0.5}));
+
+  const group=new THREE.Group();
+  group.add(m1,m2,pts);
+  scene.add(group);
+
+  let tx=0,ty=0;
+  document.addEventListener('mousemove',e=>{
+    tx=(e.clientX/window.innerWidth-0.5)*0.7;
+    ty=(e.clientY/window.innerHeight-0.5)*0.7;
+  });
+
+  (function anim(){
+    requestAnimationFrame(anim);
+    group.rotation.y+=0.004;
+    group.rotation.x+=0.002;
+    group.rotation.y+=(tx-group.rotation.y)*0.035;
+    group.rotation.x+=(ty-group.rotation.x)*0.035;
+    renderer.render(scene,camera);
+  })();
+})();
+
+// ── 4. PARTICLES ──
+(function(){
+  const c=document.getElementById('particles-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,ps=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();
+  window.addEventListener('resize',resize);
+  const N=window.innerWidth<=900?55:120;
+  function P(){
+    this.reset=function(){
+      this.x=Math.random()*W; this.y=Math.random()*H;
+      this.r=Math.random()*1.3+0.3;
+      this.vx=(Math.random()-.5)*.28; this.vy=(Math.random()-.5)*.28;
+      this.a=Math.random()*.45+.08;
+    };
+    this.reset();
+  }
+  for(let i=0;i<N;i++){const p=new P();ps.push(p);}
+  let mx2=-999,my2=-999;
+  document.addEventListener('mousemove',e=>{mx2=e.clientX;my2=e.clientY;});
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    ps.forEach(p=>{
+      const dx=p.x-mx2,dy=p.y-my2,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<110){p.vx+=dx/d*.35;p.vy+=dy/d*.35;}
+      p.vx*=.98;p.vy*=.98;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W||p.y<0||p.y>H)p.reset();
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(245,243,239,${p.a})`;ctx.fill();
+    });
+    for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){
+      const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<105){
+        ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);
+        ctx.strokeStyle=`rgba(245,243,239,${.052*(1-d/105)})`;ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+// ── 5. PARALLAX ──
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  const hn=document.getElementById('heroName');
+  if(hn)hn.style.transform=`translateY(${sy*.18}px)`;
+  const tc=document.getElementById('three-canvas');
+  if(tc)tc.style.transform=`translateY(calc(-50% + ${sy*.22}px))`;
+});
+
+// ── 6. SCROLL REVEAL + SKILL BARS ──
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+const so=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.querySelectorAll('.skill-fill').forEach(f=>{f.style.width=f.dataset.w+'%';});});},{threshold:.2});
+document.querySelectorAll('.about-right').forEach(el=>so.observe(el));
+
+// ── 7. GLITCH ──
+(function(){
+  const el=document.getElementById('heroName');
+  if(!el)return;
+  setInterval(()=>{
+    el.style.animation='none';
+    el.offsetHeight;
+    el.style.animation='glitch .45s steps(1) forwards';
+    setTimeout(()=>{el.style.animation='';},500);
+  },5500);
+})();
+
+// ── 8. LIGHTBOX ──
+const skillArtes={
+  'social-media':['https://mir-s3-cdn-cf.behance.net/projects/max_808/0f73f6240790423.Y3JvcCwyNzQzLDIxNDUsMCw2NDU.png','https://mir-s3-cdn-cf.behance.net/projects/max_808/3dc1f9152593359.Y3JvcCwzOTk5LDMxMjgsMCw0MzU.png'],
+  'identidade-visual':['https://mir-s3-cdn-cf.behance.net/projects/max_808/de7415245685887.Y3JvcCwxMjc4LDEwMDAsMzYwLDA.png','https://mir-s3-cdn-cf.behance.net/projects/max_808/a3b9f2241833461.Y3JvcCwyODc2LDIyNTAsNjQsMA.png','https://mir-s3-cdn-cf.behance.net/projects/max_808/d5992f241836671.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png'],
+  'logotipos':['https://mir-s3-cdn-cf.behance.net/projects/max_808/648c59241836823.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png'],
+  'motion-vfx':[],'vfx':[],'branding':[],'landing-page':[],
+  'geral':['https://mir-s3-cdn-cf.behance.net/projects/max_808/3adba7162560867.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png']
+};
+const ov=document.getElementById('lightboxOverlay');
+const lt=document.getElementById('lightboxTitle');
+const lg=document.getElementById('lightboxGrid');
+function openLightbox(skill,titulo){
+  const artes=skillArtes[skill]||[];
+  lt.textContent=titulo; lg.innerHTML='';
+  if(!artes.length){lg.innerHTML='<div class="lightbox-empty">Em breve — projetos desta categoria serão adicionados.</div>';}
+  else artes.forEach((src,i)=>{
+    const d=document.createElement('div');d.className='lightbox-art';
+    d.style.animationDelay=(i*.08)+'s';
+    d.innerHTML=`<img src="${src}" alt="${titulo}" loading="lazy">`;lg.appendChild(d);
+  });
+  ov.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeLightbox(){ov.classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.proj-cat-card').forEach(c=>{c.addEventListener('click',()=>openLightbox(c.dataset.skill,c.dataset.titulo));});
+document.getElementById('lightboxClose').addEventListener('click',closeLightbox);
+ov.addEventListener('click',e=>{if(e.target===ov)closeLightbox();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+
+// ── 9. FORM ──
+document.getElementById('btnSend').addEventListener('click',function(){
+  this.textContent='Mensagem enviada ✓';
+  this.style.background='#2a2a2a';this.style.color='rgba(255,255,255,.6)';
+});
+</script>
 </body>
 </html>
