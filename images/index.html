@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vini Graphics — Designer Gráfico</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f3ef;
+    --accent: #e8e0d0;
+    --muted: #555;
+    --border: rgba(255,255,255,0.08);
+    --card-bg: #111;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--white);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s, height 0.3s;
+  }
+  .cursor.expanded { width: 20px; height: 20px; background: #fff; }
+  .cursor-ring.expanded { width: 60px; height: 60px; border-color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 48px;
+    mix-blend-mode: difference;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    color: var(--white); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0.6; transition: opacity 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 20px; border-radius: 2px;
+    color: var(--white); text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .nav-cta:hover { background: var(--white); color: var(--black); }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; background: none; border: none;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 1px;
+    background: var(--white); transition: all 0.3s;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 40%, #1a1a1a 0%, var(--black) 70%);
+  }
+  .hero-noise {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4; pointer-events: none;
+  }
+  .hero-photo {
+    position: absolute; right: 0; bottom: 0;
+    height: 90%; width: auto;
+    object-fit: cover;
+    object-position: top;
+    opacity: 0.55;
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.8) 60%, transparent 100%),
+                linear-gradient(to top, transparent 0%, black 20%);
+    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 60%, transparent 100%),
+                        linear-gradient(to top, transparent 0%, black 20%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  .hero-tag {
+    font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 20px;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s ease both;
+  }
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 12vw, 180px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s 0.15s ease both;
+  }
+  .hero-name span { color: rgba(255,255,255,0.15); }
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 15px; color: rgba(255,255,255,0.5);
+    max-width: 360px; line-height: 1.6;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 40px; right: 48px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    animation: fadeUp 1s 0.6s ease both;
+  }
+  .scroll-line {
+    width: 40px; height: 1px; background: rgba(255,255,255,0.2);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute;
+    left: -100%; top: 0; width: 100%; height: 100%;
+    background: var(--white);
+    animation: scrollLine 2s 1s ease-in-out infinite;
+  }
+  @keyframes scrollLine { to { left: 100%; } }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden; padding: 18px 0;
+    background: #0d0d0d;
+  }
+  .marquee-track {
+    display: flex; gap: 60px; width: max-content;
+    animation: marquee 25s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.25);
+    white-space: nowrap; display: flex; align-items: center; gap: 60px;
+  }
+  .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* SECTIONS */
+  section { padding: 120px 48px; }
+
+  .section-label {
+    font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); margin-bottom: 64px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-label::before {
+    content: ''; width: 30px; height: 1px; background: rgba(255,255,255,0.2);
+  }
+
+  /* ABOUT */
+  .about {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start;
+  }
+  .about-left {}
+  .about-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    line-height: 1; margin-bottom: 32px;
+    color: var(--white);
+  }
+  .about-text {
+    font-size: 16px; line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 48px;
+  }
+  .about-stats {
+    display: flex; gap: 48px; flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; line-height: 1;
+    color: var(--white);
+  }
+  .stat-label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); margin-top: 6px;
+  }
+  .about-right {
+    display: flex; flex-direction: column; gap: 2px; padding-top: 80px;
+  }
+  .skill-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+  }
+  .skill-name { font-size: 14px; color: rgba(255,255,255,0.7); }
+  .skill-bar { width: 120px; height: 1px; background: rgba(255,255,255,0.1); position: relative; }
+  .skill-fill { height: 100%; background: var(--white); transition: width 1s ease; }
+
+  /* PORTFOLIO FILTERS */
+  .portfolio-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .filter-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 9px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+  }
+  .filter-btn:hover {
+    color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.3);
+  }
+  .filter-btn.active {
+    color: var(--black);
+    background: var(--white);
+    border-color: var(--white);
+  }
+
+  /* PORTFOLIO GRID */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+
+  /* Quando filtrado, layout vira grade uniforme de 3 colunas */
+  .portfolio-grid.filtered {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .portfolio-grid.filtered .proj {
+    grid-column: span 1 !important;
+  }
+
+  .proj {
+    position: relative; overflow: hidden;
+    background: var(--card-bg);
+    aspect-ratio: 4/3;
+    border-radius: 3px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .proj.hidden {
+    display: none;
+  }
+
+  /* Spans do layout masonry (Todos) */
+  .proj:nth-child(1) { grid-column: span 7; }
+  .proj:nth-child(2) { grid-column: span 5; }
+  .proj:nth-child(3) { grid-column: span 4; }
+  .proj:nth-child(4) { grid-column: span 5; }
+  .proj:nth-child(5) { grid-column: span 3; }
+  .proj:nth-child(6) { grid-column: span 7; }
+  .proj:nth-child(7) { grid-column: span 5; }
+
+  .proj img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s;
+    opacity: 0.75;
+  }
+  .proj:hover img { transform: scale(1.06); opacity: 0.9; }
+  .proj-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 24px;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .proj:hover .proj-overlay { opacity: 1; }
+  .proj-cat {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); margin-bottom: 6px;
+  }
+  .proj-title { font-size: 16px; color: var(--white); font-weight: 400; }
+  .proj-link {
+    position: absolute; top: 20px; right: 20px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white); text-decoration: none;
+    font-size: 14px;
+    opacity: 0; transform: scale(0.8);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .proj:hover .proj-link { opacity: 1; transform: scale(1); }
+
+  .proj-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px; letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.12);
+  }
+
+  /* SERVICES */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    padding: 48px 40px;
+    border-right: 1px solid var(--border);
+    transition: background 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .service-card:last-child { border-right: none; }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px; background: var(--white);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: rgba(255,255,255,0.03); }
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.2); margin-bottom: 32px;
+  }
+  .service-icon { font-size: 28px; margin-bottom: 20px; }
+  .service-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 0.05em;
+    color: var(--white); margin-bottom: 16px;
+  }
+  .service-desc {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* CONTACT */
+  .contact-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start;
+  }
+  .contact-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.95; color: var(--white);
+    margin-bottom: 32px;
+  }
+  .contact-sub {
+    font-size: 15px; color: rgba(255,255,255,0.4);
+    line-height: 1.7; margin-bottom: 48px;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 2px; }
+  .contact-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0; border-bottom: 1px solid var(--border);
+    color: var(--white); text-decoration: none;
+    font-size: 14px; letter-spacing: 0.05em;
+    transition: padding-left 0.3s;
+  }
+  .contact-link:hover { padding-left: 8px; }
+  .contact-link-arrow { font-size: 18px; color: rgba(255,255,255,0.3); }
+  .contact-form { display: flex; flex-direction: column; gap: 24px; }
+  .form-group { position: relative; }
+  .form-group input,
+  .form-group textarea {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid var(--border);
+    color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 300;
+    padding: 14px 0;
+    outline: none; resize: none;
+    transition: border-color 0.3s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus { border-color: rgba(255,255,255,0.5); }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
+  .form-group textarea { height: 100px; }
+  .btn-send {
+    align-self: flex-start;
+    background: var(--white); color: var(--black);
+    border: none; padding: 16px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: none; border-radius: 2px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-send:hover { background: var(--accent); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+  }
+  .footer-copy {
+    font-size: 12px; color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+  }
+  .footer-socials { display: flex; gap: 24px; }
+  .footer-socials a {
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-socials a:hover { color: var(--white); }
+
+  /* MOBILE NAV */
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--black);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 32px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; letter-spacing: 0.1em;
+    color: var(--white); text-decoration: none;
+    opacity: 0.7; transition: opacity 0.2s;
+  }
+  .mobile-menu a:hover { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 80px 24px; }
+    .hero { padding: 0 24px 48px; }
+    .hero-photo { right: -20%; opacity: 0.3; }
+    .hero-scroll { right: 24px; }
+    .about { grid-template-columns: 1fr; gap: 48px; }
+    .about-right { padding-top: 0; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .proj:nth-child(n) { grid-column: span 1; }
+    .proj:nth-child(1) { grid-column: span 2; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-socials { flex-wrap: wrap; justify-content: center; }
+  }
+
+  @media (max-width: 560px) {
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .proj:nth-child(n) { grid-column: span 1; }
+    .about-stats { gap: 32px; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ══════════════════════════════════
+     SKILLS — GRID DE CATEGORIAS
+  ══════════════════════════════════ */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .skill-card {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #111;
+  }
+
+  .skill-card img.skill-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s;
+    opacity: 0.9;
+  }
+
+  .skill-card:hover img.skill-cover {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  .skill-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 24px;
+    pointer-events: none;
+  }
+
+  .skill-card-label {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 4px;
+  }
+
+  .skill-card-count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .skill-card-cta {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .skill-card:hover .skill-card-cta {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ══════════════════════════════════
+     LIGHTBOX — MODAL DE ARTES
+  ══════════════════════════════════ */
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 64px 48px 80px;
+    animation: lbFadeIn 0.3s ease;
+  }
+  .lightbox-overlay.open { display: flex; }
+
+  @keyframes lbFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .lightbox-header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-shrink: 0;
+  }
+
+  .lightbox-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.08em;
+    color: #f5f3ef;
+  }
+
+  .lightbox-close {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .lightbox-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  .lightbox-arts-grid {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .lightbox-art {
+    border-radius: 3px;
+    overflow: hidden;
+    background: #111;
+    aspect-ratio: 4/3;
+    animation: artFadeUp 0.4s ease both;
+  }
+
+  .lightbox-art:nth-child(1) { animation-delay: 0.05s; }
+  .lightbox-art:nth-child(2) { animation-delay: 0.10s; }
+  .lightbox-art:nth-child(3) { animation-delay: 0.15s; }
+  .lightbox-art:nth-child(4) { animation-delay: 0.20s; }
+  .lightbox-art:nth-child(5) { animation-delay: 0.25s; }
+  .lightbox-art:nth-child(6) { animation-delay: 0.30s; }
+
+  @keyframes artFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .lightbox-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease, opacity 0.3s;
+    opacity: 0.85;
+  }
+  .lightbox-art:hover img {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  .lightbox-empty {
+    color: rgba(255,255,255,0.2);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 80px 0;
+    width: 100%;
+  }
+
+  /* responsive skills */
+  @media (max-width: 900px) {
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .lightbox-arts-grid { grid-template-columns: repeat(2, 1fr); }
+    .lightbox-overlay { padding: 40px 24px 60px; }
+  }
+  @media (max-width: 560px) {
+    .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .lightbox-arts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre" onclick="closeMenu()">Sobre</a>
+  <a href="#portfolio" onclick="closeMenu()">Portfólio</a>
+  <a href="#servicos" onclick="closeMenu()">Serviços</a>
+  <a href="#contato" onclick="closeMenu()">Contato</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">VINI GRAPHICS</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#portfolio">Portfólio</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+  <a href="#contato" class="nav-cta">Trabalhar Juntos</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <img class="hero-photo" src="FOTO_PERFIL.png" alt="Vinícius Santos">
+  <p class="hero-tag">Designer Gráfico · Lagarto, Brasil</p>
+  <h1 class="hero-name">VINI<br><span>GRAPHICS</span></h1>
+  <p class="hero-sub">Identidade visual, branding e design gráfico que transforma ideias em experiências visuais memoráveis.</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item">Identidade Visual <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Branding <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Social Media <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Motion Design <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Logotipos <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Flyers <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Identidade Visual <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Branding <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Social Media <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Motion Design <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Logotipos <div class="marquee-dot"></div></div>
+    <div class="marquee-item">Flyers <div class="marquee-dot"></div></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="sobre">
+  <div class="section-label">Sobre mim</div>
+  <div class="about reveal">
+    <div class="about-left">
+      <h2 class="about-headline">Design é<br>comunicação<br>sem ruído.</h2>
+      <p class="about-text">
+        Sou Vinícius Santos, designer gráfico com anos de experiência criando identidades visuais, materiais de branding e peças digitais que conectam marcas às pessoas. Baseado em Lagarto, Brasil, disponível para projetos freelance e tempo integral.
+      </p>
+      <div class="about-stats">
+        <div>
+          <div class="stat-num">7+</div>
+          <div class="stat-label">Anos de exp.</div>
+        </div>
+        <div>
+          <div class="stat-num">50+</div>
+          <div class="stat-label">Projetos</div>
+        </div>
+        <div>
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Criatividade</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="skill-row">
+        <span class="skill-name">Identidade Visual</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Branding</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Social Media Design</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Motion Design</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Tipografia</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Composição Visual</span>
+        <div class="skill-bar"><div class="skill-fill" style="width:93%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-label">Portfólio Selecionado</div>
+
+  <!-- FILTROS DE CATEGORIA -->
+  <div class="portfolio-filters">
+    <button class="filter-btn active" data-filter="todos">Todos</button>
+    <button class="filter-btn" data-filter="social-media">Social Media</button>
+    <button class="filter-btn" data-filter="identidade-visual">Identidade Visual</button>
+    <button class="filter-btn" data-filter="logotipos">Logotipos</button>
+    <button class="filter-btn" data-filter="flyers">Flyers</button>
+    <button class="filter-btn" data-filter="motion-vfx">Motion & VFX</button>
+  </div>
+
+  <div class="portfolio-grid" id="portfolioGrid">
+
+    <!-- categoria: identidade-visual -->
+    <div class="proj reveal" data-categoria="identidade-visual">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/de7415245685887.Y3JvcCwxMjc4LDEwMDAsMzYwLDA.png" alt="Litoral Norte Santos FC">
+      <div class="proj-overlay">
+        <div class="proj-cat">Identidade Visual · Esporte</div>
+        <div class="proj-title">ID Visual Litoral Norte Santos FC</div>
+      </div>
+      <a href="https://www.behance.net/gallery/245685887/Projeto-ID-Visual-Litoral-Norte-Santos-Fc" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: logotipos -->
+    <div class="proj reveal" data-categoria="logotipos">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/648c59241836823.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png" alt="Pacgens Logo">
+      <div class="proj-overlay">
+        <div class="proj-cat">Logotipo</div>
+        <div class="proj-title">Projeto Logotipo Pacgens</div>
+      </div>
+      <a href="https://www.behance.net/gallery/241836823/Projeto-Logotipo-Pacgens" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: identidade-visual -->
+    <div class="proj reveal" data-categoria="identidade-visual">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/a3b9f2241833461.Y3JvcCwyODc2LDIyNTAsNjQsMA.png" alt="Felina Closet">
+      <div class="proj-overlay">
+        <div class="proj-cat">Branding · Moda</div>
+        <div class="proj-title">Felina Closet</div>
+      </div>
+      <a href="https://www.behance.net/gallery/241833461/Felina-Closet" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: social-media -->
+    <div class="proj reveal" data-categoria="social-media">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/0f73f6240790423.Y3JvcCwyNzQzLDIxNDUsMCw2NDU.png" alt="Bem Estar Fit">
+      <div class="proj-overlay">
+        <div class="proj-cat">Social Media · Fitness</div>
+        <div class="proj-title">Projeto Bem Estar Fit</div>
+      </div>
+      <a href="https://www.behance.net/gallery/240790423/PROJETO-BEM-ESTAR-FIT" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: identidade-visual -->
+    <div class="proj reveal" data-categoria="identidade-visual">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/d5992f241836671.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png" alt="Residencial Palace">
+      <div class="proj-overlay">
+        <div class="proj-cat">Branding · Imobiliário</div>
+        <div class="proj-title">Residencial Palace</div>
+      </div>
+      <a href="https://www.behance.net/gallery/241836671/Projeto-Residencial-Palace" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: social-media -->
+    <div class="proj reveal" data-categoria="social-media">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/3dc1f9152593359.Y3JvcCwzOTk5LDMxMjgsMCw0MzU.png" alt="Social Media Esportivo">
+      <div class="proj-overlay">
+        <div class="proj-cat">Pacote Social Media · Esporte</div>
+        <div class="proj-title">Pack Social Media Loja Esportiva</div>
+      </div>
+      <a href="https://www.behance.net/gallery/152593359/PACOTE-SOCIAL-MEDIA-PARA-LOJA-DE-MATERIA-ESPORTIVO" target="_blank" class="proj-link">↗</a>
+    </div>
+
+    <!-- categoria: flyers -->
+    <div class="proj reveal" data-categoria="flyers">
+      <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/3adba7162560867.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png" alt="Flyer Hamburgueria">
+      <div class="proj-overlay">
+        <div class="proj-cat">Flyer · Food</div>
+        <div class="proj-title">Flyer para Hamburgueria</div>
+      </div>
+      <a href="https://www.behance.net/gallery/162560867/FLYER-PARA-HAMBURGUERIA" target="_blank" class="proj-link">↗</a>
+    </div>
+
+  </div>
+
+  <!-- Mensagem quando nenhum projeto encontrado na categoria -->
+  <div id="emptyState" style="display:none; text-align:center; padding: 80px 0; color: rgba(255,255,255,0.2); font-size:13px; letter-spacing:0.2em; text-transform:uppercase;">
+    Nenhum projeto nesta categoria ainda
+  </div>
+
+  <div style="text-align:center; margin-top:56px;">
+    <a href="https://www.behance.net/vini_graphics" target="_blank" style="
+      display:inline-flex; align-items:center; gap:12px;
+      border: 1px solid var(--border); padding: 16px 36px; border-radius: 2px;
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: border-color 0.3s, color 0.3s;
+    " onmouseover="this.style.borderColor='rgba(255,255,255,0.4)';this.style.color='#fff'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.6)'">
+      Ver todos os projetos no Behance ↗
+    </a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="servicos" style="background:#0d0d0d; margin: 0 -48px; padding: 120px 48px;">
+  <div class="section-label">O que ofereço</div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon">◈</div>
+      <div class="service-name">Identidade Visual</div>
+      <p class="service-desc">Criação de sistemas visuais completos: logo, paleta de cores, tipografia e brand guidelines que definem a personalidade da sua marca.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon">◐</div>
+      <div class="service-name">Social Media</div>
+      <p class="service-desc">Pacotes de posts, stories e templates personalizados para manter sua presença digital consistente e visualmente impactante.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon">◎</div>
+      <div class="service-name">Motion & VFX</div>
+      <p class="service-desc">Animações e efeitos visuais para redes sociais e apresentações, dando vida às marcas com movimento e dinâmica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     LIGHTBOX MODAL
+══════════════════════════════════ -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <div class="lightbox-header">
+    <div class="lightbox-title" id="lightboxTitle">Categoria</div>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">✕</button>
+  </div>
+  <div class="lightbox-arts-grid" id="lightboxGrid"></div>
+</div>
+
+<!-- ══════════════════════════════════
+     SKILLS — CATEGORIAS
+══════════════════════════════════ -->
+<section id="skills">
+  <div class="section-label">Minhas Skills</div>
+  <div class="skills-grid reveal">
+
+    <!-- Social Media -->
+    <div class="skill-card" data-skill="social-media" data-titulo="Social Media"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_01.png" alt="Social Media">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Social Media</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Identidade Visual -->
+    <div class="skill-card" data-skill="identidade-visual" data-titulo="Identidade Visual"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_02.png" alt="Identidade Visual">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Identidade Visual</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Logotipo -->
+    <div class="skill-card" data-skill="logotipos" data-titulo="Logotipo"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_03.png" alt="Logotipo">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Logotipo</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Motion -->
+    <div class="skill-card" data-skill="motion-vfx" data-titulo="Motion Design"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_04.png" alt="Motion">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Motion Design</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- VFX -->
+    <div class="skill-card" data-skill="vfx" data-titulo="VFX"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_05.png" alt="VFX">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">VFX</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Branding -->
+    <div class="skill-card" data-skill="branding" data-titulo="Branding"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_06.png" alt="Branding">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Branding</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Landing Page -->
+    <div class="skill-card" data-skill="landing-page" data-titulo="Landing Page"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_07.png" alt="Landing Page">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Landing Page</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+    <!-- Geral -->
+    <div class="skill-card" data-skill="geral" data-titulo="Geral"
+         data-artes='[]'>
+      <img class="skill-cover" src="images/SKILS-SITE_08.png" alt="Geral">
+      <div class="skill-card-overlay">
+        <div class="skill-card-label">Categoria</div>
+        <div class="skill-card-count">Geral</div>
+      </div>
+      <div class="skill-card-cta">↗</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contato">
+  <div class="section-label">Vamos trabalhar juntos</div>
+  <div class="contact-inner reveal">
+    <div>
+      <h2 class="contact-headline">PRONTO<br>PARA<br>CRIAR?</h2>
+      <p class="contact-sub">Disponível para projetos freelance e posições de tempo integral. Entre em contato e vamos conversar sobre o seu projeto.</p>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/vini-graphics/" target="_blank" class="contact-link">
+          LinkedIn <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="https://www.behance.net/vini_graphics" target="_blank" class="contact-link">
+          Behance <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="https://www.instagram.com/vini_graphics/" target="_blank" class="contact-link">
+          Instagram <span class="contact-link-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form">
+      <div class="form-group">
+        <input type="text" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <input type="email" placeholder="Seu e-mail">
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="Assunto do projeto">
+      </div>
+      <div class="form-group">
+        <textarea placeholder="Conte-me sobre o seu projeto..."></textarea>
+      </div>
+      <button class="btn-send">Enviar mensagem</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VINI GRAPHICS</div>
+  <div class="footer-copy">© 2026 — Vinícius Santos. Todos os direitos reservados.</div>
+  <div class="footer-socials">
+    <a href="https://www.linkedin.com/in/vini-graphics/" target="_blank">LinkedIn</a>
+    <a href="https://www.behance.net/vini_graphics" target="_blank">Behance</a>
+    <a href="https://www.instagram.com/vini_graphics/" target="_blank">Instagram</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+  document.querySelectorAll('a, button, .proj').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('expanded'); ring.classList.add('expanded'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('expanded'); ring.classList.remove('expanded'); });
+  });
+
+  // Hamburger
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── FILTRO DE CATEGORIAS ──
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const grid = document.getElementById('portfolioGrid');
+  const emptyState = document.getElementById('emptyState');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const categoria = btn.dataset.filter;
+
+      // Atualiza botão ativo
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const projetos = grid.querySelectorAll('.proj');
+      let visiveis = 0;
+
+      projetos.forEach(proj => {
+        if (categoria === 'todos' || proj.dataset.categoria === categoria) {
+          proj.classList.remove('hidden');
+          visiveis++;
+        } else {
+          proj.classList.add('hidden');
+        }
+      });
+
+      // Layout: masonry quando "Todos", grade uniforme quando filtrado
+      if (categoria === 'todos') {
+        grid.classList.remove('filtered');
+      } else {
+        grid.classList.add('filtered');
+      }
+
+      // Mostra empty state se nenhum projeto na categoria
+      emptyState.style.display = visiveis === 0 ? 'block' : 'none';
+      grid.style.display = visiveis === 0 ? 'none' : 'grid';
+    });
+  });
+
+  // Form submit (visual feedback)
+  document.querySelector('.btn-send').addEventListener('click', function() {
+    this.textContent = 'Mensagem enviada ✓';
+    this.style.background = '#2a2a2a';
+    this.style.color = 'rgba(255,255,255,0.7)';
+  });
+
+  // ══════════════════════════════════
+  // SKILLS LIGHTBOX
+  // Para adicionar artes a uma categoria, edite o data-artes do card
+  // correspondente com um array de caminhos de imagem. Exemplo:
+  // data-artes='["images/sm-1.jpg","images/sm-2.jpg"]'
+  // ══════════════════════════════════
+
+  // Banco de artes por categoria — adicione os caminhos das suas imagens aqui
+  const skillArtes = {
+    'social-media': [
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/0f73f6240790423.Y3JvcCwyNzQzLDIxNDUsMCw2NDU.png',
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/3dc1f9152593359.Y3JvcCwzOTk5LDMxMjgsMCw0MzU.png'
+      // Adicione mais: 'images/social-media-3.jpg', etc.
+    ],
+    'identidade-visual': [
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/de7415245685887.Y3JvcCwxMjc4LDEwMDAsMzYwLDA.png',
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/a3b9f2241833461.Y3JvcCwyODc2LDIyNTAsNjQsMA.png',
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/d5992f241836671.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png'
+    ],
+    'logotipos': [
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/648c59241836823.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png'
+    ],
+    'motion-vfx': [
+      // Adicione: 'images/motion-1.jpg'
+    ],
+    'vfx': [
+      // Adicione: 'images/vfx-1.jpg'
+    ],
+    'branding': [
+      // Adicione: 'images/branding-1.jpg'
+    ],
+    'landing-page': [
+      // Adicione: 'images/lp-1.jpg'
+    ],
+    'geral': [
+      'https://mir-s3-cdn-cf.behance.net/projects/max_808/3adba7162560867.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png'
+    ]
+  };
+
+  const overlay   = document.getElementById('lightboxOverlay');
+  const lbTitle   = document.getElementById('lightboxTitle');
+  const lbGrid    = document.getElementById('lightboxGrid');
+  const lbClose   = document.getElementById('lightboxClose');
+
+  function openLightbox(skill, titulo) {
+    const artes = skillArtes[skill] || [];
+    lbTitle.textContent = titulo;
+    lbGrid.innerHTML = '';
+
+    if (artes.length === 0) {
+      lbGrid.innerHTML = '<div class="lightbox-empty">Em breve — artes desta categoria serão adicionadas em breve.</div>';
+    } else {
+      artes.forEach(src => {
+        const div = document.createElement('div');
+        div.className = 'lightbox-art';
+        div.innerHTML = `<img src="${src}" alt="${titulo}" loading="lazy">`;
+        lbGrid.appendChild(div);
+      });
+    }
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Abre ao clicar nos cards de skill
+  document.querySelectorAll('.skill-card').forEach(card => {
+    card.addEventListener('click', () => {
+      openLightbox(card.dataset.skill, card.dataset.titulo);
+    });
+  });
+
+  // Fecha ao clicar no botão X
+  lbClose.addEventListener('click', closeLightbox);
+
+  // Fecha ao clicar fora do conteúdo
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeLightbox();
+  });
+
+  // Fecha com tecla ESC
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // Cursor hover nos cards de skill
+  document.querySelectorAll('.skill-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('expanded'); ring.classList.add('expanded'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('expanded'); ring.classList.remove('expanded'); });
+  });
+</script>
+</body>
+</html>
