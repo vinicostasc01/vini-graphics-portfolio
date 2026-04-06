@@ -1,0 +1,4 @@
+Line 6: '<title>Vini Graphics — Designer Gráfico</title>\n'
+Line 521: '  <!-- Hero tag (imagem do Figma: "Designer Gráfico · Lagarto, Brasil") -->\n'
+Line 523: '    <span style="font-size:11px;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,.4);font-family:\'DM Sans\',sans-serif;font-weight:300;font-variation-settings:\'opsz\' 14">Designer Gráfico · Lagarto, Brasil</span>\n'
+Line 576: '      <h2 class="about-headline">Design éé<br>comunicação<br>sem ruído.</h2>\n'
