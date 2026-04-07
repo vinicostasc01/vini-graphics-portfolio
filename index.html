@@ -2011,12 +2011,26 @@
     // ── CURSOR PERSONALIZADO COM GSAP ──
     const cursor = document.querySelector('.cursor-personalizado');
 
-    let xTo = gsap.quickTo(cursor, "x", { duration: 0.15, ease: "power3" });
-    let yTo = gsap.quickTo(cursor, "y", { duration: 0.15, ease: "power3" });
+    let xTo = gsap.quickTo(cursor, "x", { duration: 0.05, ease: "power1.out" });
+    let yTo = gsap.quickTo(cursor, "y", { duration: 0.05, ease: "power1.out" });
+
+    // ── BRILHOS INTERATIVOS NO FUNDO ──
+    const bgGlow = document.createElement('div');
+    Object.assign(bgGlow.style, {
+      position: 'fixed', width: '600px', height: '600px',
+      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, rgba(0,0,0,0) 70%)',
+      borderRadius: '50%', pointerEvents: 'none', zIndex: -1,
+      transform: 'translate(-50%, -50%)', top: 0, left: 0
+    });
+    document.body.appendChild(bgGlow);
+    let glowXTo = gsap.quickTo(bgGlow, "left", { duration: 1.2, ease: "power3.out" });
+    let glowYTo = gsap.quickTo(bgGlow, "top", { duration: 1.2, ease: "power3.out" });
 
     window.addEventListener("mousemove", (e) => {
       xTo(e.clientX);
       yTo(e.clientY);
+      glowXTo(e.clientX);
+      glowYTo(e.clientY);
     });
 
     const elementosInterativos = document.querySelectorAll('a, button, .botao, [role="button"]');
@@ -2048,6 +2062,28 @@
       .to('#heroBadge', { opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.7)', from: { opacity: 0, scale: .8 } }, '-=.8')
       .to('#heroScroll', { opacity: 1, duration: .5 }, '-=.3');
 
+    // ── GIRO 3D NAVBAR LOGO ──
+    const navLogoSvg = document.querySelector('.nav-logo svg');
+    if (navLogoSvg) {
+      // Rotação apenas no hover
+      document.querySelector('.nav-logo').addEventListener('mouseenter', () => {
+        gsap.to(navLogoSvg, { rotationY: "+=360", duration: 1.2, ease: 'power2.out', transformOrigin: "center center", overwrite: "auto" });
+      });
+    }
+
+    // ── EFEITO DIGITANDO NA HEADLINE ──
+    const headlineEl = document.getElementById("heroHeadline");
+    if (headlineEl) {
+      const targetText = "DESIGN ESTRATÉGICO QUE CONECTA, DESTACA E VENDE.";
+      headlineEl.textContent = "";
+      let i = 0;
+      const typeInt = setInterval(() => {
+        i++;
+        headlineEl.textContent = targetText.slice(0, i);
+        if (i >= targetText.length) clearInterval(typeInt);
+      }, 50);
+    }
+
     // ── GSAP PARALLAX ──
     gsap.to('#heroContent', {
       y: -50,
@@ -2057,9 +2093,36 @@
       y: -80,
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
     });
+    // ── EFEITO MOVER NA FOTO DO HERO ──
+    const heroPhoto = document.getElementById('heroPhoto');
+    if (heroPhoto) {
+      heroPhoto.addEventListener('mousemove', (e) => {
+        const rect = heroPhoto.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
+        gsap.to(heroPhoto, { x: x, rotationY: x * 0.2, rotationX: -y * 0.2, scale: 1.05, duration: 0.4, ease: 'power2.out', transformPerspective: 800 });
+      });
+      heroPhoto.addEventListener('mouseleave', () => {
+        gsap.to(heroPhoto, { x: 0, rotationY: 0, rotationX: 0, scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.4)' });
+      });
+    }
+
     gsap.to('#heroBadge', {
       y: -40,
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+    });
+
+    // ── BOTÕES MAGNÉTICOS ──
+    document.querySelectorAll('.hero-btn, .btn-send').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.35;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.35;
+        gsap.to(btn, { x: x, y: y, duration: 0.3, ease: "power2.out" });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
+      });
     });
 
     // ── TEXTO ROTATIVO VINCULADO AO SCROLL ──
@@ -2157,6 +2220,50 @@
     window.addEventListener('load', () => {
       createCarousel('portfolioCarousel', 'prevPort', 'nextPort', 'portDots', portVis());
       createCarousel('artesCarousel', 'prevArtes', 'nextArtes', 'artesDots', artesVis());
+      
+      // ── TILT 3D NAS CARTAS DE ARTES ──
+      // Inicializado após a criação do carrossel para garantir que os elementos estejam prontos
+      document.querySelectorAll('.arte-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;  
+          const centerX = rect.width / 2, centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -12; 
+          const rotateY = ((x - centerX) / centerX) * 12;
+          gsap.to(card, { rotationX: rotateX, rotationY: rotateY, transformPerspective: 1000, ease: 'power2.out', duration: 0.4 });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { rotationX: 0, rotationY: 0, ease: 'elastic.out(1, 0.5)', duration: 0.8 });
+        });
+      });
+
+      // ── TILT 3D E GLOW NAS CARTAS DE PORTFÓLIO (PORTFÓLIOS SELECIONADOS) ──
+      document.querySelectorAll('.proj-cat-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;  
+          const centerX = rect.width / 2, centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -10; 
+          const rotateY = ((x - centerX) / centerX) * 10;
+          gsap.to(card, { 
+            rotationX: rotateX, 
+            rotationY: rotateY, 
+            boxShadow: "0px 0px 20px 2px rgba(255, 255, 255, 0.3)",
+            transformPerspective: 1000, 
+            ease: 'power2.out', 
+            duration: 0.4 
+          });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { 
+            rotationX: 0, 
+            rotationY: 0, 
+            boxShadow: "0px 0px 0px 0px rgba(255, 255, 255, 0)",
+            ease: 'elastic.out(1, 0.5)', 
+            duration: 0.8 
+          });
+        });
+      });
     });
 
     // ── LIGHTBOX ──
