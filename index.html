@@ -2005,6 +2005,7 @@
     </svg>
   </a>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
@@ -2156,35 +2157,94 @@
       gsap.from(card, { opacity: 0, y: 50, duration: .7, delay: i * .15, ease: 'power2.out', scrollTrigger: { trigger: card, start: 'top 85%' } });
     });
 
-    // ── PARTICLES ──
+    // ── WEBGL2 SYNTHWAVE GRID TERRAIN (THREE.JS) ──
     (function () {
-      const c = document.getElementById('particles-canvas');
-      const ctx = c.getContext('2d');
-      let W, H, ps = [];
-      function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+      const canvas = document.getElementById('particles-canvas');
+      // Set to standard WebGL context with webgl2 preference if available via three.js defaults
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      
+      const scene = new THREE.Scene();
+      // Configure fog to fade out distant grid cells into black empty space
+      scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0015);
+
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+      camera.position.set(0, 150, 400); // Elevate camera to see the grid terrain
+      camera.lookAt(0, 0, 0);
+
+      // Create a large subdivised plane
+      const planeGeometry = new THREE.PlaneGeometry(3000, 3000, 80, 80);
+      // Cyberpunk Wireframe material
+      const planeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00d4ff, // Neon Cyan
+        wireframe: true,
+        transparent: true,
+        opacity: 0.15 // Subtle background matrix
+      });
+      const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+      planeMesh.rotation.x = -Math.PI / 2; // Flat on the ground
+      planeMesh.position.y = -200; // Far below
+      scene.add(planeMesh);
+
+      // Save initial Z coordinates (which become Y when rotated) to apply wave animation
+      const vertices = planeGeometry.attributes.position.array;
+      const initialZ = new Float32Array(vertices.length / 3);
+      for(let i=0; i<initialZ.length; i++){
+        initialZ[i] = vertices[i*3 + 2];
+      }
+
+      function resize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
       resize(); window.addEventListener('resize', resize);
-      const N = window.innerWidth <= 900 ? 40 : 90;
-      function P() { this.reset = function () { this.x = Math.random() * W; this.y = Math.random() * H; this.r = Math.random() * 1.2 + .3; this.vx = (Math.random() - .5) * .22; this.vy = (Math.random() - .5) * .22; this.a = Math.random() * .35 + .06; }; this.reset(); }
-      for (let i = 0; i < N; i++) { const p = new P(); ps.push(p); }
-      let mx2 = -999, my2 = -999;
-      document.addEventListener('mousemove', e => { mx2 = e.clientX; my2 = e.clientY; });
+
+      let mouseX = 0;
+      let mouseY = 0;
+      let targetX = 0;
+      let targetY = 0;
+      document.addEventListener('mousemove', e => { 
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.05; 
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.05; 
+      });
+
+      const clock = new THREE.Clock();
+
       (function draw() {
-        ctx.clearRect(0, 0, W, H);
-        ps.forEach(p => {
-          const dx = p.x - mx2, dy = p.y - my2, d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 100) { p.vx += dx / d * .28; p.vy += dy / d * .28; }
-          p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) p.reset();
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245,243,239,${p.a})`; ctx.fill();
-        });
-        for (let i = 0; i < ps.length; i++)for (let j = i + 1; j < ps.length; j++) {
-          const dx = ps[i].x - ps[j].x, dy = ps[i].y - ps[j].y, d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 95) { ctx.beginPath(); ctx.moveTo(ps[i].x, ps[i].y); ctx.lineTo(ps[j].x, ps[j].y); ctx.strokeStyle = `rgba(245,243,239,${.04 * (1 - d / 95)})`; ctx.lineWidth = .5; ctx.stroke(); }
-        }
         requestAnimationFrame(draw);
+        const time = clock.getElapsedTime() * 0.5;
+
+        // Animate grid vertices like terrain waves
+        const positions = planeGeometry.attributes.position.array;
+        for (let i = 0; i < initialZ.length; i++) {
+          const x = positions[i * 3];
+          const y = positions[i * 3 + 1];
+          // Simplex-like sine waves
+          const waveX1 = 0.5 * Math.sin(x * 0.002 + time);
+          const waveX2 = 0.25 * Math.sin(x * 0.005 - time);
+          const waveY1 = 0.5 * Math.sin(y * 0.002 + time);
+          const waveY2 = 0.25 * Math.sin(y * 0.005 - time);
+          // Set Z offset based on waves (multiplied for height)
+          positions[i * 3 + 2] = initialZ[i] + (waveX1 + waveX2 + waveY1 + waveY2) * 120;
+        }
+        planeGeometry.attributes.position.needsUpdate = true;
+
+        // Smoothly interpolate camera position and rotation towards mouse
+        targetX = mouseX * 2;
+        targetY = mouseY * 2;
+        camera.position.x += (targetX - camera.position.x) * 0.02;
+        camera.position.y += (150 - targetY - camera.position.y) * 0.02;
+        // Also subtle roll (rotate Z)
+        camera.rotation.z = -camera.position.x * 0.0002;
+        
+        // Move the plane towards the camera to simulate forward movement
+        planeMesh.position.z = (time * 150) % 37.5; // Loop the grid
+
+        renderer.render(scene, camera);
       })();
     })();
+
 
     // ── CAROUSEL FACTORY ──
     function createCarousel(carouselId, prevId, nextId, dotsId, visCount) {
