@@ -1938,8 +1938,8 @@
         <p class="contact-sub">Disponível para projetos freelance e posições de tempo integral. Entre em contato e vamos
           conversar sobre o seu projeto.</p>
         <div class="contact-links">
-          <a href="https://wa.me/5579996768698" target="_blank" class="contact-link" style="color:#25D366">
-            WhatsApp <span class="contact-link-arrow" style="color:#25D366">↗</span>
+          <a href="https://wa.me/5579996768698" target="_blank" class="contact-link">
+            WhatsApp <span class="contact-link-arrow">↗</span>
           </a>
           <a href="https://www.linkedin.com/in/vini-graphics/" target="_blank" class="contact-link">LinkedIn <span
               class="contact-link-arrow">↗</span></a>
@@ -2070,6 +2070,12 @@
         gsap.to(navLogoSvg, { rotationY: "+=360", duration: 1.2, ease: 'power2.out', transformOrigin: "center center", overwrite: "auto" });
       });
     }
+
+    // ── ANIMAÇÃO DE ENTRADA DO LOGO HERO ──
+    gsap.fromTo('#heroLogoName', 
+      { opacity: 0, y: 40, scale: 0.9 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'power3.out', delay: 0.1, clearProps: 'all' }
+    );
 
     // ── EFEITO DIGITANDO NA HEADLINE ──
     const headlineEl = document.getElementById("heroHeadline");
