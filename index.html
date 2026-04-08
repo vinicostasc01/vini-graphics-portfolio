@@ -6,27 +6,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vini Graphics — Designer Gráfico</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 143 52' fill='white'%3E%3Crect width='143' height='52' rx='8' fill='%231e1e1e'/%3E%3Cpath d='M48.59 39.81c-.02.32-.04.6-.13.91-.07.23-.24.63-.65 1.05L39.37 50.36a2.62 2.62 0 01-1.94.81H16.74a2.62 2.62 0 01-2.98-2.33v-5.79a4.18 4.18 0 00-4.18-4.18H2.02A2.02 2.02 0 01.02 37.83v-.02c.07-.62.35-1.2.8-1.64l8.59-8.43c1.72-1.68 4.61-.47 4.61 1.94v3.67a4.18 4.18 0 004.18 4.18h12.91a4.18 4.18 0 004.18-4.18V4.68c0-.47.1-1.03.28-1.6A3.1 3.1 0 0137.29 1.58h8.59a3.1 3.1 0 012.43 1.5c.18.57.28 1.13.28 1.6h.01v34.35c.01.19.02.46 0 .78z' fill='white'/%3E%3Cpath d='M4.61 28.6l8.59-8.43a2.62 2.62 0 00.81-1.94V4.29A2.71 2.71 0 0011.3 1.57H2.71A2.71 2.71 0 000 4.29v22.37c0 2.4 2.9 3.62 4.61 1.94z' fill='white'/%3E%3C/svg%3E">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@1,900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
-    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: "Acumin Variable Concept", "Acumin Variable Concept, Extracondensed UltraBlack Italic", "Barlow Condensed", Impact, "Arial Narrow", sans-serif;
-      src: local('Acumin Variable Concept'), local('AcuminVariableConcept'), local('Acumin Pro ExtraCondensed');
-      font-weight: 100 900;
-      font-stretch: 50% 200%;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: "Acumin Variable Concept", "Acumin Variable Concept, Extracondensed UltraBlack Italic", "Barlow Condensed", Impact, "Arial Narrow", sans-serif;
-      src: local('Acumin Variable Concept Italic'), local('AcuminVariableConcept-Italic'), local('Acumin Pro ExtraCondensed Italic');
-      font-weight: 100 900;
-      font-stretch: 50% 200%;
-      font-style: italic;
+    :root {
+      --font-display:    'Montserrat', sans-serif;
+      --font-headline:   'Montserrat', sans-serif;
+      --font-body:       'Montserrat', sans-serif;
+      --font-ui:         'Montserrat', sans-serif;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    // ══ LUZ INTERATIVA NA HERO (efeito clonado de designagora.onlineaprender.com) ══
+    (function() {
+      const hero = document.querySelector('.hero');
+      const canvas = document.getElementById('heroLightCanvas');
+      if (!canvas || !hero) return;
+
+      const ctx = canvas.getContext('2d');
+      let mouseX = -9999, mouseY = -9999;
+      let targetX = -9999, targetY = -9999;
+      let animFrame;
+
+      // Resize canvas to match hero
+      function resizeCanvas() {
+        canvas.width  = hero.offsetWidth;
+        canvas.height = hero.offsetHeight;
+      }
+      resizeCanvas();
+      new ResizeObserver(resizeCanvas).observe(hero);
+
+      // Reveal canvas on first mouse move
+      hero.addEventListener('mouseenter', () => {
+        canvas.style.opacity = '1';
+      });
+      hero.addEventListener('mouseleave', () => {
+        mouseX = -9999; mouseY = -9999;
+      });
+
+      hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      });
+
+      // Smooth follow + draw
+      function drawLight() {
+        targetX += (mouseX - targetX) * 0.09;
+        targetY += (mouseY - targetY) * 0.09;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (targetX > 0) {
+          // Outer glow — large diffuse
+          const outerGlow = ctx.createRadialGradient(
+            targetX, targetY, 0,
+            targetX, targetY, Math.min(canvas.width, canvas.height) * 0.65
+          );
+          outerGlow.addColorStop(0,   'rgba(255,255,255,0.055)');
+          outerGlow.addColorStop(0.4, 'rgba(255,255,255,0.022)');
+          outerGlow.addColorStop(1,   'rgba(255,255,255,0)');
+          ctx.fillStyle = outerGlow;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Inner bright spot
+          const innerSpot = ctx.createRadialGradient(
+            targetX, targetY, 0,
+            targetX, targetY, 200
+          );
+          innerSpot.addColorStop(0,    'rgba(255,255,255,0.12)');
+          innerSpot.addColorStop(0.35, 'rgba(255,255,255,0.04)');
+          innerSpot.addColorStop(1,    'rgba(255,255,255,0)');
+          ctx.fillStyle = innerSpot;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Tiny bright core
+          const core = ctx.createRadialGradient(
+            targetX, targetY, 0,
+            targetX, targetY, 60
+          );
+          core.addColorStop(0,   'rgba(255,255,255,0.22)');
+          core.addColorStop(0.5, 'rgba(255,255,255,0.06)');
+          core.addColorStop(1,   'rgba(255,255,255,0)');
+          ctx.fillStyle = core;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        animFrame = requestAnimationFrame(drawLight);
+      }
+      drawLight();
+    })();
+
+    // ══ BOTÃO — efeitos extras ══
+    // Magnetic effect (like the reference site)
+    const heroBtnWrapper = document.getElementById('heroBtnWrapper');
+    const heroBtn = document.getElementById('heroBtn');
+    if (heroBtnWrapper && heroBtn) {
+      heroBtnWrapper.addEventListener('mousemove', (e) => {
+        const rect = heroBtnWrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width  / 2;
+        const y = e.clientY - rect.top  - rect.height / 2;
+        // Magnetic pull — wrapper moves slightly
+        heroBtnWrapper.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+        // Button moves more
+        heroBtn.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px)`;
+      });
+      heroBtnWrapper.addEventListener('mouseleave', () => {
+        heroBtnWrapper.style.transform = '';
+        heroBtn.style.transform = '';
+      });
+    }
+
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
     /* ══ RESET & VARS ══ */
@@ -48,6 +140,11 @@
       --b48: rgba(255, 255, 255, 0.48);
       --b55: rgba(255, 255, 255, 0.55);
       --b60: rgba(255, 255, 255, 0.6);
+      /* ── COR DE DESTAQUE — branco #ffffff ── */
+      --accent: #ffffff;
+      --accent-dim: rgba(255, 255, 255, 0.18);
+      --accent-glow: rgba(255, 255, 255, 0.35);
+      --accent-bright: rgba(255, 255, 255, 0.7);
     }
 
     html {
@@ -57,7 +154,7 @@
     body {
       background: var(--black);
       color: var(--white);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-body, 'Barlow Semi Condensed', sans-serif);
       font-weight: 300;
       overflow-x: hidden
     }
@@ -118,20 +215,16 @@
       align-items: center;
       justify-content: space-between;
       padding: 23px 57px;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      border-radius: 0 0 8px 8px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid var(--border);
       transition: padding .4s, background .4s
     }
 
     nav.scrolled {
       padding: 14px 57px;
-      background: rgba(0, 0, 0, 0.55)
+      background: rgba(0, 0, 0, 0.7)
     }
 
     .nav-logo {
@@ -165,13 +258,13 @@
     .nav-links a {
       color: var(--white);
       text-decoration: none;
-      font-size: 11px;
-      letter-spacing: 2.42px;
+      font-family: var(--font-ui, 'Barlow', sans-serif);
+      font-size: 11.5px;
+      letter-spacing: 2.6px;
       text-transform: uppercase;
       opacity: .55;
       transition: opacity .3s;
-      font-weight: 300;
-      font-variation-settings: 'opsz' 14
+      font-weight: 400;
     }
 
     .nav-links a:hover {
@@ -179,24 +272,25 @@
     }
 
     .nav-cta {
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 1.65px;
       text-transform: uppercase;
-      border: 1px solid rgba(255, 255, 255, .3);
-      padding: 10px 23px 6px;
-      border-radius: 8px;
-      color: var(--white);
+      border: 1px solid var(--accent);
+      padding: 10px 23px 8px;
+      border-radius: 4px;
+      color: #000000;
       text-decoration: none;
-      background: rgba(0, 0, 0, 0.39);
-      backdrop-filter: blur(7.5px);
-      -webkit-backdrop-filter: blur(7.5px);
-      transition: background .3s, color .3s;
-      font-family: 'Bebas Neue', sans-serif;
+      background: #ffffff;
+      box-shadow: var(--accent-glow) 0px 0px 6px 9px;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      font-family: var(--font-display, 'Montserrat', sans-serif); font-weight: 800;
       white-space: nowrap;
     }
 
     .nav-cta:hover {
-      background: rgba(255, 255, 255, .1)
+      transform: scale(1.05);
+      box-shadow: var(--accent-glow) 0px 0px 10px 12px;
+      background: #f0f0f0;
     }
 
     .hamburger {
@@ -246,7 +340,7 @@
     }
 
     .mobile-menu a {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 52px;
       letter-spacing: .08em;
       color: var(--white);
@@ -421,28 +515,21 @@
     }
 
     .hero-headline-wrap {
-      /* Largura proporcional: 672px em canvas 1920px = 35vw, min 200px */
-      width: clamp(200px, 35vw, 672px);
+      width: 100%;
+      max-width: 680px;
       overflow: visible;
       margin-bottom: 24px;
     }
 
     .hero-headline {
-      font-family: "Acumin Variable Concept, Extracondesed UltraBlack Italic", "Acumin Variable Concept", "Acumin Pro ExtraCondensed", sans-serif;
-      /* 94px em 1920px = 4.896vw */
-      font-size: clamp(65px, 1.896vw, 171px);
+      font-family: 'Powermax', var(--font-headline, 'Montserrat', sans-serif);
+      font-size: clamp(16px, 2.5vw, 28px);
       font-weight: 800;
-      font-style: italic;
-      /* 88/94 = 0.936 — line-height exato do Figma */
-      line-height: 0.936;
+      line-height: 1.05;
       letter-spacing: -0.01em;
       text-transform: uppercase;
       margin: 0;
-      /* Largura natural do texto: 833px em 1920px = 43.4vw */
-      width: clamp(280px, 43.4vw, 833px);
-      /* ScaleX para simular ExtraCondensed: 672/833 = 0.807 */
-      transform: scaleX(0.807);
-      transform-origin: left top;
+      width: 100%;
       display: block;
       white-space: normal;
       /* Animated shine text effect */
@@ -462,55 +549,108 @@
     }
 
     .hero-sub {
-      font-size: 15px;
+      font-size: 16px;
       color: rgba(255, 255, 255, .48);
-      max-width: 380px;
+      max-width: 680px;
       line-height: 1.65;
-      margin-bottom: 40px;
-      font-variation-settings: 'opsz' 14;
+      margin-bottom: 24px;
+    }
+
+    /* ══ BOTÃO "FAZER ORÇAMENTO" — clonado de designagora.onlineaprender.com ══ */
+    @keyframes orcamentoPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.28), 0 0 24px 4px rgba(255,255,255,0.1); }
+      50%  { box-shadow: 0 0 0 10px rgba(255,255,255,0), 0 0 40px 8px rgba(255,255,255,0.18); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0), 0 0 24px 4px rgba(255,255,255,0.1); }
+    }
+    @keyframes orcamentoBorderShimmer {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes orcamentoBtnGlow {
+      0%   { opacity: 0.6; transform: translateX(-100%) skewX(-20deg); }
+      100% { opacity: 0;   transform: translateX(400%)  skewX(-20deg); }
+    }
+
+    /* Wrapper do botão com borda animada */
+    .hero-btn-wrapper {
+      position: relative;
+      display: flex;
+      width: 100%;
+      max-width: 680px;
+      border-radius: 6px;
     }
 
     .hero-btn {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 17px 44px;
+      background: #ffffff;
+      box-shadow: var(--accent-glow) 0px 0px 6px 9px;
+      color: #000000;
+      text-decoration: none;
+      font-family: var(--font-display, 'Montserrat', sans-serif); font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 0.15em;
+      border-radius: 5px;
+      border: 1px solid var(--accent);
+      transition: background .25s ease, transform .2s ease, box-shadow .25s ease;
+      text-transform: uppercase;
+      font-weight: 800;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Ícone seta dentro do botão */
+    .hero-btn .btn-arrow {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 18px 48px;
-      background: rgba(255, 255, 255, 1);
-      color: #1e1e1e;
-      text-decoration: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: .05em;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, .3);
-      backdrop-filter: blur(7.75px);
-      transition: transform .2s, background .3s;
-      text-transform: uppercase;
-      font-weight: 700;
-      position: relative;
-      overflow: hidden;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid #000000;
+      font-size: 13px;
+      transition: transform .3s ease, border-color .25s ease;
+      flex-shrink: 0;
     }
 
-    /* Animated shine sweep on button */
-    .hero-btn::after {
+    /* Faixa de luz que passa pelo botão */
+    .hero-btn::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
-      width: 60%;
+      left: 0;
+      width: 40%;
       height: 100%;
       background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(255, 255, 255, 0.4) 50%,
+        rgba(0, 0, 0, 0.1) 50%,
         transparent 100%
       );
-      animation: btnShine 3s ease-in-out infinite;
+      transform: translateX(-100%) skewX(-20deg);
+      animation: orcamentoBtnGlow 3s ease-in-out infinite;
       pointer-events: none;
     }
 
     .hero-btn:hover {
-      transform: translateY(-2px)
+      background: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: var(--accent-glow) 0px 0px 10px 12px;
+      color: #000000;
+    }
+    .hero-btn:hover .btn-arrow {
+      transform: translateX(3px) rotate(-45deg);
+      border-color: #000000;
+    }
+    .hero-btn:active {
+      transform: translateY(0px) scale(0.98);
     }
 
     .hero-scroll {
@@ -525,7 +665,6 @@
       text-transform: uppercase;
       color: rgba(255, 255, 255, .28);
       z-index: 5;
-      font-variation-settings: 'opsz' 14;
     }
 
     .scroll-line {
@@ -543,7 +682,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: var(--white);
+      background: var(--accent);
       animation: scrollLine 2s ease-in-out infinite
     }
 
@@ -572,7 +711,7 @@
     }
 
     .marquee-item {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 13px;
       letter-spacing: .3em;
       color: rgba(255, 255, 255, .22);
@@ -603,22 +742,23 @@
     }
 
     .section-label {
-      font-size: 10px;
-      letter-spacing: 4.2px;
+      font-family: var(--font-ui, 'Barlow', sans-serif);
+      font-size: 10.5px;
+      letter-spacing: 3.8px;
+      font-weight: 500;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, .28);
+      color: var(--accent);
       margin-bottom: 64px;
       display: flex;
       align-items: center;
       gap: 16px;
-      font-variation-settings: 'opsz' 14
     }
 
     .section-label::before {
       content: '';
       width: 28px;
       height: 1px;
-      background: var(--b18)
+      background: var(--accent)
     }
 
     .reveal {
@@ -641,7 +781,8 @@
     }
 
     .about-headline {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Mona Sans', 'Mona-Sans', var(--font-display, 'Montserrat', sans-serif);
+      font-weight: 800;
       font-size: clamp(40px, 5vw, 70px);
       line-height: 1.02;
       margin-bottom: 32px;
@@ -653,7 +794,6 @@
       line-height: 1.78;
       color: rgba(255, 255, 255, .48);
       margin-bottom: 48px;
-      font-variation-settings: 'opsz' 14
     }
 
     .about-stats {
@@ -663,7 +803,7 @@
     }
 
     .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 52px;
       line-height: 1;
       color: var(--white)
@@ -675,7 +815,6 @@
       text-transform: uppercase;
       color: rgba(255, 255, 255, .28);
       margin-top: 6px;
-      font-variation-settings: 'opsz' 14
     }
 
     .about-right {
@@ -695,7 +834,6 @@
     .skill-name {
       font-size: 14px;
       color: rgba(255, 255, 255, .68);
-      font-variation-settings: 'opsz' 14
     }
 
     .skill-bar {
@@ -706,7 +844,7 @@
 
     .skill-fill {
       height: 100%;
-      background: var(--white);
+      background: var(--accent);
       width: 0;
       transition: width 1.4s cubic-bezier(.4, 0, .2, 1)
     }
@@ -774,11 +912,10 @@
       text-transform: uppercase;
       color: var(--b48);
       margin-bottom: 5px;
-      font-variation-settings: 'opsz' 14
     }
 
     .proj-cat-name {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 22px;
       letter-spacing: 1.32px;
       color: var(--white)
@@ -912,7 +1049,7 @@
       letter-spacing: .15em;
       text-transform: uppercase;
       color: rgba(255, 255, 255, .8);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-body, 'Barlow Semi Condensed', sans-serif);
       font-weight: 300;
     }
 
@@ -978,7 +1115,7 @@
     }
 
     .lightbox-title {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 44px;
       letter-spacing: .07em
     }
@@ -1098,7 +1235,7 @@
     }
 
     .service-num {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 13px;
       letter-spacing: .2em;
       color: rgba(255, 255, 255, .18);
@@ -1111,7 +1248,7 @@
     }
 
     .service-name {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: 28px;
       letter-spacing: .05em;
       color: var(--white);
@@ -1122,7 +1259,6 @@
       font-size: 14px;
       line-height: 1.72;
       color: rgba(255, 255, 255, .38);
-      font-variation-settings: 'opsz' 14
     }
 
     /* ══ CONTACT ══ */
@@ -1134,7 +1270,7 @@
     }
 
     .contact-headline {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
       font-size: clamp(48px, 6vw, 88px);
       line-height: .95;
       color: var(--white);
@@ -1146,7 +1282,6 @@
       color: rgba(255, 255, 255, .38);
       line-height: 1.72;
       margin-bottom: 48px;
-      font-variation-settings: 'opsz' 14
     }
 
     .contact-links {
@@ -1165,7 +1300,6 @@
       font-size: 14px;
       letter-spacing: .05em;
       transition: padding-left .3s;
-      font-variation-settings: 'opsz' 14
     }
 
     .contact-link:hover {
@@ -1190,14 +1324,13 @@
       border: none;
       border-bottom: 1px solid var(--border);
       color: var(--white);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-body, 'Barlow Semi Condensed', sans-serif);
       font-size: 15px;
       font-weight: 300;
       padding: 14px 0;
       outline: none;
       resize: none;
       transition: border-color .3s;
-      font-variation-settings: 'opsz' 14
     }
 
     .form-group input:focus,
@@ -1216,22 +1349,25 @@
 
     .btn-send {
       align-self: flex-start;
-      background: var(--white);
-      color: #0a0a0a;
-      border: none;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid var(--accent);
       padding: 16px 42px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-body, 'Montserrat', sans-serif);
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 800;
       letter-spacing: .15em;
       text-transform: uppercase;
       cursor: pointer;
-      border-radius: 2px;
-      transition: background .3s, transform .2s
+      border-radius: 4px;
+      box-shadow: var(--accent-glow) 0px 0px 6px 9px;
+      transition: box-shadow .3s, transform .2s, background .3s;
     }
 
     .btn-send:hover {
-      transform: translateY(-2px)
+      transform: translateY(-2px);
+      box-shadow: var(--accent-glow) 0px 0px 10px 12px;
+      background: #f0f0f0;
     }
 
     /* ══ FOOTER ══ */
@@ -1253,7 +1389,6 @@
       font-size: 12px;
       color: rgba(255, 255, 255, .18);
       letter-spacing: 1.2px;
-      font-variation-settings: 'opsz' 14
     }
 
     .footer-socials {
@@ -1268,7 +1403,6 @@
       color: rgba(255, 255, 255, .28);
       text-decoration: none;
       transition: color .3s;
-      font-variation-settings: 'opsz' 14
     }
 
     .footer-socials a:hover {
@@ -1293,7 +1427,6 @@
       letter-spacing: 2.4px;
       text-transform: uppercase;
       transition: border-color .3s, color .3s;
-      font-variation-settings: 'opsz' 14
     }
 
     .behance-link:hover {
@@ -1302,38 +1435,71 @@
     }
 
     /* ══ RESPONSIVE ══ */
-    @media(max-width:900px) {
-      nav {
-        padding: 18px 24px;
-        border-radius: 0
-      }
 
-      nav.scrolled {
-        padding: 12px 24px
-      }
+    /* ══════════════════════════════════════════════
+       RESPONSIVO — Harmonizado para todas as telas
+       ══════════════════════════════════════════════ */
 
-      .nav-links,
-      .nav-cta {
-        display: none
-      }
+    /* ── DESKTOP GRANDE (> 1400px) ── */
+    @media (min-width: 1401px) {
+      section { padding: 130px 72px; }
+      .hero { padding: 0 72px 80px; }
+      .hero-photo { right: 60px; height: 94%; }
+    }
 
-      .hamburger {
-        display: flex
-      }
+    /* ── DESKTOP MÉDIO (1025–1400px) ── */
+    @media (max-width: 1400px) and (min-width: 1025px) {
+      .hero-badge-wrap { right: clamp(160px, 22vw, 320px); top: 36%; width: clamp(130px, 10vw, 175px); height: clamp(130px, 10vw, 175px); }
+      .hero-photo { right: 40px; height: 90%; }
+    }
 
-      section {
-        padding: 80px 24px
-      }
+    /* ── TABLET LANDSCAPE (769–1024px) ── */
+    @media (max-width: 1024px) and (min-width: 769px) {
+      nav { padding: 18px 32px; }
+      nav.scrolled { padding: 12px 32px; }
+      section { padding: 80px 32px; }
+      .services-section { padding: 80px 32px; }
+      .artes-section { padding: 60px 32px; }
+      .hero { padding: 0 32px 56px; }
+      .hero-content { max-width: 52%; padding-top: 120px; }
+      .hero-photo { right: 0; height: 88%; max-width: 52%; }
+      .hero-badge-wrap { right: 44%; top: 34%; width: 110px; height: 110px; }
+      .hero-headline { font-size: clamp(32px, 5vw, 64px); }
+      .about { grid-template-columns: 1fr; gap: 40px; }
+      .about-right { padding-top: 0; }
+      .proj-cat-card { flex: 0 0 calc(50% - 8px); }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .service-card:last-child { border-right: none; grid-column: span 2; border-top: 1px solid var(--border); border-bottom: none; }
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+      .lightbox-arts-grid { grid-template-columns: repeat(2, 1fr); }
+      .arte-card { flex: 0 0 calc(50% - 6px); }
+    }
 
-      /* ── Hero mobile: foto acima, texto abaixo ── */
+    /* ── MOBILE (≤ 768px) ── */
+    @media (max-width: 768px) {
+
+      /* NAV */
+      nav { padding: 14px 20px; border-radius: 0; }
+      nav.scrolled { padding: 10px 20px; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+
+      /* SECTIONS */
+      section { padding: 64px 20px; }
+      .services-section { padding: 64px 20px; }
+      .artes-section { padding: 48px 20px; }
+
+      /* HERO — layout em coluna (foto acima, conteúdo abaixo) */
       .hero {
-        padding: 80px 20px 40px !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        min-height: auto !important;
+        min-height: 100svh;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 80px 20px 36px;
+        gap: 0;
       }
 
+      /* Foto: fica acima, centralizada */
       .hero-photo {
         position: relative !important;
         right: auto !important;
@@ -1341,21 +1507,21 @@
         left: auto !important;
         top: auto !important;
         height: auto !important;
-        width: 65% !important;
-        max-width: 320px !important;
+        width: 60% !important;
+        max-width: 280px !important;
         opacity: 1 !important;
         z-index: 5 !important;
         margin: 0 auto !important;
         display: block !important;
         order: 1 !important;
-        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, transparent 100%);
-        mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, transparent 100%);
+        mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, transparent 100%);
       }
 
-      .hero-graphics-frame {
-        display: none !important;
-      }
+      /* Formas brancas — ocultar */
+      .hero-graphics-frame { display: none !important; }
 
+      /* Conteúdo (logo + headline + sub + btn) — abaixo da foto */
       .hero-content {
         position: relative !important;
         left: auto !important;
@@ -1369,23 +1535,24 @@
         flex-direction: column !important;
         align-items: center !important;
         order: 2 !important;
-        margin-top: -30px;
+        margin-top: -24px;
       }
 
+      /* Badge/Selo */
       .hero-badge-wrap {
         position: absolute !important;
-        right: calc(50% - 170px) !important;
+        right: auto !important;
+        left: calc(50% + 50px) !important;
         top: 200px !important;
-        left: auto !important;
         bottom: auto !important;
         transform: none !important;
-        width: 56px !important;
-        height: 56px !important;
+        width: 64px !important;
+        height: 64px !important;
         margin: 0 !important;
-        order: unset !important;
         z-index: 10 !important;
       }
 
+      /* Scroll indicator */
       .hero-scroll {
         position: relative !important;
         right: auto !important;
@@ -1393,138 +1560,140 @@
         left: auto !important;
         top: auto !important;
         justify-content: center !important;
-        margin-top: 24px !important;
+        margin-top: 20px !important;
         order: 4 !important;
       }
 
+      /* Tag "Designer Gráfico · Lagarto, Brasil" */
       .hero-tag-wrap {
         position: relative !important;
         left: auto !important;
         top: auto !important;
         margin-bottom: 8px;
+        text-align: center;
       }
 
-      .hero-name-wrap {
-        display: flex;
-        justify-content: center;
-      }
-
-      .hero-headline {
-        font-size: clamp(32px, 10vw, 52px) !important;
-        line-height: 0.94 !important;
-        width: auto !important;
-        max-width: 100%;
-        transform: scaleX(0.807);
-        transform-origin: center !important;
-        text-align: center !important;
-      }
-
+      /* Headline */
+      .hero-name-wrap { display: flex; justify-content: center; }
       .hero-headline-wrap {
         width: 100% !important;
-        max-width: 100%;
+        max-width: 340px;
         display: flex;
         justify-content: center;
+        margin-bottom: 16px;
+      }
+      .hero-headline {
+        font-family: 'Powermax', var(--font-headline, 'Montserrat', sans-serif) !important;
+        font-size: clamp(14px, 4vw, 22px) !important;
+        line-height: 1.1 !important;
+        width: 100% !important;
+        transform: none !important;
+        text-align: center !important;
+        margin-top: 8px !important;
       }
 
+      /* Subtítulo */
       .hero-sub {
         text-align: center !important;
         margin-left: auto;
         margin-right: auto;
-        font-size: 12px !important;
-        max-width: 280px;
-        line-height: 1.5;
+        font-size: 13px !important;
+        max-width: 290px;
+        line-height: 1.55;
+        margin-bottom: 24px !important;
       }
 
+      /* Botão */
+      .hero-btn-wrapper {
+        margin: 0 auto !important;
+      }
       .hero-btn {
-        margin: 12px auto 0 !important;
-        padding: 12px 32px !important;
-        font-size: 16px !important;
+        font-size: 13px !important;
+        padding: 12px 20px !important;
+        letter-spacing: 0.1em !important;
+        white-space: normal !important;
       }
 
-      .hero-ellipse {
-        display: none !important;
+      /* Logo VINI no hero */
+      @keyframes floatMobile {
+        0% { transform: translateY(0px) }
+        50% { transform: translateY(-8px) }
+        100% { transform: translateY(0px) }
+      }
+      #heroLogoName { margin-bottom: 24px !important; display: flex; justify-content: center; }
+      #heroLogoName svg { 
+        width: 200px !important; 
+        max-width: 80vw !important; 
+        animation: floatMobile 4s ease-in-out infinite; 
       }
 
-      .about {
-        grid-template-columns: 1fr;
-        gap: 48px
-      }
+      /* Elipses decorativas — ocultar */
+      .hero-ellipse { display: none !important; }
 
-      .about-right {
-        padding-top: 0
-      }
+      /* ABOUT */
+      .about { grid-template-columns: 1fr; gap: 40px; }
+      .about-right { padding-top: 0; }
+      .about-headline { font-size: clamp(34px, 8vw, 54px) !important; }
+      .about-stats { gap: 28px; flex-wrap: wrap; }
+      .stat-num { font-size: 44px !important; }
 
-      .proj-cat-card {
-        flex: 0 0 calc(50% - 8px)
-      }
+      /* PORTFOLIO */
+      .proj-cat-card { flex: 0 0 calc(50% - 8px); }
+      .proj-cat-name { font-size: 16px !important; }
 
-      .services-grid {
-        grid-template-columns: 1fr
-      }
+      /* SERVICES */
+      .services-grid { grid-template-columns: 1fr; }
+      .service-card { border-right: none; border-bottom: 1px solid var(--border); padding: 36px 24px; }
+      .service-card:last-child { border-bottom: none; }
+      .service-name { font-size: 24px !important; }
 
-      .service-card {
-        border-right: none;
-        border-bottom: 1px solid var(--border)
-      }
+      /* CONTACT */
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .contact-headline { font-size: clamp(40px, 10vw, 72px) !important; }
 
-      .contact-inner {
-        grid-template-columns: 1fr;
-        gap: 48px
-      }
+      /* FOOTER */
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+      .footer-socials { flex-wrap: wrap; justify-content: center; }
 
-      footer {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center
-      }
+      /* LIGHTBOX */
+      .lightbox-arts-grid { grid-template-columns: repeat(2, 1fr); }
+      .lightbox-overlay { padding: 36px 16px 56px; }
+      .lightbox-title { font-size: 28px !important; }
 
-      .footer-socials {
-        flex-wrap: wrap;
-        justify-content: center
-      }
+      /* ARTES */
+      .arte-card { flex: 0 0 calc(50% - 6px); }
 
-      .lightbox-arts-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-
-      .lightbox-overlay {
-        padding: 40px 20px 60px
-      }
-
-      .arte-card {
-        flex: 0 0 calc(50% - 6px)
-      }
-
-      .artes-section {
-        padding: 60px 24px
-      }
-
-      .cursor-personalizado {
-        display: none
-      }
-
-      body {
-        cursor: auto !important
-      }
+      /* CURSOR — ocultar em touch */
+      .cursor-personalizado { display: none !important; }
+      body, a, button, .botao, [role="button"] { cursor: auto !important; }
     }
 
-    @media(max-width:560px) {
-      .proj-cat-card {
-        flex: 0 0 100%
-      }
-
-      .about-stats {
-        gap: 32px
-      }
-
-      .lightbox-arts-grid {
-        grid-template-columns: 1fr
-      }
-
-      .arte-card {
-        flex: 0 0 100%
-      }
+    /* ── MOBILE PEQUENO (≤ 480px) ── */
+    @media (max-width: 480px) {
+      section { padding: 48px 16px; }
+      .services-section { padding: 48px 16px; }
+      .artes-section { padding: 40px 16px; }
+      .hero { padding: 72px 16px 28px; }
+      .hero-photo { width: 70% !important; max-width: 240px !important; }
+      .hero-badge-wrap { width: 52px !important; height: 52px !important; left: calc(50% + 40px) !important; top: 180px !important; }
+      .hero-headline { font-size: clamp(12px, 4vw, 18px) !important; }
+      .hero-sub { font-size: 12px !important; max-width: 260px; }
+      .proj-cat-card { flex: 0 0 100%; }
+      .arte-card { flex: 0 0 100%; }
+      .about-stats { gap: 20px; }
+      .stat-num { font-size: 38px !important; }
+      .lightbox-arts-grid { grid-template-columns: 1fr; }
+      footer { padding: 24px 16px; }
+      .nav-cta { display: none; }
     }
+
+    /* ── TELAS MUITO PEQUENAS (≤ 360px) ── */
+    @media (max-width: 360px) {
+      .hero-headline { font-size: 11px !important; }
+      .hero-sub { font-size: 11px !important; max-width: 240px; }
+      .contact-headline { font-size: clamp(34px, 9vw, 56px) !important; }
+    }
+
   </style>
 </head>
 
@@ -1571,6 +1740,8 @@
     <!-- Backgrounds -->
     <div class="hero-bg"></div>
     <div class="hero-bg-grid"></div>
+    <!-- Luz interativa que segue o mouse — efeito do site de referência -->
+    <canvas id="heroLightCanvas" style="position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0;transition:opacity 1s ease;"></canvas>
     <div class="hero-ellipse hero-ellipse-1"></div>
     <div class="hero-ellipse hero-ellipse-2"></div>
     <div class="hero-ellipse hero-ellipse-3"></div>
@@ -1618,10 +1789,10 @@
       </div>
     </div>
     <!-- Hero nome e texto (posição exata do Figma: left 54px, top 544px) -->
-    <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:744px" id="heroContent">
+    <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:620px" id="heroContent">
       <!-- Logo VINI GRAPHICS como imagem SVG no hero -->
-      <div style="margin-bottom:16px;opacity:0" id="heroLogoName">
-        <svg width="120" height="auto" viewBox="0 0 143 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div style="margin-bottom:24px;opacity:0" id="heroLogoName">
+        <svg width="100%" style="max-width: 680px; display: block;" height="auto" viewBox="0 0 143 52" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M56.2842 21.2808L64.2131 13.4956C65.8725 11.8645 68.6774 13.0426 68.6774 15.3684V48.5496C68.6774 50 67.5014 51.1737 66.0533 51.1737H57.7432C56.2929 51.1737 55.1191 49.9978 55.1191 48.5496V24.0617C55.1191 23.0164 55.5394 22.0125 56.2864 21.2808H56.2842Z"
             fill="white" />
@@ -1648,13 +1819,20 @@
       </div>
       <div class="hero-headline-wrap" id="heroHeadlineWrap" style="opacity: 1;translate: none;rotate: none;scale: none;transform: translate(0px, 0px);">
         <h1 class="hero-headline" id="heroHeadline">
-          DESIGN ESTRATÉGICO QUE CONECTA, DESTACA E VENDE.
+          DESIGN ESTRATÉGICO QUE <strong>CONECTA, DESTACA E VENDE.</strong>
         </h1>
       </div>
-      <p class="hero-sub" id="heroSub" style="opacity:0">Design que comunica com clareza, envolve com autenticidade e
-        converte com impacto.</p>
-      <a href="https://www.behance.net/vini_graphics/projects" target="_blank" class="hero-btn" id="heroBtn"
-        style="opacity:0">Ver Portfolio</a>
+      <p class="hero-sub" id="heroSub" style="opacity:0">Com sólida experiência atuando como freelancer, desenvolvo identidades visuais exclusivas e projetos focados em gerar valor para marcas.</p>
+      <!-- Botão "Fazer Orçamento" — clonado de designagora.onlineaprender.com -->
+      <span class="hero-btn-wrapper" id="heroBtnWrapper" style="opacity:0">
+        <a href="https://www.behance.net/vini_graphics"
+           target="_blank"
+           class="hero-btn"
+           id="heroBtn">
+          Acessar Portifolio
+          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46" fill="none"><circle cx="22.6966" cy="22.6966" r="22.6966" fill="#000000"></circle><path d="M14.1342 31.2591L31.2592 14.1341M31.2592 14.1341H15.8467M31.2592 14.1341V29.5466" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </span>
     </div>
 
     <div class="hero-scroll" id="heroScroll" style="opacity:0">
@@ -2058,7 +2236,7 @@
       .to('#heroLogoName', { opacity: 1, duration: .6 }, '-=.3')
       .to('#heroHeadlineWrap', { opacity: 1, y: 0, duration: .8, from: { opacity: 0, y: 30 } }, '-=.4')
       .to('#heroSub', { opacity: 1, duration: .6 }, '-=.4')
-      .to('#heroBtn', { opacity: 1, duration: .5 }, '-=.3')
+      .to('#heroBtnWrapper', { opacity: 1, duration: .5 }, '-=.3')
       .to('#heroBadge', { opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.7)', from: { opacity: 0, scale: .8 } }, '-=.8')
       .to('#heroScroll', { opacity: 1, duration: .5 }, '-=.3');
 
@@ -2080,12 +2258,18 @@
     // ── EFEITO DIGITANDO NA HEADLINE ──
     const headlineEl = document.getElementById("heroHeadline");
     if (headlineEl) {
-      const targetText = "DESIGN ESTRATÉGICO QUE CONECTA, DESTACA E VENDE.";
-      headlineEl.textContent = "";
+      const part1 = "DESIGN ESTRATÉGICO QUE ";
+      const part2 = "CONECTA, DESTACA E VENDE.";
+      const targetText = part1 + part2;
+      headlineEl.innerHTML = "";
       let i = 0;
       const typeInt = setInterval(() => {
         i++;
-        headlineEl.textContent = targetText.slice(0, i);
+        if (i <= part1.length) {
+            headlineEl.innerHTML = targetText.slice(0, i);
+        } else {
+            headlineEl.innerHTML = part1 + "<strong>" + part2.slice(0, i - part1.length) + "</strong>";
+        }
         if (i >= targetText.length) clearInterval(typeInt);
       }, 50);
     }
