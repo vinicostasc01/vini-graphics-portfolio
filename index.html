@@ -5,21 +5,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vini Graphics — Designer Gráfico</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 143 52' fill='white'%3E%3Crect width='143' height='52' rx='8' fill='%231e1e1e'/%3E%3Cpath d='M48.59 39.81c-.02.32-.04.6-.13.91-.07.23-.24.63-.65 1.05L39.37 50.36a2.62 2.62 0 01-1.94.81H16.74a2.62 2.62 0 01-2.98-2.33v-5.79a4.18 4.18 0 00-4.18-4.18H2.02A2.02 2.02 0 01.02 37.83v-.02c.07-.62.35-1.2.8-1.64l8.59-8.43c1.72-1.68 4.61-.47 4.61 1.94v3.67a4.18 4.18 0 004.18 4.18h12.91a4.18 4.18 0 004.18-4.18V4.68c0-.47.1-1.03.28-1.6A3.1 3.1 0 0137.29 1.58h8.59a3.1 3.1 0 012.43 1.5c.18.57.28 1.13.28 1.6h.01v34.35c.01.19.02.46 0 .78z' fill='white'/%3E%3Cpath d='M4.61 28.6l8.59-8.43a2.62 2.62 0 00.81-1.94V4.29A2.71 2.71 0 0011.3 1.57H2.71A2.71 2.71 0 000 4.29v22.37c0 2.4 2.9 3.62 4.61 1.94z' fill='white'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 143 52' fill='white'%3E%3Crect width='143' height='52' rx='8' fill='%231e1e1e'/%3E%3Cpath d='M48.59 39.81c-.02.32-.04.6-.13.91-.07.23-.24.63-.65 1.05L39.37 50.36a2.62 2.62 0 01-1.94.81H16.74a2.62 2.62 0 01-2.98-2.33v-5.79a4.18 4.18 0 00-4.18-4.18H2.02A2.02 2.02 0 01.02 37.83v-.02c.07-.62.35-1.2.8-1.64l8.59-8.43c1.72-1.68 4.61-.47 4.61 1.94v3.67a4.18 4.18 0 004.18 4.18h12.91a4.18 4.18 0 004.18-4.18V4.68c0-.47.1-1.03.28-1.6A3.1 3.1 0 0137.29 1.58h8.59a3.1 3.1 0 012.43 1.5c.18.57.28 1.13.28 1.6h.01v34.35c.01.19.02.46 0 .78z' fill='white'/%3E%3Cpath d='M4.61 28.6l8.59-8.43a2.62 2.62 0 00.81-1.94V4.29A2.71 2.71 0 0011.3 1.57H2.71A2.71 2.71 0 000 4.29v22.37c0 2.4 2.9 3.62 4.61 1.94z' fill='white'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
   <style>
     :root {
-      --font-display:    'Montserrat', sans-serif;
-      --font-headline:   'Montserrat', sans-serif;
-      --font-body:       'Montserrat', sans-serif;
-      --font-ui:         'Montserrat', sans-serif;
+      --font-display: 'Montserrat', sans-serif;
+      --font-headline: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --font-ui: 'Montserrat', sans-serif;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
     // ══ LUZ INTERATIVA NA HERO (efeito clonado de designagora.onlineaprender.com) ══
-    (function() {
+    (function () {
       const hero = document.querySelector('.hero');
       const canvas = document.getElementById('heroLightCanvas');
       if (!canvas || !hero) return;
@@ -31,7 +33,7 @@
 
       // Resize canvas to match hero
       function resizeCanvas() {
-        canvas.width  = hero.offsetWidth;
+        canvas.width = hero.offsetWidth;
         canvas.height = hero.offsetHeight;
       }
       resizeCanvas();
@@ -64,9 +66,9 @@
             targetX, targetY, 0,
             targetX, targetY, Math.min(canvas.width, canvas.height) * 0.65
           );
-          outerGlow.addColorStop(0,   'rgba(255,255,255,0.055)');
+          outerGlow.addColorStop(0, 'rgba(255,255,255,0.055)');
           outerGlow.addColorStop(0.4, 'rgba(255,255,255,0.022)');
-          outerGlow.addColorStop(1,   'rgba(255,255,255,0)');
+          outerGlow.addColorStop(1, 'rgba(255,255,255,0)');
           ctx.fillStyle = outerGlow;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -75,9 +77,9 @@
             targetX, targetY, 0,
             targetX, targetY, 200
           );
-          innerSpot.addColorStop(0,    'rgba(255,255,255,0.12)');
+          innerSpot.addColorStop(0, 'rgba(255,255,255,0.12)');
           innerSpot.addColorStop(0.35, 'rgba(255,255,255,0.04)');
-          innerSpot.addColorStop(1,    'rgba(255,255,255,0)');
+          innerSpot.addColorStop(1, 'rgba(255,255,255,0)');
           ctx.fillStyle = innerSpot;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -86,9 +88,9 @@
             targetX, targetY, 0,
             targetX, targetY, 60
           );
-          core.addColorStop(0,   'rgba(255,255,255,0.22)');
+          core.addColorStop(0, 'rgba(255,255,255,0.22)');
           core.addColorStop(0.5, 'rgba(255,255,255,0.06)');
-          core.addColorStop(1,   'rgba(255,255,255,0)');
+          core.addColorStop(1, 'rgba(255,255,255,0)');
           ctx.fillStyle = core;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
@@ -105,8 +107,8 @@
     if (heroBtnWrapper && heroBtn) {
       heroBtnWrapper.addEventListener('mousemove', (e) => {
         const rect = heroBtnWrapper.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width  / 2;
-        const y = e.clientY - rect.top  - rect.height / 2;
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
         // Magnetic pull — wrapper moves slightly
         heroBtnWrapper.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
         // Button moves more
@@ -283,7 +285,8 @@
       background: #ffffff;
       box-shadow: var(--accent-glow) 0px 0px 6px 9px;
       transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-      font-family: var(--font-display, 'Montserrat', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Montserrat', sans-serif);
+      font-weight: 800;
       white-space: nowrap;
     }
 
@@ -340,7 +343,8 @@
     }
 
     .mobile-menu a {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 52px;
       letter-spacing: .08em;
       color: var(--white);
@@ -505,13 +509,23 @@
    No mobile: proporcional ao viewport (672px em 1920px = 35vw) */
     /* Shine animation keyframes */
     @keyframes shine {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
+      0% {
+        background-position: -200% center;
+      }
+
+      100% {
+        background-position: 200% center;
+      }
     }
 
     @keyframes btnShine {
-      0% { left: -100%; }
-      100% { left: 200%; }
+      0% {
+        left: -100%;
+      }
+
+      100% {
+        left: 200%;
+      }
     }
 
     .hero-headline-wrap {
@@ -533,14 +547,12 @@
       display: block;
       white-space: normal;
       /* Animated shine text effect */
-      background: linear-gradient(
-        90deg,
-        #ffffff 0%,
-        #ffffff 40%,
-        #b0b0b0 45%,
-        #ffffff 50%,
-        #ffffff 100%
-      );
+      background: linear-gradient(90deg,
+          #ffffff 0%,
+          #ffffff 40%,
+          #b0b0b0 45%,
+          #ffffff 50%,
+          #ffffff 100%);
       background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
@@ -558,18 +570,43 @@
 
     /* ══ BOTÃO "FAZER ORÇAMENTO" — clonado de designagora.onlineaprender.com ══ */
     @keyframes orcamentoPulse {
-      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.28), 0 0 24px 4px rgba(255,255,255,0.1); }
-      50%  { box-shadow: 0 0 0 10px rgba(255,255,255,0), 0 0 40px 8px rgba(255,255,255,0.18); }
-      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0), 0 0 24px 4px rgba(255,255,255,0.1); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.28), 0 0 24px 4px rgba(255, 255, 255, 0.1);
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0), 0 0 40px 8px rgba(255, 255, 255, 0.18);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 0 24px 4px rgba(255, 255, 255, 0.1);
+      }
     }
+
     @keyframes orcamentoBorderShimmer {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
     }
+
     @keyframes orcamentoBtnGlow {
-      0%   { opacity: 0.6; transform: translateX(-100%) skewX(-20deg); }
-      100% { opacity: 0;   transform: translateX(400%)  skewX(-20deg); }
+      0% {
+        opacity: 0.6;
+        transform: translateX(-100%) skewX(-20deg);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(400%) skewX(-20deg);
+      }
     }
 
     /* Wrapper do botão com borda animada */
@@ -592,7 +629,8 @@
       box-shadow: var(--accent-glow) 0px 0px 6px 9px;
       color: #000000;
       text-decoration: none;
-      font-family: var(--font-display, 'Montserrat', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Montserrat', sans-serif);
+      font-weight: 800;
       font-size: 20px;
       letter-spacing: 0.15em;
       border-radius: 5px;
@@ -628,12 +666,10 @@
       left: 0;
       width: 40%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(0, 0, 0, 0.1) 50%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(0, 0, 0, 0.1) 50%,
+          transparent 100%);
       transform: translateX(-100%) skewX(-20deg);
       animation: orcamentoBtnGlow 3s ease-in-out infinite;
       pointer-events: none;
@@ -645,10 +681,12 @@
       box-shadow: var(--accent-glow) 0px 0px 10px 12px;
       color: #000000;
     }
+
     .hero-btn:hover .btn-arrow {
       transform: translateX(3px) rotate(-45deg);
       border-color: #000000;
     }
+
     .hero-btn:active {
       transform: translateY(0px) scale(0.98);
     }
@@ -711,7 +749,8 @@
     }
 
     .marquee-item {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 13px;
       letter-spacing: .3em;
       color: rgba(255, 255, 255, .22);
@@ -803,7 +842,8 @@
     }
 
     .stat-num {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 52px;
       line-height: 1;
       color: var(--white)
@@ -915,7 +955,8 @@
     }
 
     .proj-cat-name {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 22px;
       letter-spacing: 1.32px;
       color: var(--white)
@@ -1115,7 +1156,8 @@
     }
 
     .lightbox-title {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 44px;
       letter-spacing: .07em
     }
@@ -1235,7 +1277,8 @@
     }
 
     .service-num {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 13px;
       letter-spacing: .2em;
       color: rgba(255, 255, 255, .18);
@@ -1248,7 +1291,8 @@
     }
 
     .service-name {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: 28px;
       letter-spacing: .05em;
       color: var(--white);
@@ -1270,7 +1314,8 @@
     }
 
     .contact-headline {
-      font-family: var(--font-display, 'Barlow Condensed', sans-serif); font-weight: 800;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-weight: 800;
       font-size: clamp(48px, 6vw, 88px);
       line-height: .95;
       color: var(--white);
@@ -1442,52 +1487,155 @@
 
     /* ── DESKTOP GRANDE (> 1400px) ── */
     @media (min-width: 1401px) {
-      section { padding: 130px 72px; }
-      .hero { padding: 0 72px 80px; }
-      .hero-photo { right: 60px; height: 94%; }
+      section {
+        padding: 130px 72px;
+      }
+
+      .hero {
+        padding: 0 72px 80px;
+      }
+
+      .hero-photo {
+        right: 60px;
+        height: 94%;
+      }
     }
 
     /* ── DESKTOP MÉDIO (1025–1400px) ── */
     @media (max-width: 1400px) and (min-width: 1025px) {
-      .hero-badge-wrap { right: clamp(160px, 22vw, 320px); top: 36%; width: clamp(130px, 10vw, 175px); height: clamp(130px, 10vw, 175px); }
-      .hero-photo { right: 40px; height: 90%; }
+      .hero-badge-wrap {
+        right: clamp(160px, 22vw, 320px);
+        top: 36%;
+        width: clamp(130px, 10vw, 175px);
+        height: clamp(130px, 10vw, 175px);
+      }
+
+      .hero-photo {
+        right: 40px;
+        height: 90%;
+      }
     }
 
     /* ── TABLET LANDSCAPE (769–1024px) ── */
     @media (max-width: 1024px) and (min-width: 769px) {
-      nav { padding: 18px 32px; }
-      nav.scrolled { padding: 12px 32px; }
-      section { padding: 80px 32px; }
-      .services-section { padding: 80px 32px; }
-      .artes-section { padding: 60px 32px; }
-      .hero { padding: 0 32px 56px; }
-      .hero-content { max-width: 52%; padding-top: 120px; }
-      .hero-photo { right: 0; height: 88%; max-width: 52%; }
-      .hero-badge-wrap { right: 44%; top: 34%; width: 110px; height: 110px; }
-      .hero-headline { font-size: clamp(32px, 5vw, 64px); }
-      .about { grid-template-columns: 1fr; gap: 40px; }
-      .about-right { padding-top: 0; }
-      .proj-cat-card { flex: 0 0 calc(50% - 8px); }
-      .services-grid { grid-template-columns: 1fr 1fr; }
-      .service-card:last-child { border-right: none; grid-column: span 2; border-top: 1px solid var(--border); border-bottom: none; }
-      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
-      .lightbox-arts-grid { grid-template-columns: repeat(2, 1fr); }
-      .arte-card { flex: 0 0 calc(50% - 6px); }
+      nav {
+        padding: 18px 32px;
+      }
+
+      nav.scrolled {
+        padding: 12px 32px;
+      }
+
+      section {
+        padding: 80px 32px;
+      }
+
+      .services-section {
+        padding: 80px 32px;
+      }
+
+      .artes-section {
+        padding: 60px 32px;
+      }
+
+      .hero {
+        padding: 0 32px 56px;
+      }
+
+      .hero-content {
+        max-width: 52%;
+        padding-top: 120px;
+      }
+
+      .hero-photo {
+        right: 0;
+        height: 88%;
+        max-width: 52%;
+      }
+
+      .hero-badge-wrap {
+        right: 44%;
+        top: 34%;
+        width: 110px;
+        height: 110px;
+      }
+
+      .hero-headline {
+        font-size: clamp(32px, 5vw, 64px);
+      }
+
+      .about {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-right {
+        padding-top: 0;
+      }
+
+      .proj-cat-card {
+        flex: 0 0 calc(50% - 8px);
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .service-card:last-child {
+        border-right: none;
+        grid-column: span 2;
+        border-top: 1px solid var(--border);
+        border-bottom: none;
+      }
+
+      .contact-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .lightbox-arts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .arte-card {
+        flex: 0 0 calc(50% - 6px);
+      }
     }
 
     /* ── MOBILE (≤ 768px) ── */
     @media (max-width: 768px) {
 
       /* NAV */
-      nav { padding: 14px 20px; border-radius: 0; }
-      nav.scrolled { padding: 10px 20px; }
-      .nav-links, .nav-cta { display: none; }
-      .hamburger { display: flex; }
+      nav {
+        padding: 14px 20px;
+        border-radius: 0;
+      }
+
+      nav.scrolled {
+        padding: 10px 20px;
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
 
       /* SECTIONS */
-      section { padding: 64px 20px; }
-      .services-section { padding: 64px 20px; }
-      .artes-section { padding: 48px 20px; }
+      section {
+        padding: 64px 20px;
+      }
+
+      .services-section {
+        padding: 64px 20px;
+      }
+
+      .artes-section {
+        padding: 48px 20px;
+      }
 
       /* HERO — layout em coluna (foto acima, conteúdo abaixo) */
       .hero {
@@ -1514,12 +1662,14 @@
         margin: 0 auto !important;
         display: block !important;
         order: 1 !important;
-        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, transparent 100%);
-        mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, transparent 100%);
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, transparent 100%);
       }
 
       /* Formas brancas — ocultar */
-      .hero-graphics-frame { display: none !important; }
+      .hero-graphics-frame {
+        display: none !important;
+      }
 
       /* Conteúdo (logo + headline + sub + btn) — abaixo da foto */
       .hero-content {
@@ -1574,7 +1724,11 @@
       }
 
       /* Headline */
-      .hero-name-wrap { display: flex; justify-content: center; }
+      .hero-name-wrap {
+        display: flex;
+        justify-content: center;
+      }
+
       .hero-headline-wrap {
         width: 100% !important;
         max-width: 340px;
@@ -1582,6 +1736,7 @@
         justify-content: center;
         margin-bottom: 16px;
       }
+
       .hero-headline {
         font-family: 'Powermax', var(--font-headline, 'Montserrat', sans-serif) !important;
         font-size: clamp(14px, 4vw, 22px) !important;
@@ -1607,6 +1762,7 @@
       .hero-btn-wrapper {
         margin: 0 auto !important;
       }
+
       .hero-btn {
         font-size: 13px !important;
         padding: 12px 20px !important;
@@ -1616,84 +1772,599 @@
 
       /* Logo VINI no hero */
       @keyframes floatMobile {
-        0% { transform: translateY(0px) }
-        50% { transform: translateY(-8px) }
-        100% { transform: translateY(0px) }
+        0% {
+          transform: translateY(0px)
+        }
+
+        50% {
+          transform: translateY(-8px)
+        }
+
+        100% {
+          transform: translateY(0px)
+        }
       }
-      #heroLogoName { margin-bottom: 24px !important; display: flex; justify-content: center; }
-      #heroLogoName svg { 
-        width: 200px !important; 
-        max-width: 80vw !important; 
-        animation: floatMobile 4s ease-in-out infinite; 
+
+      #heroLogoName {
+        margin-bottom: 24px !important;
+        display: flex;
+        justify-content: center;
+      }
+
+      #heroLogoName svg {
+        width: 200px !important;
+        max-width: 80vw !important;
+        animation: floatMobile 4s ease-in-out infinite;
       }
 
       /* Elipses decorativas — ocultar */
-      .hero-ellipse { display: none !important; }
+      .hero-ellipse {
+        display: none !important;
+      }
 
       /* ABOUT */
-      .about { grid-template-columns: 1fr; gap: 40px; }
-      .about-right { padding-top: 0; }
-      .about-headline { font-size: clamp(34px, 8vw, 54px) !important; }
-      .about-stats { gap: 28px; flex-wrap: wrap; }
-      .stat-num { font-size: 44px !important; }
+      .about {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-right {
+        padding-top: 0;
+      }
+
+      .about-headline {
+        font-size: clamp(34px, 8vw, 54px) !important;
+      }
+
+      .about-stats {
+        gap: 28px;
+        flex-wrap: wrap;
+      }
+
+      .stat-num {
+        font-size: 44px !important;
+      }
 
       /* PORTFOLIO */
-      .proj-cat-card { flex: 0 0 calc(50% - 8px); }
-      .proj-cat-name { font-size: 16px !important; }
+      .proj-cat-card {
+        flex: 0 0 calc(50% - 8px);
+      }
+
+      .proj-cat-name {
+        font-size: 16px !important;
+      }
 
       /* SERVICES */
-      .services-grid { grid-template-columns: 1fr; }
-      .service-card { border-right: none; border-bottom: 1px solid var(--border); padding: 36px 24px; }
-      .service-card:last-child { border-bottom: none; }
-      .service-name { font-size: 24px !important; }
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-card {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 36px 24px;
+      }
+
+      .service-card:last-child {
+        border-bottom: none;
+      }
+
+      .service-name {
+        font-size: 24px !important;
+      }
 
       /* CONTACT */
-      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .contact-headline { font-size: clamp(40px, 10vw, 72px) !important; }
+      .contact-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .contact-headline {
+        font-size: clamp(40px, 10vw, 72px) !important;
+      }
 
       /* FOOTER */
-      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
-      .footer-socials { flex-wrap: wrap; justify-content: center; }
+      footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+        padding: 32px 20px;
+      }
+
+      .footer-socials {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
 
       /* LIGHTBOX */
-      .lightbox-arts-grid { grid-template-columns: repeat(2, 1fr); }
-      .lightbox-overlay { padding: 36px 16px 56px; }
-      .lightbox-title { font-size: 28px !important; }
+      .lightbox-arts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .lightbox-overlay {
+        padding: 36px 16px 56px;
+      }
+
+      .lightbox-title {
+        font-size: 28px !important;
+      }
 
       /* ARTES */
-      .arte-card { flex: 0 0 calc(50% - 6px); }
+      .arte-card {
+        flex: 0 0 calc(50% - 6px);
+      }
 
       /* CURSOR — ocultar em touch */
-      .cursor-personalizado { display: none !important; }
-      body, a, button, .botao, [role="button"] { cursor: auto !important; }
+      .cursor-personalizado {
+        display: none !important;
+      }
+
+      body,
+      a,
+      button,
+      .botao,
+      [role="button"] {
+        cursor: auto !important;
+      }
     }
 
     /* ── MOBILE PEQUENO (≤ 480px) ── */
     @media (max-width: 480px) {
-      section { padding: 48px 16px; }
-      .services-section { padding: 48px 16px; }
-      .artes-section { padding: 40px 16px; }
-      .hero { padding: 72px 16px 28px; }
-      .hero-photo { width: 70% !important; max-width: 240px !important; }
-      .hero-badge-wrap { width: 52px !important; height: 52px !important; left: calc(50% + 40px) !important; top: 180px !important; }
-      .hero-headline { font-size: clamp(12px, 4vw, 18px) !important; }
-      .hero-sub { font-size: 12px !important; max-width: 260px; }
-      .proj-cat-card { flex: 0 0 100%; }
-      .arte-card { flex: 0 0 100%; }
-      .about-stats { gap: 20px; }
-      .stat-num { font-size: 38px !important; }
-      .lightbox-arts-grid { grid-template-columns: 1fr; }
-      footer { padding: 24px 16px; }
-      .nav-cta { display: none; }
+      section {
+        padding: 48px 16px;
+      }
+
+      .services-section {
+        padding: 48px 16px;
+      }
+
+      .artes-section {
+        padding: 40px 16px;
+      }
+
+      .hero {
+        padding: 72px 16px 28px;
+      }
+
+      .hero-photo {
+        width: 70% !important;
+        max-width: 240px !important;
+      }
+
+      .hero-badge-wrap {
+        width: 52px !important;
+        height: 52px !important;
+        left: calc(50% + 40px) !important;
+        top: 180px !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(12px, 4vw, 18px) !important;
+      }
+
+      .hero-sub {
+        font-size: 12px !important;
+        max-width: 260px;
+      }
+
+      .proj-cat-card {
+        flex: 0 0 100%;
+      }
+
+      .arte-card {
+        flex: 0 0 100%;
+      }
+
+      .about-stats {
+        gap: 20px;
+      }
+
+      .stat-num {
+        font-size: 38px !important;
+      }
+
+      .lightbox-arts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        padding: 24px 16px;
+      }
+
+      .nav-cta {
+        display: none;
+      }
     }
 
     /* ── TELAS MUITO PEQUENAS (≤ 360px) ── */
     @media (max-width: 360px) {
-      .hero-headline { font-size: 11px !important; }
-      .hero-sub { font-size: 11px !important; max-width: 240px; }
-      .contact-headline { font-size: clamp(34px, 9vw, 56px) !important; }
+      .hero-headline {
+        font-size: 11px !important;
+      }
+
+      .hero-sub {
+        font-size: 11px !important;
+        max-width: 240px;
+      }
+
+      .contact-headline {
+        font-size: clamp(34px, 9vw, 56px) !important;
+      }
     }
 
+    /* ══ DEPOIMENTOS ══ */
+    .depoimentos-section {
+      padding: 100px 57px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .depoimentos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .dep-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      transition: border-color .3s, transform .4s, background .3s;
+      overflow: hidden;
+    }
+
+    .dep-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity .4s;
+      pointer-events: none;
+    }
+
+    .dep-card:hover {
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-4px);
+    }
+
+    .dep-card:hover::before {
+      opacity: 1;
+    }
+
+    .dep-quote {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.35;
+      margin-bottom: 14px;
+      font-family: var(--font-display);
+    }
+
+    .dep-quote em {
+      color: rgba(255,255,255,0.55);
+      font-style: normal;
+    }
+
+    .dep-text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+
+    .dep-highlight {
+      color: rgba(255,255,255,0.75);
+      font-weight: 600;
+    }
+
+    .dep-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .dep-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--white);
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+
+    .dep-author-info .dep-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .02em;
+    }
+
+    .dep-author-info .dep-role {
+      font-size: 11px;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: .05em;
+      margin-top: 1px;
+    }
+
+    .dep-stars {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 3px;
+    }
+
+    .dep-stars span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    @media (max-width: 900px) {
+      .depoimentos-section { padding: 80px 32px; }
+      .depoimentos-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .depoimentos-section { padding: 60px 20px; }
+      .depoimentos-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══ CURRÍCULO ══ */
+    .cv-section {
+      padding: 100px 57px;
+      position: relative;
+    }
+
+    .cv-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      margin-top: 56px;
+    }
+
+    .cv-col-title {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+
+    /* Timeline */
+    .cv-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .cv-item {
+      position: relative;
+      padding: 0 0 36px 28px;
+      border-left: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cv-item:last-child {
+      padding-bottom: 0;
+      border-left: 1px solid transparent;
+    }
+
+    .cv-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
+
+    .cv-period {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .cv-role {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+    }
+
+    .cv-company {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+
+    .cv-desc {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.6;
+    }
+
+    /* Tech skills grid */
+    .cv-skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .cv-skill-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      transition: border-color .3s, background .3s;
+    }
+
+    .cv-skill-pill:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06);
+      color: var(--white);
+    }
+
+    .cv-skill-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .cv-skill-level {
+      margin-left: auto;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .cv-download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 36px;
+      padding: 12px 24px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: background .3s, border-color .3s, transform .2s;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cv-download-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.06);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s ease;
+    }
+
+    .cv-download-btn:hover {
+      border-color: rgba(255,255,255,0.7);
+      transform: translateY(-2px);
+    }
+
+    .cv-download-btn:hover::after {
+      transform: scaleX(1);
+    }
+
+    @media (max-width: 900px) {
+      .cv-section { padding: 80px 32px; }
+      .cv-inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    @media (max-width: 600px) {
+      .cv-section { padding: 60px 20px; }
+      .cv-skills-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══ COUNTER ANIMATION ══ */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ══ GLITCH EFFECT ══ */
+    @keyframes glitch1 {
+      0%   { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 0); }
+      20%  { clip-path: inset(70% 0 5%  0); transform: translate(3px, 0);  }
+      40%  { clip-path: inset(40% 0 40% 0); transform: translate(-2px, 0); }
+      60%  { clip-path: inset(10% 0 80% 0); transform: translate(2px, 0);  }
+      80%  { clip-path: inset(55% 0 25% 0); transform: translate(-1px, 0); }
+      100% { clip-path: inset(20% 0 60% 0); transform: translate(3px, 0);  }
+    }
+
+    @keyframes glitch2 {
+      0%   { clip-path: inset(60% 0 10% 0); transform: translate(3px, 0);  }
+      20%  { clip-path: inset(5%  0 75% 0); transform: translate(-3px, 0); }
+      40%  { clip-path: inset(35% 0 50% 0); transform: translate(2px, 0);  }
+      60%  { clip-path: inset(80% 0 5%  0); transform: translate(-2px, 0); }
+      80%  { clip-path: inset(25% 0 55% 0); transform: translate(1px, 0);  }
+      100% { clip-path: inset(60% 0 10% 0); transform: translate(-3px, 0); }
+    }
+
+    .glitch-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch-wrap::before,
+    .glitch-wrap::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .glitch-wrap:hover::before {
+      opacity: 0.6;
+      color: rgba(200,200,200,0.7);
+      animation: glitch1 .4s steps(1) infinite;
+    }
+
+    .glitch-wrap:hover::after {
+      opacity: 0.6;
+      color: rgba(180,180,180,0.5);
+      animation: glitch2 .4s steps(1) infinite;
+    }
+
+    /* ══ FLOATING ORBS ══ */
+    .floating-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0.04;
+    }
+
+    /* ══ SECTION DIVIDER ══ */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.12) 70%, transparent);
+      margin: 0 57px;
+      width: calc(100% - 114px);
+    }
+
+    @media (max-width: 768px) {
+      .section-divider { margin: 0 20px; width: calc(100% - 40px); }
+    }
   </style>
 </head>
 
@@ -1708,6 +2379,8 @@
     <a href="#sobre" onclick="closeMenu()">Sobre</a>
     <a href="#portfolio" onclick="closeMenu()">Portfólio</a>
     <a href="#servicos" onclick="closeMenu()">Serviços</a>
+    <a href="#depoimentos" onclick="closeMenu()">Depoimentos</a>
+    <a href="#curriculo" onclick="closeMenu()">Currículo</a>
     <a href="#contato" onclick="closeMenu()">Contato</a>
   </div>
 
@@ -1728,6 +2401,8 @@
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#portfolio">Portfólio</a></li>
       <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+      <li><a href="#curriculo">Currículo</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
     <a href="https://wa.me/5579996768698?text=Ol%C3%A1%20Vini%21%20Vim%20pelo%20seu%20portifolio" target="_blank"
@@ -1741,7 +2416,8 @@
     <div class="hero-bg"></div>
     <div class="hero-bg-grid"></div>
     <!-- Luz interativa que segue o mouse — efeito do site de referência -->
-    <canvas id="heroLightCanvas" style="position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0;transition:opacity 1s ease;"></canvas>
+    <canvas id="heroLightCanvas"
+      style="position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0;transition:opacity 1s ease;"></canvas>
     <div class="hero-ellipse hero-ellipse-1"></div>
     <div class="hero-ellipse hero-ellipse-2"></div>
     <div class="hero-ellipse hero-ellipse-3"></div>
@@ -1789,10 +2465,12 @@
       </div>
     </div>
     <!-- Hero nome e texto (posição exata do Figma: left 54px, top 544px) -->
-    <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:620px" id="heroContent">
+    <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:620px"
+      id="heroContent">
       <!-- Logo VINI GRAPHICS como imagem SVG no hero -->
       <div style="margin-bottom:24px;opacity:0" id="heroLogoName">
-        <svg width="100%" style="max-width: 680px; display: block;" height="auto" viewBox="0 0 143 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="100%" style="max-width: 680px; display: block;" height="auto" viewBox="0 0 143 52" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M56.2842 21.2808L64.2131 13.4956C65.8725 11.8645 68.6774 13.0426 68.6774 15.3684V48.5496C68.6774 50 67.5014 51.1737 66.0533 51.1737H57.7432C56.2929 51.1737 55.1191 49.9978 55.1191 48.5496V24.0617C55.1191 23.0164 55.5394 22.0125 56.2864 21.2808H56.2842Z"
             fill="white" />
@@ -1817,20 +2495,23 @@
         </svg>
 
       </div>
-      <div class="hero-headline-wrap" id="heroHeadlineWrap" style="opacity: 1;translate: none;rotate: none;scale: none;transform: translate(0px, 0px);">
+      <div class="hero-headline-wrap" id="heroHeadlineWrap"
+        style="opacity: 1;translate: none;rotate: none;scale: none;transform: translate(0px, 0px);">
         <h1 class="hero-headline" id="heroHeadline">
           DESIGN ESTRATÉGICO QUE <strong>CONECTA, DESTACA E VENDE.</strong>
         </h1>
       </div>
-      <p class="hero-sub" id="heroSub" style="opacity:0">Com sólida experiência atuando como freelancer, desenvolvo identidades visuais exclusivas e projetos focados em gerar valor para marcas.</p>
+      <p class="hero-sub" id="heroSub" style="opacity:0">Com sólida experiência atuando como freelancer, desenvolvo
+        identidades visuais exclusivas e projetos focados em gerar valor para marcas.</p>
       <!-- Botão "Fazer Orçamento" — clonado de designagora.onlineaprender.com -->
       <span class="hero-btn-wrapper" id="heroBtnWrapper" style="opacity:0">
-        <a href="https://www.behance.net/vini_graphics"
-           target="_blank"
-           class="hero-btn"
-           id="heroBtn">
+        <a href="https://www.behance.net/vini_graphics" target="_blank" class="hero-btn" id="heroBtn">
           Acessar Portifolio
-          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46" fill="none"><circle cx="22.6966" cy="22.6966" r="22.6966" fill="#000000"></circle><path d="M14.1342 31.2591L31.2592 14.1341M31.2592 14.1341H15.8467M31.2592 14.1341V29.5466" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46" fill="none">
+            <circle cx="22.6966" cy="22.6966" r="22.6966" fill="#000000"></circle>
+            <path d="M14.1342 31.2591L31.2592 14.1341M31.2592 14.1341H15.8467M31.2592 14.1341V29.5466" stroke="white"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
         </a>
       </span>
     </div>
@@ -2030,12 +2711,15 @@
             alt="Projeto NXZ Vendas" loading="lazy">
           <div class="arte-label"><span>Projeto NXZ Vendas</span></div>
         </a>
-        <a class="arte-card" href="https://www.behance.net/gallery/246933925/Atena-Protecao-Veicular-Social-Media-Kit-Ramon-Junior" target="_blank">
+        <a class="arte-card"
+          href="https://www.behance.net/gallery/246933925/Atena-Protecao-Veicular-Social-Media-Kit-Ramon-Junior"
+          target="_blank">
           <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/abf1f7246933925.Y3JvcCwxMjY5LDk5MiwwLDM.png"
             alt="Atena Proteção Veicular" loading="lazy">
           <div class="arte-label"><span>Atena Proteção Veicular</span></div>
         </a>
-        <a class="arte-card" href="https://www.behance.net/gallery/245685887/Projeto-ID-Visual-Litoral-Norte-Santos-Fc" target="_blank">
+        <a class="arte-card" href="https://www.behance.net/gallery/245685887/Projeto-ID-Visual-Litoral-Norte-Santos-Fc"
+          target="_blank">
           <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/6d9f72245685887.Y3JvcCwxMjY5LDk5MiwwLDM.png"
             alt="ID Visual Litoral Norte Santos FC" loading="lazy">
           <div class="arte-label"><span>ID Visual Litoral Norte Santos FC</span></div>
@@ -2045,7 +2729,8 @@
             alt="Projeto Logotipo Pacgens" loading="lazy">
           <div class="arte-label"><span>Projeto Logotipo Pacgens</span></div>
         </a>
-        <a class="arte-card" href="https://www.behance.net/gallery/241836671/Projeto-Residencial-Palace" target="_blank">
+        <a class="arte-card" href="https://www.behance.net/gallery/241836671/Projeto-Residencial-Palace"
+          target="_blank">
           <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/d5992f241836671.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png"
             alt="Residencial Palace" loading="lazy">
           <div class="arte-label"><span>Residencial Palace</span></div>
@@ -2060,12 +2745,14 @@
             alt="Bem Estar Fit" loading="lazy">
           <div class="arte-label"><span>Projeto Bem Estar Fit</span></div>
         </a>
-        <a class="arte-card" href="https://www.behance.net/gallery/195299041/VFX-COM-A-TEMATICA-DO-PEIXAO" target="_blank">
+        <a class="arte-card" href="https://www.behance.net/gallery/195299041/VFX-COM-A-TEMATICA-DO-PEIXAO"
+          target="_blank">
           <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/d8f4ae195299041.Y3JvcCwxMDgwLDg0NCwwLDM4Mg.png"
             alt="VFX Peixão" loading="lazy">
           <div class="arte-label"><span>VFX com a Temática do Peixão</span></div>
         </a>
-        <a class="arte-card" href="https://www.behance.net/gallery/177162347/FLYER-PARA-LOJA-DE-MATERIAL-ESPORTIVO" target="_blank">
+        <a class="arte-card" href="https://www.behance.net/gallery/177162347/FLYER-PARA-LOJA-DE-MATERIAL-ESPORTIVO"
+          target="_blank">
           <img src="https://mir-s3-cdn-cf.behance.net/projects/max_808/e93018177162347.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png"
             alt="Flyer Loja Esportiva" loading="lazy">
           <div class="arte-label"><span>Flyer Loja de Material Esportivo</span></div>
@@ -2106,6 +2793,222 @@
       </div>
     </div>
   </section>
+
+  <!-- DEPOIMENTOS -->
+  <section id="depoimentos" class="depoimentos-section">
+    <div class="floating-orb" style="width:400px;height:400px;background:rgba(255,255,255,1);top:-100px;right:-150px;"></div>
+    <div class="section-label">O que dizem sobre o meu trabalho</div>
+    <div class="depoimentos-grid reveal" id="depGrid">
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"Entregou além do que eu esperava"</div>
+        <div class="dep-text">Contratei o Vinícius pra criar a identidade visual do meu negócio e fiquei impressionado. <span class="dep-highlight">Cada detalhe foi pensado</span> — do logo à paleta de cores. Meus clientes elogiaram demais o visual novo.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">RC</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Rafael Costa</div>
+            <div class="dep-role">Empreendedor · Lagarto, SE</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"Presença digital transformada"</div>
+        <div class="dep-text">Antes minhas redes sociais não tinham identidade nenhuma. Depois que o Vini assumiu o design, <span class="dep-highlight">meu engajamento dobrou em dois meses</span>. O trabalho é sério, rápido e super profissional.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">AM</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Ana Melo</div>
+            <div class="dep-role">Gestora de E-commerce</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"Visual que vende por si só"</div>
+        <div class="dep-text">Precisava de um logo que transmitisse confiança e modernidade. O resultado ficou <span class="dep-highlight">acima da média do mercado</span> — limpo, forte e versátil. Super recomendo o trabalho do Vini.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">LS</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Lucas Souza</div>
+            <div class="dep-role">Dono de Clínica · Sergipe</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"Criatividade fora do comum"</div>
+        <div class="dep-text">O Vinícius tem um olhar diferente. Apresentei minha ideia e ele trouxe algo que eu nunca teria pensado. <span class="dep-highlight">O motion design do meu lançamento</span> gerou muito mais compartilhamentos do que eu esperava.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">PO</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Pedro Oliveira</div>
+            <div class="dep-role">Produtor de Conteúdo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"Parceiro de longo prazo"</div>
+        <div class="dep-text">Já trabalhamos juntos em mais de 10 projetos. O Vini entende bem o briefing, respeita prazos e <span class="dep-highlight">sempre entrega algo que surpreende</span>. É o tipo de profissional que você quer no seu time.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">JF</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Júlia Ferreira</div>
+            <div class="dep-role">Diretora de Marketing</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="dep-quote">"IA + Design = resultado poderoso"</div>
+        <div class="dep-text">O diferencial do Vini é usar IA generativa de forma criativa e estratégica. O conteúdo que ele cria para minha marca <span class="dep-highlight">chama atenção e converte de verdade</span>. Altamente recomendado.</div>
+        <div class="dep-author">
+          <div class="dep-avatar">MB</div>
+          <div class="dep-author-info">
+            <div class="dep-name">Marcos Barreto</div>
+            <div class="dep-role">CEO · Startup de Tecnologia</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- CURRÍCULO -->
+  <section id="curriculo" class="cv-section">
+    <div class="section-label">Meu Currículo</div>
+    <div class="cv-inner reveal">
+
+      <!-- Coluna Esquerda: Experiência + Formação -->
+      <div>
+        <div class="cv-col-title">Experiência Profissional</div>
+        <div class="cv-timeline">
+          <div class="cv-item">
+            <div class="cv-period">2021 — Atualmente</div>
+            <div class="cv-role glitch-wrap" data-text="Designer Gráfico &amp; Social Media">Designer Gráfico &amp; Social Media</div>
+            <div class="cv-company">Autônomo · Lagarto, SE</div>
+            <div class="cv-desc">Criação de identidades visuais, branding, social media e motion design para marcas e empreendedores. Especialista em IA Generativa para criação de imagens e vídeos, otimizando a produção de conteúdo de alto impacto.</div>
+          </div>
+          <div class="cv-item">
+            <div class="cv-period">Projetos em destaque</div>
+            <div class="cv-role">Branding · Social Media · Motion VFX</div>
+            <div class="cv-company">Clientes em Sergipe e demais estados</div>
+            <div class="cv-desc">Logotipos, manuais de marca, pacotes de posts, stories, Reels/TikTok, materiais vetoriais para impressão e apresentações animadas.</div>
+          </div>
+        </div>
+
+        <div class="cv-col-title" style="margin-top:44px;">Formação Acadêmica</div>
+        <div class="cv-timeline">
+          <div class="cv-item">
+            <div class="cv-period">Out/2024 — Cursando</div>
+            <div class="cv-role">Bacharelado em Sistemas de Informação</div>
+            <div class="cv-company">Instituto Federal de Sergipe (IFS) · Campus Lagarto</div>
+            <div class="cv-desc">Desenvolvimento de competências em lógica de programação, tecnologia e inovação digital.</div>
+          </div>
+          <div class="cv-item">
+            <div class="cv-period">Concluído em 2021</div>
+            <div class="cv-role">Ensino Médio Completo</div>
+            <div class="cv-company">Col. Est. Prof. Abelardo Romero Dantas</div>
+            <div class="cv-desc"></div>
+          </div>
+        </div>
+
+        <a href="https://wa.me/5579996768698?text=Ol%C3%A1%20Vini%21%20Quero%20o%20seu%20curr%C3%ADculo%20completo%20em%20PDF" target="_blank" class="cv-download-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar Currículo em PDF
+        </a>
+      </div>
+
+      <!-- Coluna Direita: Ferramentas + Contatos -->
+      <div>
+        <div class="cv-col-title">Ferramentas &amp; Habilidades</div>
+        <div class="cv-skills-grid">
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🎨</span>
+            Adobe Photoshop
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">✏️</span>
+            Adobe Illustrator
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🎬</span>
+            After Effects
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🎞️</span>
+            Premiere Pro
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🤖</span>
+            IA Generativa
+            <span class="cv-skill-level">Especialista</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🖼️</span>
+            Figma
+            <span class="cv-skill-level">Em aprendizado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">📱</span>
+            Social Media
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🧩</span>
+            Branding
+            <span class="cv-skill-level">Avançado</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">🎯</span>
+            Marketing Digital
+            <span class="cv-skill-level">Noções</span>
+          </div>
+          <div class="cv-skill-pill">
+            <span class="cv-skill-icon">💻</span>
+            Lógica de Prog.
+            <span class="cv-skill-level">Em aprendizado</span>
+          </div>
+        </div>
+
+        <div class="cv-col-title" style="margin-top:40px;">Informações de Contato</div>
+        <div class="cv-timeline">
+          <div class="cv-item" style="padding-bottom:16px;">
+            <div class="cv-period">Telefone</div>
+            <div class="cv-role" style="font-size:14px;">(79) 99676-8698</div>
+          </div>
+          <div class="cv-item" style="padding-bottom:16px;">
+            <div class="cv-period">E-mail</div>
+            <div class="cv-role" style="font-size:14px;">vinicostasc01@hotmail.com</div>
+          </div>
+          <div class="cv-item" style="padding-bottom:16px;">
+            <div class="cv-period">Localização</div>
+            <div class="cv-role" style="font-size:14px;">Lagarto — SE, Brasil</div>
+          </div>
+          <div class="cv-item">
+            <div class="cv-period">Portfólio</div>
+            <div class="cv-role" style="font-size:14px;">behance.net/vini_graphics</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
 
   <!-- CONTACT -->
   <section id="contato">
@@ -2250,7 +3153,7 @@
     }
 
     // ── ANIMAÇÃO DE ENTRADA DO LOGO HERO ──
-    gsap.fromTo('#heroLogoName', 
+    gsap.fromTo('#heroLogoName',
       { opacity: 0, y: 40, scale: 0.9 },
       { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'power3.out', delay: 0.1, clearProps: 'all' }
     );
@@ -2266,9 +3169,9 @@
       const typeInt = setInterval(() => {
         i++;
         if (i <= part1.length) {
-            headlineEl.innerHTML = targetText.slice(0, i);
+          headlineEl.innerHTML = targetText.slice(0, i);
         } else {
-            headlineEl.innerHTML = part1 + "<strong>" + part2.slice(0, i - part1.length) + "</strong>";
+          headlineEl.innerHTML = part1 + "<strong>" + part2.slice(0, i - part1.length) + "</strong>";
         }
         if (i >= targetText.length) clearInterval(typeInt);
       }, 50);
@@ -2346,6 +3249,54 @@
       gsap.from(card, { opacity: 0, y: 50, duration: .7, delay: i * .15, ease: 'power2.out', scrollTrigger: { trigger: card, start: 'top 85%' } });
     });
 
+    // ── DEPOIMENTOS CARDS STAGGER ──
+    gsap.utils.toArray('.dep-card').forEach((card, i) => {
+      gsap.from(card, {
+        opacity: 0, y: 40, scale: 0.96,
+        duration: .65, delay: i * .08,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: '#depGrid', start: 'top 82%' }
+      });
+    });
+
+    // ── CV ITEMS STAGGER ──
+    gsap.utils.toArray('.cv-item').forEach((item, i) => {
+      gsap.from(item, {
+        opacity: 0, x: -20,
+        duration: .6, delay: i * .1,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: item, start: 'top 88%' }
+      });
+    });
+
+    // ── CV SKILL PILLS STAGGER ──
+    gsap.utils.toArray('.cv-skill-pill').forEach((pill, i) => {
+      gsap.from(pill, {
+        opacity: 0, y: 16, scale: 0.95,
+        duration: .5, delay: i * .05,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: pill, start: 'top 90%' }
+      });
+    });
+
+    // ── TILT 3D NOS DEP CARDS ──
+    document.querySelectorAll('.dep-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const cx = rect.width / 2, cy = rect.height / 2;
+        gsap.to(card, {
+          rotationX: ((y - cy) / cy) * -5,
+          rotationY: ((x - cx) / cx) * 5,
+          transformPerspective: 1000,
+          ease: 'power2.out', duration: 0.4
+        });
+      });
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, { rotationX: 0, rotationY: 0, ease: 'elastic.out(1,0.5)', duration: 0.8 });
+      });
+    });
+
     // ── PARTICLES ──
     (function () {
       const c = document.getElementById('particles-canvas');
@@ -2411,15 +3362,15 @@
     window.addEventListener('load', () => {
       createCarousel('portfolioCarousel', 'prevPort', 'nextPort', 'portDots', portVis());
       createCarousel('artesCarousel', 'prevArtes', 'nextArtes', 'artesDots', artesVis());
-      
+
       // ── TILT 3D NAS CARTAS DE ARTES ──
       // Inicializado após a criação do carrossel para garantir que os elementos estejam prontos
       document.querySelectorAll('.arte-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left, y = e.clientY - rect.top;  
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;
           const centerX = rect.width / 2, centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -12; 
+          const rotateX = ((y - centerY) / centerY) * -12;
           const rotateY = ((x - centerX) / centerX) * 12;
           gsap.to(card, { rotationX: rotateX, rotationY: rotateY, transformPerspective: 1000, ease: 'power2.out', duration: 0.4 });
         });
@@ -2432,26 +3383,26 @@
       document.querySelectorAll('.proj-cat-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left, y = e.clientY - rect.top;  
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;
           const centerX = rect.width / 2, centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -10; 
+          const rotateX = ((y - centerY) / centerY) * -10;
           const rotateY = ((x - centerX) / centerX) * 10;
-          gsap.to(card, { 
-            rotationX: rotateX, 
-            rotationY: rotateY, 
+          gsap.to(card, {
+            rotationX: rotateX,
+            rotationY: rotateY,
             boxShadow: "0px 0px 20px 2px rgba(255, 255, 255, 0.3)",
-            transformPerspective: 1000, 
-            ease: 'power2.out', 
-            duration: 0.4 
+            transformPerspective: 1000,
+            ease: 'power2.out',
+            duration: 0.4
           });
         });
         card.addEventListener('mouseleave', () => {
-          gsap.to(card, { 
-            rotationX: 0, 
-            rotationY: 0, 
+          gsap.to(card, {
+            rotationX: 0,
+            rotationY: 0,
             boxShadow: "0px 0px 0px 0px rgba(255, 255, 255, 0)",
-            ease: 'elastic.out(1, 0.5)', 
-            duration: 0.8 
+            ease: 'elastic.out(1, 0.5)',
+            duration: 0.8
           });
         });
       });
