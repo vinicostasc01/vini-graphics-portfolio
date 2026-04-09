@@ -2534,9 +2534,9 @@
     <!-- Backgrounds -->
     <div class="hero-bg"></div>
     <div class="hero-bg-grid"></div>
-    <!-- Luz interativa que segue o mouse — efeito do site de referência -->
-    <canvas id="heroLightCanvas"
-      style="position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0;transition:opacity 1s ease;"></canvas>
+    <!-- Luz difusa interativa que segue o mouse -->
+    <div id="heroInteractiveLight"
+      style="position:absolute;top:0;left:0;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 60%);filter:blur(40px);pointer-events:none;z-index:1;transform:translate(-50%, -50%);opacity:0;transition:opacity 0.8s ease;"></div>
     <div class="hero-ellipse hero-ellipse-1"></div>
     <div class="hero-ellipse hero-ellipse-2"></div>
     <div class="hero-ellipse hero-ellipse-3"></div>
@@ -3574,6 +3574,25 @@
           const x = (e.clientX - window.innerWidth / 2) * -0.04;
           const y = (e.clientY - window.innerHeight / 2) * -0.04;
           heroBg.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      }
+    })();
+
+    // ── LUZ INTERATIVA DIFUSA (HERO) ──
+    (function () {
+      const light = document.getElementById('heroInteractiveLight');
+      const hero = document.querySelector('.hero');
+      if (light && hero) {
+        hero.addEventListener('mousemove', (e) => {
+          const rect = hero.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          light.style.left = x + 'px';
+          light.style.top = y + 'px';
+          light.style.opacity = '1';
+        });
+        hero.addEventListener('mouseleave', () => {
+          light.style.opacity = '0';
         });
       }
     })();
