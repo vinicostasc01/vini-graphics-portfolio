@@ -235,9 +235,16 @@
       text-decoration: none
     }
 
-    .nav-logo svg {
-      width: 49px;
-      height: 50px
+    .nav-logo img {
+      height: 32px;
+      width: auto;
+      display: block;
+      filter: brightness(0) invert(1);
+      transition: opacity .3s
+    }
+
+    .nav-logo:hover img {
+      opacity: .75
     }
 
     .nav-links {
@@ -277,14 +284,19 @@
       font-size: 11px;
       letter-spacing: 1.65px;
       text-transform: uppercase;
-      border: 1px solid var(--accent);
       padding: 10px 23px 8px;
       border-radius: 4px;
-      color: #000000;
+      color: #ffffff;
       text-decoration: none;
-      background: #ffffff;
-      box-shadow: var(--accent-glow) 0px 0px 6px 9px;
-      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      
+      /* Efeito Vitrificado (Glassmorphism) */
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s, color 0.3s;
       font-family: var(--font-display, 'Montserrat', sans-serif);
       font-weight: 800;
       white-space: nowrap;
@@ -292,8 +304,8 @@
 
     .nav-cta:hover {
       transform: scale(1.05);
-      box-shadow: var(--accent-glow) 0px 0px 10px 12px;
-      background: #f0f0f0;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
     }
 
     .hamburger {
@@ -368,12 +380,41 @@
       z-index: 1;
     }
 
-    /* Background layers */
-    .hero-bg {
+    /* Overlay escuro no hero para contraste do texto */
+    .hero-overlay {
       position: absolute;
       inset: 0;
-      background: url('hero-bg.png') center/cover no-repeat;
-      z-index: 0
+      z-index: 1;
+      background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.75) 0%,
+        rgba(0,0,0,0.55) 40%,
+        rgba(0,0,0,0.12) 65%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Background layers */
+    @keyframes moveGridHero {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 50px;
+      }
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: -100px;
+      z-index: 0;
+      background-color: transparent;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveGridHero 20s linear infinite;
     }
 
     .hero-bg-grid {
@@ -422,18 +463,20 @@
       background: rgba(40, 40, 40, 0.2)
     }
 
-    /* Badge / Selo — posição absoluta no hero */
+    /* Badge / Selo — canto superior direito do hero */
     .hero-badge-wrap {
       position: absolute;
-      right: 205px;
+      right: auto;
+      left: calc(50% + 230px);
       top: 38%;
-      width: 173px;
-      height: 158px;
+      transform: translateY(-50%);
+      width: 160px;
+      height: 160px;
       z-index: 6;
       overflow: visible;
     }
 
-    .badge-logo-inner {}
+    .badge-logo-inner { pointer-events: none; }
 
     .badge-text-ring img {
       width: 100%;
@@ -458,27 +501,49 @@
       gap: 0;
     }
 
-    /* Foto */
-    .hero-photo {
+    /* Wrapper da foto — GSAP anima este elemento, foto usa position absolute dentro dele */
+    .hero-photo-wrap {
       position: absolute;
-      right: 56px;
-      bottom: 0;
-      height: 90%;
-      width: auto;
-      object-fit: cover;
-      object-position: top;
-      z-index: 3;
+      inset: 0;
       pointer-events: none;
-      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85) 50%, transparent 100%);
-      mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85) 50%, transparent 100%);
+      z-index: 2;
     }
 
-    /* Hero conteúdo esquerdo */
+    /* Foto — centralizada como na referência */
+    .hero-photo {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      height: 95%;
+      width: auto;
+      max-width: none;
+      min-width: 300px;
+      object-fit: contain;
+      object-position: bottom center;
+      z-index: 2;
+      pointer-events: none;
+      display: block;
+      /* Gradiente suave nas bordas inferiores */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        rgba(0,0,0,1) 70%,
+        rgba(0,0,0,0.4) 88%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        rgba(0,0,0,1) 70%,
+        rgba(0,0,0,0.4) 88%,
+        transparent 100%
+      );
+    }
+
+    /* Hero conteúdo esquerdo — z-index acima da foto */
     .hero-content {
       position: relative;
       z-index: 5;
-      max-width: 686px;
-      padding-top: 100px
+      max-width: 580px;
     }
 
     .hero-tag-wrap {
@@ -528,18 +593,39 @@
       }
     }
 
+    @keyframes headlineGlow {
+      0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.95); }
+      100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+    }
+
     .hero-headline-wrap {
       width: 100%;
       max-width: 680px;
       overflow: visible;
       margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero-headline-wrap::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 140%;
+      height: 160%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+      filter: blur(30px);
+      z-index: -1;
+      pointer-events: none;
+      animation: headlineGlow 4s ease-in-out infinite alternate;
     }
 
     .hero-headline {
       font-family: 'Powermax', var(--font-headline, 'Montserrat', sans-serif);
-      font-size: clamp(16px, 2.5vw, 28px);
+      font-size: clamp(14px, 2vw, 22px);
       font-weight: 800;
-      line-height: 1.05;
+      line-height: 1.1;
       letter-spacing: -0.01em;
       text-transform: uppercase;
       margin: 0;
@@ -609,56 +695,43 @@
       }
     }
 
-    /* Wrapper do botão com borda animada */
+    /* ══ GRUPO DE DOIS BOTÕES — inspirado na referência ══ */
     .hero-btn-wrapper {
       position: relative;
       display: flex;
-      width: 100%;
-      max-width: 680px;
-      border-radius: 6px;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
+    /* Botões — estilo vidro (glassmorphism) */
     .hero-btn {
-      display: flex;
-      width: 100%;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 17px 44px;
-      background: #ffffff;
-      box-shadow: var(--accent-glow) 0px 0px 6px 9px;
-      color: #000000;
+      gap: 12px;
+      padding: 14px 32px;
+      background: rgba(255, 255, 255, 0.08); /* Estilo vidro */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      color: #ffffff;
       text-decoration: none;
       font-family: var(--font-display, 'Montserrat', sans-serif);
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: 0.15em;
-      border-radius: 5px;
-      border: 1px solid var(--accent);
-      transition: background .25s ease, transform .2s ease, box-shadow .25s ease;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      border-radius: 100px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all .3s ease;
       text-transform: uppercase;
-      font-weight: 800;
       position: relative;
       overflow: hidden;
       cursor: pointer;
       white-space: nowrap;
-    }
-
-    /* Ícone seta dentro do botão */
-    .hero-btn .btn-arrow {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 1.5px solid #000000;
-      font-size: 13px;
-      transition: transform .3s ease, border-color .25s ease;
       flex-shrink: 0;
     }
 
-    /* Faixa de luz que passa pelo botão */
+    /* Faixa de luz que passa pelo botão primário */
     .hero-btn::before {
       content: '';
       position: absolute;
@@ -668,7 +741,7 @@
       height: 100%;
       background: linear-gradient(90deg,
           transparent 0%,
-          rgba(0, 0, 0, 0.1) 50%,
+          rgba(255, 255, 255, 0.15) 50%,
           transparent 100%);
       transform: translateX(-100%) skewX(-20deg);
       animation: orcamentoBtnGlow 3s ease-in-out infinite;
@@ -676,19 +749,52 @@
     }
 
     .hero-btn:hover {
-      background: #e0e0e0;
+      background: rgba(255, 255, 255, 0.15);
       transform: translateY(-2px);
-      box-shadow: var(--accent-glow) 0px 0px 10px 12px;
-      color: #000000;
-    }
-
-    .hero-btn:hover .btn-arrow {
-      transform: translateX(3px) rotate(-45deg);
-      border-color: #000000;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3); /* Glow branco */
+      border-color: rgba(255, 255, 255, 0.8);
+      color: #ffffff;
     }
 
     .hero-btn:active {
       transform: translateY(0px) scale(0.98);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Botão secundário — outline / glassmorphism */
+    .hero-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 32px;
+      background: rgba(255, 255, 255, 0.05); /* Estilo vidro */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #ffffff;
+      text-decoration: none;
+      font-family: var(--font-display, 'Montserrat', sans-serif);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      border-radius: 100px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all .3s ease;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .hero-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3); /* Glow branco */
+    }
+
+    .hero-btn-secondary:active {
+      transform: translateY(0px) scale(0.98);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
     }
 
     .hero-scroll {
@@ -1554,7 +1660,8 @@
       }
 
       .hero-badge-wrap {
-        right: 44%;
+        right: auto;
+        left: calc(50% + 140px);
         top: 34%;
         width: 110px;
         height: 110px;
@@ -1637,33 +1744,43 @@
         padding: 48px 20px;
       }
 
-      /* HERO — layout em coluna (foto acima, conteúdo abaixo) */
+      /* HERO — Mobile: foto cobre tela toda, texto sobrepõe */
       .hero {
         min-height: 100svh;
         flex-direction: column;
         justify-content: flex-end;
         align-items: center;
-        padding: 80px 20px 36px;
+        padding: 0 0 44px;
         gap: 0;
       }
 
-      /* Foto: fica acima, centralizada */
+      /* Overlay lateral vira gradiente de baixo para cima */
+      .hero-overlay {
+        background: linear-gradient(
+          to top,
+          rgba(0,0,0,0.92) 0%,
+          rgba(0,0,0,0.7) 35%,
+          rgba(0,0,0,0.3) 60%,
+          transparent 100%
+        ) !important;
+      }
+
+      /* Foto: cobre 100% da tela como background */
       .hero-photo {
-        position: relative !important;
+        position: absolute !important;
+        left: 50% !important;
         right: auto !important;
-        bottom: auto !important;
-        left: auto !important;
-        top: auto !important;
-        height: auto !important;
-        width: 60% !important;
-        max-width: 280px !important;
-        opacity: 1 !important;
-        z-index: 5 !important;
-        margin: 0 auto !important;
-        display: block !important;
-        order: 1 !important;
-        -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, transparent 100%);
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, transparent 100%);
+        bottom: 0 !important;
+        top: 0 !important;
+        transform: translateX(-50%) !important;
+        height: 100% !important;
+        width: auto !important;
+        min-width: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        z-index: 2 !important;
+        -webkit-mask-image: none !important;
+        mask-image: none !important;
       }
 
       /* Formas brancas — ocultar */
@@ -1671,7 +1788,7 @@
         display: none !important;
       }
 
-      /* Conteúdo (logo + headline + sub + btn) — abaixo da foto */
+      /* Conteúdo sobrepõe a foto (z-index acima) */
       .hero-content {
         position: relative !important;
         left: auto !important;
@@ -1681,23 +1798,24 @@
         padding-top: 0 !important;
         text-align: center !important;
         max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 24px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        order: 2 !important;
-        margin-top: -24px;
+        z-index: 6 !important;
       }
 
       /* Badge/Selo */
       .hero-badge-wrap {
         position: absolute !important;
-        right: auto !important;
-        left: calc(50% + 50px) !important;
-        top: 200px !important;
+        right: 24px !important;
+        left: auto !important;
+        top: 110px !important;
         bottom: auto !important;
         transform: none !important;
-        width: 64px !important;
-        height: 64px !important;
+        width: 80px !important;
+        height: 80px !important;
         margin: 0 !important;
         z-index: 10 !important;
       }
@@ -1710,11 +1828,10 @@
         left: auto !important;
         top: auto !important;
         justify-content: center !important;
-        margin-top: 20px !important;
-        order: 4 !important;
+        margin-top: 14px !important;
       }
 
-      /* Tag "Designer Gráfico · Lagarto, Brasil" */
+      /* Tag */
       .hero-tag-wrap {
         position: relative !important;
         left: auto !important;
@@ -1734,12 +1851,12 @@
         max-width: 340px;
         display: flex;
         justify-content: center;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
 
       .hero-headline {
         font-family: 'Powermax', var(--font-headline, 'Montserrat', sans-serif) !important;
-        font-size: clamp(14px, 4vw, 22px) !important;
+        font-size: clamp(13px, 4vw, 20px) !important;
         line-height: 1.1 !important;
         width: 100% !important;
         transform: none !important;
@@ -1752,22 +1869,32 @@
         text-align: center !important;
         margin-left: auto;
         margin-right: auto;
-        font-size: 13px !important;
-        max-width: 290px;
+        font-size: 12px !important;
+        max-width: 280px;
         line-height: 1.55;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
+        color: rgba(255,255,255,0.6) !important;
       }
 
-      /* Botão */
+      /* Botões */
       .hero-btn-wrapper {
         margin: 0 auto !important;
+        justify-content: center;
+        gap: 12px;
       }
 
       .hero-btn {
-        font-size: 13px !important;
-        padding: 12px 20px !important;
-        letter-spacing: 0.1em !important;
-        white-space: normal !important;
+        font-size: 11px !important;
+        padding: 12px 22px !important;
+        letter-spacing: 0.14em !important;
+        white-space: nowrap !important;
+      }
+
+      .hero-btn-secondary {
+        font-size: 11px !important;
+        padding: 12px 22px !important;
+        letter-spacing: 0.14em !important;
+        white-space: nowrap !important;
       }
 
       /* Logo VINI no hero */
@@ -2384,18 +2511,10 @@
     <a href="#contato" onclick="closeMenu()">Contato</a>
   </div>
 
-  <!-- NAV — exato do Figma: logo V | links centrados | CTA direita -->
+  <!-- NAV — logo VINI | links centrados | CTA direita -->
   <nav id="mainNav">
     <a href="#" class="nav-logo" aria-label="Vini Graphics">
-      <svg width="49" height="50" viewBox="0 0 49 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M48.5905 38.2399C48.5687 38.5622 48.5513 38.8453 48.4577 39.148C48.3858 39.381 48.2225 39.7817 47.8087 40.1977L39.3746 48.7864C38.865 49.3069 38.1682 49.5987 37.4386 49.5987H16.7442C15.3047 49.5987 14.0961 48.61 13.7608 47.2729V41.4781C13.7608 39.7229 12.3366 38.2987 10.5814 38.2987H2.02092C0.897239 38.2987 -0.0195622 37.3754 0.0174583 36.2517V36.2321C0.0849662 35.6137 0.363706 35.0322 0.814485 34.5902L9.40324 26.156C11.1214 24.4727 14.0177 25.6878 14.0177 28.092V31.7592C14.0177 33.8715 15.7294 35.5832 17.8417 35.5832H30.7532C32.8655 35.5832 34.5772 33.8715 34.5772 31.7592V3.10531C34.5772 2.63711 34.6773 2.07745 34.8603 1.5069C35.3045 0.614054 36.2235 0.00212669 37.2884 0.00212669H45.8793C46.9442 0.00212669 47.8654 0.614054 48.3074 1.5069C48.4903 2.07745 48.5905 2.63711 48.5905 3.10531H48.5927V37.4603C48.6036 37.652 48.6101 37.9198 48.5905 38.2399Z"
-          fill="white" />
-        <path
-          d="M4.6145 27.0228L13.2054 18.5886C13.7259 18.0791 14.0177 17.38 14.0177 16.6527V2.71338C14.0177 1.21514 12.8026 0 11.3043 0H2.71338C1.21514 0 0 1.21514 0 2.71338V25.0846C0 27.4888 2.89631 28.7061 4.61232 27.0206H4.6145V27.0228Z"
-          fill="white" />
-      </svg>
-
+      <img src="LOGO VINI.svg" alt="Vini Graphics" height="32">
     </a>
     <ul class="nav-links">
       <li><a href="#sobre">Sobre</a></li>
@@ -2422,9 +2541,11 @@
     <div class="hero-ellipse hero-ellipse-2"></div>
     <div class="hero-ellipse hero-ellipse-3"></div>
 
-    <!-- Foto de perfil -->
-    <img class="hero-photo" src="VINI GRAPHICS.png" alt="Vinícius Santos" id="heroPhoto"
-      style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px);">
+    <!-- Wrapper centraliza a foto — GSAP anima o wrapper,
+         CSS centra a foto internamente -->
+    <div class="hero-photo-wrap" id="heroPhotoWrap">
+      <img class="hero-photo" src="VINI GRAPHICS.png" alt="Vinícius Santos" id="heroPhoto">
+    </div>
 
     <!-- Badge / Selo rotativo -->
     <div class="hero-badge-wrap" id="heroBadge">
@@ -2464,37 +2585,13 @@
           alt="Domine o seu mercado com design estratégico" style="width:100%;height:100%;display:block;">
       </div>
     </div>
-    <!-- Hero nome e texto (posição exata do Figma: left 54px, top 544px) -->
-    <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:620px"
-      id="heroContent">
-      <!-- Logo VINI GRAPHICS como imagem SVG no hero -->
-      <div style="margin-bottom:24px;opacity:0" id="heroLogoName">
-        <svg width="100%" style="max-width: 680px; display: block;" height="auto" viewBox="0 0 143 52" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M56.2842 21.2808L64.2131 13.4956C65.8725 11.8645 68.6774 13.0426 68.6774 15.3684V48.5496C68.6774 50 67.5014 51.1737 66.0533 51.1737H57.7432C56.2929 51.1737 55.1191 49.9978 55.1191 48.5496V24.0617C55.1191 23.0164 55.5394 22.0125 56.2864 21.2808H56.2842Z"
-            fill="white" />
-          <path
-            d="M67.9107 5.77955L59.6007 13.9393C57.9413 15.5704 55.1365 14.3923 55.1365 12.0665V2.6241C55.1365 1.17377 56.3124 0 57.7606 0H66.0706C66.2644 0 67.1899 0.0304872 67.926 0.768719C68.49 1.33492 68.6206 1.99911 68.6555 2.23429C68.6511 2.26043 68.6446 4.40544 68.6402 4.43157C68.6098 4.57747 68.564 4.74298 68.49 4.92155C68.3223 5.32224 68.0849 5.60316 67.9085 5.77955H67.9107Z"
-            fill="white" />
-          <path
-            d="M130.377 21.2808L138.306 13.4956C139.966 11.8645 142.771 13.0426 142.771 15.3684V48.5496C142.771 50 141.595 51.1737 140.147 51.1737H131.837C130.386 51.1737 129.212 49.9978 129.212 48.5496V24.0617C129.212 23.0164 129.633 22.0125 130.38 21.2808H130.377Z"
-            fill="white" />
-          <path
-            d="M142.004 5.77955L133.694 13.9393C132.035 15.5704 129.23 14.3923 129.23 12.0665V2.6241C129.23 1.17377 130.406 0 131.854 0H140.164C140.358 0 141.283 0.0304872 142.019 0.768719C142.583 1.33492 142.714 1.99911 142.749 2.23429C142.744 2.26043 142.738 4.40544 142.734 4.43157C142.703 4.57747 142.657 4.74298 142.583 4.92155C142.416 5.32224 142.178 5.60316 142.002 5.77955H142.004Z"
-            fill="white" />
-          <path
-            d="M122.451 48.9041C122.451 50.5897 121.085 51.9551 119.4 51.9551H111.954C110.262 51.9551 108.89 50.5831 108.89 48.8911V19.6972C108.89 17.6175 107.203 15.9298 105.123 15.9298H92.7667C90.6871 15.9298 88.9994 17.6175 88.9994 19.6972V48.8323C88.9994 50.5156 87.634 51.8832 85.9484 51.8832H78.4899C76.8044 51.8832 75.439 50.5156 75.439 48.8323V15.7381C75.439 14.0809 76.7826 12.7373 78.4398 12.7373H86.0203C87.7755 12.7373 89.1997 11.3131 89.1997 9.55789V3.25134C89.485 1.84674 90.7284 0.792748 92.2158 0.794925C92.6687 0.794925 106.826 0.816701 110.508 0.803634C111.02 0.803634 111.329 0.799279 111.371 0.797102C111.397 0.797102 111.941 0.814523 112.218 0.899453C112.664 1.03665 112.965 1.25877 113.041 1.31539C113.2 1.43516 113.339 1.58107 113.47 1.73132L121.04 10.5945C121.926 11.6332 122.414 12.9529 122.416 14.3183C122.427 25.8469 122.44 37.3755 122.451 48.9041Z"
-            fill="white" />
-          <path
-            d="M48.5905 39.814C48.5687 40.1363 48.5513 40.4194 48.4577 40.7221C48.3858 40.9551 48.2225 41.3558 47.8087 41.7717L39.3746 50.3605C38.865 50.8809 38.1681 51.1727 37.4386 51.1727H16.7442C15.3047 51.1727 14.0961 50.1841 13.7608 48.847V43.0522C13.7608 41.297 12.3366 39.8728 10.5813 39.8728H2.0209C0.897221 39.8728 -0.0195799 38.9494 0.0174406 37.8258V37.8062C0.0849486 37.1877 0.363689 36.6063 0.814467 36.1642L9.40322 27.7301C11.1214 26.0467 14.0177 27.2619 14.0177 29.666V33.3332C14.0177 35.4456 15.7294 37.1572 17.8417 37.1572H30.7532C32.8655 37.1572 34.5772 35.4456 34.5772 33.3332V4.67936C34.5772 4.21116 34.6773 3.6515 34.8603 3.08095C35.3045 2.1881 36.2235 1.57617 37.2884 1.57617H45.8793C46.9442 1.57617 47.8653 2.1881 48.3074 3.08095C48.4903 3.6515 48.5905 4.21116 48.5905 4.67936H48.5927V39.0344C48.6036 39.226 48.6101 39.4939 48.5905 39.814Z"
-            fill="white" />
-          <path
-            d="M4.6145 28.597L13.2054 20.1629C13.7259 19.6533 14.0177 18.9543 14.0177 18.2269V4.2876C14.0177 2.78936 12.8026 1.57422 11.3043 1.57422H2.71338C1.21514 1.57422 0 2.78936 0 4.2876V26.6589C0 29.063 2.89631 30.2803 4.61232 28.5948H4.6145V28.597Z"
-            fill="white" />
-        </svg>
+    <!-- Hero overlay (gradiente lateral desktop / baixo mobile) -->
+    <div class="hero-overlay"></div>
 
-      </div>
+    <!-- Hero nome e texto -->
+    <div class="hero-content" style="position:absolute;left:56px;top:50%;transform:translateY(-50%);z-index:5;max-width:580px"
+      id="heroContent">
+
       <div class="hero-headline-wrap" id="heroHeadlineWrap"
         style="opacity: 1;translate: none;rotate: none;scale: none;transform: translate(0px, 0px);">
         <h1 class="hero-headline" id="heroHeadline">
@@ -2503,17 +2600,15 @@
       </div>
       <p class="hero-sub" id="heroSub" style="opacity:0">Com sólida experiência atuando como freelancer, desenvolvo
         identidades visuais exclusivas e projetos focados em gerar valor para marcas.</p>
-      <!-- Botão "Fazer Orçamento" — clonado de designagora.onlineaprender.com -->
-      <span class="hero-btn-wrapper" id="heroBtnWrapper" style="opacity:0">
+      <!-- Dois botões simétricos — inspirados na referência -->
+      <div class="hero-btn-wrapper" id="heroBtnWrapper" style="opacity:0">
         <a href="https://www.behance.net/vini_graphics" target="_blank" class="hero-btn" id="heroBtn">
-          Acessar Portifolio
-          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46" fill="none">
-            <circle cx="22.6966" cy="22.6966" r="22.6966" fill="#000000"></circle>
-            <path d="M14.1342 31.2591L31.2592 14.1341M31.2592 14.1341H15.8467M31.2592 14.1341V29.5466" stroke="white"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
+          Acessar Portifólio
         </a>
-      </span>
+        <a href="#sobre" class="hero-btn-secondary" id="heroBtnSecondary">
+          Sobre Mim
+        </a>
+      </div>
     </div>
 
     <div class="hero-scroll" id="heroScroll" style="opacity:0">
@@ -3182,20 +3277,21 @@
       y: -50,
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 }
     });
-    gsap.to('#heroPhoto', {
+    gsap.to('#heroPhotoWrap', {
       y: -80,
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
     });
     // ── EFEITO MOVER NA FOTO DO HERO ──
     const heroPhoto = document.getElementById('heroPhoto');
-    if (heroPhoto) {
-      heroPhoto.addEventListener('mousemove', (e) => {
-        const rect = heroPhoto.getBoundingClientRect();
+    const heroPhotoWrap = document.getElementById('heroPhotoWrap');
+    if (heroPhoto && heroPhotoWrap) {
+      heroPhotoWrap.addEventListener('mousemove', (e) => {
+        const rect = heroPhotoWrap.getBoundingClientRect();
         const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
         const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
         gsap.to(heroPhoto, { x: x, rotationY: x * 0.2, rotationX: -y * 0.2, scale: 1.05, duration: 0.4, ease: 'power2.out', transformPerspective: 800 });
       });
-      heroPhoto.addEventListener('mouseleave', () => {
+      heroPhotoWrap.addEventListener('mouseleave', () => {
         gsap.to(heroPhoto, { x: 0, rotationY: 0, rotationX: 0, scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.4)' });
       });
     }
@@ -3469,6 +3565,18 @@
         this.style.color = '';
       }, 4000);
     });
+
+    // ── GRID PARALLAX ──
+    (function () {
+      const heroBg = document.querySelector('.hero-bg');
+      if (heroBg) {
+        document.addEventListener('mousemove', (e) => {
+          const x = (e.clientX - window.innerWidth / 2) * -0.04;
+          const y = (e.clientY - window.innerHeight / 2) * -0.04;
+          heroBg.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      }
+    })();
   </script>
 </body>
 
