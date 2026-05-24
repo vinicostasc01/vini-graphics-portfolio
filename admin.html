@@ -96,6 +96,11 @@
       margin-top: 22px;
     }
 
+    .grid > *,
+    .panel {
+      min-width: 0;
+    }
+
     .panel {
       border-radius: 22px;
       padding: 22px;
@@ -169,6 +174,26 @@
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
+    }
+
+    .auth-divider {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 18px 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      height: 1px;
+      background: var(--line);
     }
 
     button,
@@ -275,10 +300,19 @@
     }
 
     @media (max-width: 860px) {
+      html,
+      body {
+        overflow-x: hidden;
+      }
+
       .grid,
       .row,
       .art-list {
         grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
       }
 
       .topbar {
@@ -316,6 +350,22 @@
             <input id="loginPassword" type="password" autocomplete="current-password" required>
           </label>
           <button type="submit">Entrar no painel</button>
+        </form>
+
+        <div class="auth-divider">ou</div>
+
+        <h2>Criar conta</h2>
+        <form id="signupForm">
+          <label>Nome
+            <input id="signupName" type="text" autocomplete="name" placeholder="Seu nome">
+          </label>
+          <label>Email
+            <input id="signupEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>Senha
+            <input id="signupPassword" type="password" autocomplete="new-password" minlength="6" required>
+          </label>
+          <button class="secondary" type="submit">Criar acesso</button>
         </form>
         <div class="notice show" id="configNotice">Preencha <code>supabase-config.js</code> com a URL e a anon key do seu projeto.</div>
       </div>
@@ -564,6 +614,44 @@ with check (
         return;
       }
       await setLoggedIn(data.session);
+    });
+
+    $('signupForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!requireConfig()) return;
+
+      const form = event.target;
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+
+      try {
+        const email = $('signupEmail').value.trim();
+        const password = $('signupPassword').value;
+        const name = $('signupName').value.trim();
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name },
+            emailRedirectTo: `${window.location.origin}/admin.html`
+          }
+        });
+
+        if (error) throw error;
+        form.reset();
+
+        if (data.session) {
+          showStatus('Conta criada. Conferindo permissao do painel...');
+          await setLoggedIn(data.session);
+          return;
+        }
+
+        showStatus('Conta criada. Se o Supabase pedir confirmacao, abra o email de verificacao antes de entrar. Para acessar o painel, este email tambem precisa estar em portfolio_admins.');
+      } catch (error) {
+        showStatus(error.message || String(error), true);
+      } finally {
+        btn.disabled = false;
+      }
     });
 
     $('artForm').addEventListener('submit', async (event) => {
