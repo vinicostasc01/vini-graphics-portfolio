@@ -7148,6 +7148,131 @@
         font-size: 12px !important;
       }
     }
+
+    /* Exact Figma text proportions pass */
+    @media (min-width: 769px) {
+      .hero-content {
+        top: clamp(245px, 45.5vh, 365px) !important;
+        bottom: auto !important;
+        left: clamp(48px, 5.6vw, 108px) !important;
+        width: min(390px, 28vw) !important;
+        max-width: min(390px, 28vw) !important;
+      }
+
+      #heroLogoName {
+        margin: 0 0 12px 0 !important;
+      }
+
+      #heroLogoName::before {
+        display: inline-flex !important;
+        margin-bottom: 11px !important;
+        padding: 5px 9px !important;
+        font-size: 8.5px !important;
+        letter-spacing: .13em !important;
+      }
+
+      #heroLogoName svg {
+        width: clamp(62px, 5.2vw, 92px) !important;
+      }
+
+      .hero-headline-wrap {
+        width: min(390px, 28vw) !important;
+        max-width: min(390px, 28vw) !important;
+        margin: 0 0 17px 0 !important;
+      }
+
+      .hero-headline {
+        display: grid !important;
+        gap: 2px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        font-family: var(--font-headline, 'Space Grotesk', sans-serif) !important;
+        font-size: clamp(24px, 2.5vw, 36px) !important;
+        font-weight: 700 !important;
+        line-height: .92 !important;
+        letter-spacing: 0 !important;
+        text-align: left !important;
+        text-transform: uppercase !important;
+      }
+
+      .hero-headline .hero-title-row {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: .22em !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        line-height: .92 !important;
+      }
+
+      .hero-headline .hero-title-accent {
+        font: inherit !important;
+        color: var(--blueprint-accent, #d8ff46) !important;
+        -webkit-text-fill-color: var(--blueprint-accent, #d8ff46) !important;
+      }
+
+      .hero-sub {
+        width: min(360px, 26vw) !important;
+        max-width: min(360px, 26vw) !important;
+        margin: 0 0 18px 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        font-size: clamp(10px, .82vw, 12px) !important;
+        line-height: 1.48 !important;
+        text-align: left !important;
+      }
+
+      .hero-btn {
+        min-height: 34px !important;
+        height: 34px !important;
+        padding-left: 16px !important;
+        padding-right: 42px !important;
+        font-size: 8.5px !important;
+        letter-spacing: .12em !important;
+      }
+
+      .hero-btn svg {
+        width: 28px !important;
+        height: 28px !important;
+      }
+    }
+
+    @media (min-width: 769px) and (max-height: 760px) {
+      .hero-content {
+        top: clamp(230px, 45vh, 320px) !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(24px, 2.45vw, 34px) !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-headline {
+        display: grid !important;
+        gap: 2px !important;
+        font-size: clamp(26px, 7.2vw, 32px) !important;
+        line-height: .94 !important;
+      }
+
+      .hero-headline .hero-title-row {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: .22em !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+      }
+
+      .hero-headline .hero-title-accent {
+        font: inherit !important;
+        color: var(--blueprint-accent, #d8ff46) !important;
+        -webkit-text-fill-color: var(--blueprint-accent, #d8ff46) !important;
+      }
+    }
   </style>
 </head>
 
@@ -7336,14 +7461,14 @@
       <div class="hero-headline-wrap" id="heroHeadlineWrap"
         style="opacity: 1;translate: none;rotate: none;scale: none;transform: translate(0px, 0px);">
         <h1 class="hero-headline" id="heroHeadline">
-          <span class="hero-title-block hero-title-block-main">
-            <span class="hero-title-line">DESIGN</span>
-            <span class="hero-title-line">ESTRAT&Eacute;GICO</span>
+          <span class="hero-title-row">
+            <strong class="hero-title-accent">DESIGN</strong>
+            <span>ESTRAT&Eacute;GICO</span>
           </span>
-          <strong class="hero-title-block hero-title-block-accent">
-            <span class="hero-title-line">MARCAS QUE</span>
-            <span class="hero-title-line">VENDEM.</span>
-          </strong>
+          <span class="hero-title-row">
+            <span>MARCAS</span>
+            <strong class="hero-title-accent">QUE VENDEM.</strong>
+          </span>
         </h1>
       </div>
       <p class="hero-sub" id="heroSub" style="opacity:0">Design estrat&eacute;gico para marcas que precisam parecer mais
@@ -8232,8 +8357,8 @@
     if (headlineEl) {
       headlineEl.classList.add('typewriter-ready');
       headlineEl.innerHTML = [
-        '<span class="hero-title-block hero-title-block-main hero-type-line" style="--delay:.05s"><span class="hero-title-line">DESIGN</span><span class="hero-title-line">ESTRAT&Eacute;GICO</span></span>',
-        '<strong class="hero-title-block hero-title-block-accent hero-type-line" style="--delay:.22s"><span class="hero-title-line">MARCAS QUE</span><span class="hero-title-line">VENDEM.</span><span class="hero-type-cursor"></span></strong>'
+        '<span class="hero-title-row hero-type-line" style="--delay:.05s"><strong class="hero-title-accent">DESIGN</strong><span>ESTRAT&Eacute;GICO</span></span>',
+        '<span class="hero-title-row hero-type-line" style="--delay:.22s"><span>MARCAS</span><strong class="hero-title-accent">QUE VENDEM.</strong><span class="hero-type-cursor"></span></span>'
       ].join('');
     }
 
