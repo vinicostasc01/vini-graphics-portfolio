@@ -7024,6 +7024,130 @@
         margin-right: auto !important;
       }
     }
+
+    /* Figma reference proportions: smaller type, higher text block, calmer hero balance */
+    @media (min-width: 769px) {
+      .hero {
+        min-height: 100vh !important;
+      }
+
+      .hero-content {
+        top: clamp(138px, 18vh, 176px) !important;
+        bottom: auto !important;
+        left: clamp(70px, 7.2vw, 116px) !important;
+        width: min(520px, 39vw) !important;
+        max-width: min(520px, 39vw) !important;
+      }
+
+      #heroLogoName {
+        margin-bottom: clamp(12px, 1.6vh, 16px) !important;
+      }
+
+      #heroLogoName::before {
+        margin-bottom: clamp(14px, 1.8vh, 18px) !important;
+        font-size: 10px !important;
+        letter-spacing: .14em !important;
+      }
+
+      #heroLogoName svg {
+        width: clamp(92px, 7vw, 124px) !important;
+      }
+
+      .hero-headline-wrap {
+        width: min(520px, 39vw) !important;
+        margin-bottom: clamp(16px, 2.2vh, 22px) !important;
+      }
+
+      .hero-headline {
+        width: 100% !important;
+        max-width: min(520px, 39vw) !important;
+        font-size: clamp(42px, 4.15vw, 60px) !important;
+        line-height: .91 !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        margin-bottom: .12em !important;
+      }
+
+      .hero-headline .hero-title-line,
+      .hero-headline .hero-title-block-main .hero-title-line:first-child,
+      .hero-headline .hero-title-block-main .hero-title-line:last-child,
+      .hero-headline .hero-title-block-accent .hero-title-line:first-child,
+      .hero-headline .hero-title-block-accent .hero-title-line:last-child {
+        line-height: .91 !important;
+      }
+
+      .hero-sub {
+        width: min(420px, 32vw) !important;
+        max-width: min(420px, 32vw) !important;
+        font-size: clamp(12px, .92vw, 14px) !important;
+        line-height: 1.48 !important;
+        margin-bottom: clamp(18px, 2.4vh, 24px) !important;
+      }
+
+      .hero-btn {
+        min-height: 46px !important;
+        height: 46px !important;
+        padding-left: 22px !important;
+        padding-right: 58px !important;
+        font-size: 11px !important;
+      }
+
+      .hero-btn svg {
+        width: 38px !important;
+        height: 38px !important;
+      }
+
+      .hero-photo {
+        right: clamp(56px, 5vw, 96px) !important;
+        height: min(76vh, 660px) !important;
+        max-width: 39vw !important;
+      }
+
+      .hero-popup {
+        width: clamp(210px, 15vw, 258px) !important;
+        min-height: 62px !important;
+      }
+
+      .hero-popup-1,
+      .hero-popup-2 {
+        right: clamp(330px, 34vw, 560px) !important;
+      }
+
+      .hero-popup-1 {
+        top: clamp(360px, 48vh, 450px) !important;
+      }
+
+      .hero-popup-2 {
+        top: clamp(250px, 34vh, 330px) !important;
+      }
+
+      .hero-popup-3 {
+        right: clamp(58px, 6vw, 118px) !important;
+        top: clamp(470px, 62vh, 560px) !important;
+      }
+
+      .hero-badge-wrap {
+        width: clamp(104px, 8.5vw, 124px) !important;
+        height: clamp(104px, 8.5vw, 124px) !important;
+        right: clamp(124px, 12vw, 210px) !important;
+        top: clamp(318px, 43vh, 410px) !important;
+      }
+    }
+
+    @media (min-width: 769px) and (max-height: 760px) {
+      .hero-content {
+        top: clamp(118px, 16vh, 145px) !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(40px, 3.85vw, 54px) !important;
+      }
+
+      .hero-sub {
+        font-size: 12px !important;
+      }
+    }
   </style>
 </head>
 
