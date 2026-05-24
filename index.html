@@ -6885,6 +6885,145 @@
         text-align: left !important;
       }
     }
+
+    /* Hero alignment correction: clean optical axis, no uneven title scaling */
+    @media (min-width: 769px) {
+      .hero-content {
+        left: clamp(56px, 5vw, 86px) !important;
+        bottom: clamp(46px, 6vh, 74px) !important;
+        width: min(620px, 46vw) !important;
+        max-width: min(620px, 46vw) !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+      }
+
+      #heroLogoName {
+        margin: 0 0 clamp(14px, 1.8vh, 20px) 0 !important;
+      }
+
+      .hero-headline-wrap {
+        width: min(620px, 46vw) !important;
+        margin: 0 0 clamp(18px, 2.5vh, 28px) 0 !important;
+      }
+
+      .hero-headline {
+        display: block !important;
+        width: 100% !important;
+        max-width: min(620px, 46vw) !important;
+        margin: 0 !important;
+        font-size: clamp(56px, 5.2vw, 82px) !important;
+        line-height: .88 !important;
+        letter-spacing: 0 !important;
+        text-align: left !important;
+      }
+
+      .hero-headline .hero-title-block {
+        display: block !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        margin-bottom: .14em !important;
+      }
+
+      .hero-headline .hero-title-line,
+      .hero-headline .hero-title-block-main .hero-title-line:first-child,
+      .hero-headline .hero-title-block-main .hero-title-line:last-child,
+      .hero-headline .hero-title-block-accent .hero-title-line:first-child,
+      .hero-headline .hero-title-block-accent .hero-title-line:last-child {
+        display: block !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        font-size: 1em !important;
+        line-height: .88 !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+      }
+
+      .hero-headline .hero-title-block-accent {
+        color: var(--blueprint-accent, #d8ff46) !important;
+        -webkit-text-fill-color: var(--blueprint-accent, #d8ff46) !important;
+      }
+
+      .hero-sub {
+        width: min(500px, 38vw) !important;
+        max-width: min(500px, 38vw) !important;
+        margin: 0 0 clamp(20px, 2.8vh, 30px) 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        text-align: left !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content {
+        width: min(100%, 340px) !important;
+        max-width: 340px !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+      }
+
+      #heroLogoName {
+        margin: 0 0 10px 0 !important;
+      }
+
+      .hero-headline-wrap {
+        width: 100% !important;
+        margin: 0 0 13px 0 !important;
+      }
+
+      .hero-headline {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        font-size: clamp(32px, 9.5vw, 38px) !important;
+        line-height: .9 !important;
+        text-align: left !important;
+      }
+
+      .hero-headline .hero-title-block {
+        display: block !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        margin-bottom: .14em !important;
+      }
+
+      .hero-headline .hero-title-line,
+      .hero-headline .hero-title-block-accent .hero-title-line:last-child {
+        display: block !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        font-size: 1em !important;
+        line-height: .9 !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+      }
+
+      .hero-sub {
+        width: min(100%, 320px) !important;
+        max-width: 320px !important;
+        margin: 0 0 16px 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        text-align: left !important;
+      }
+
+      .hero-btn-wrapper {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+      }
+    }
   </style>
 </head>
 
