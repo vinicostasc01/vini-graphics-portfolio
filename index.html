@@ -9,6 +9,11 @@
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 143 52' fill='white'%3E%3Crect width='143' height='52' rx='8' fill='%231e1e1e'/%3E%3Cpath d='M48.59 39.81c-.02.32-.04.6-.13.91-.07.23-.24.63-.65 1.05L39.37 50.36a2.62 2.62 0 01-1.94.81H16.74a2.62 2.62 0 01-2.98-2.33v-5.79a4.18 4.18 0 00-4.18-4.18H2.02A2.02 2.02 0 01.02 37.83v-.02c.07-.62.35-1.2.8-1.64l8.59-8.43c1.72-1.68 4.61-.47 4.61 1.94v3.67a4.18 4.18 0 004.18 4.18h12.91a4.18 4.18 0 004.18-4.18V4.68c0-.47.1-1.03.28-1.6A3.1 3.1 0 0137.29 1.58h8.59a3.1 3.1 0 012.43 1.5c.18.57.28 1.13.28 1.6h.01v34.35c.01.19.02.46 0 .78z' fill='white'/%3E%3Cpath d='M4.61 28.6l8.59-8.43a2.62 2.62 0 00.81-1.94V4.29A2.71 2.71 0 0011.3 1.57H2.71A2.71 2.71 0 000 4.29v22.37c0 2.4 2.9 3.62 4.61 1.94z' fill='white'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://mir-s3-cdn-cf.behance.net" crossorigin>
+  <link rel="preload" as="image" href="VINI GRAPHICS.png" fetchpriority="high">
+  <link rel="preload" as="image" href="hero-bg.png" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <style>
@@ -6388,6 +6393,377 @@
         height: 24px !important;
       }
     }
+
+    /* Final responsiveness/performance pass */
+    html,
+    body {
+      max-width: 100%;
+      overflow-x: clip;
+    }
+
+    img,
+    video,
+    canvas,
+    svg {
+      max-width: 100%;
+    }
+
+    body > section:not(.hero),
+    .marquee-wrap,
+    .copy-section,
+    .portfolio-section,
+    .services-section,
+    .process-section,
+    .faq-section,
+    .contact-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 900px;
+    }
+
+    .hero {
+      content-visibility: visible;
+      contain-intrinsic-size: auto;
+      isolation: isolate;
+    }
+
+    .hero-photo {
+      aspect-ratio: 1229 / 1184;
+    }
+
+    @media (min-width: 769px) and (max-width: 1180px) {
+      nav#mainNav {
+        width: min(92vw, 980px) !important;
+      }
+
+      .hero-content {
+        left: clamp(28px, 4vw, 48px) !important;
+        bottom: clamp(36px, 6vh, 64px) !important;
+        width: min(520px, 48vw) !important;
+        max-width: min(520px, 48vw) !important;
+      }
+
+      .hero-headline-wrap {
+        width: 100% !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(42px, 5.5vw, 62px) !important;
+      }
+
+      .hero-sub {
+        max-width: 420px !important;
+      }
+
+      .hero-photo {
+        right: clamp(8px, 2vw, 28px) !important;
+        height: min(76vh, 680px) !important;
+        max-width: 45vw !important;
+      }
+
+      .hero-popup {
+        width: clamp(210px, 22vw, 250px) !important;
+      }
+
+      .hero-popup-1,
+      .hero-popup-2 {
+        right: clamp(300px, 36vw, 430px) !important;
+      }
+
+      .hero-popup-1 {
+        top: clamp(390px, 58vh, 500px) !important;
+      }
+
+      .hero-popup-2 {
+        top: clamp(270px, 40vh, 350px) !important;
+      }
+
+      .hero-popup-3 {
+        right: clamp(16px, 3vw, 52px) !important;
+        top: clamp(500px, 72vh, 570px) !important;
+      }
+
+      .hero-badge-wrap {
+        right: clamp(82px, 11vw, 150px) !important;
+        top: clamp(350px, 50vh, 430px) !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      #particles-canvas,
+      #heroLightCanvas,
+      .cursor-personalizado,
+      .ux-cursor-label,
+      .section-live-chip,
+      .ux-rail,
+      .hero-ellipse {
+        display: none !important;
+      }
+
+      body,
+      a,
+      button {
+        cursor: auto !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav#mainNav {
+        position: fixed !important;
+        top: 10px !important;
+        left: 12px !important;
+        right: 12px !important;
+        width: auto !important;
+        min-height: 58px !important;
+        transform: none !important;
+        display: grid !important;
+        grid-template-columns: 52px 1fr 44px !important;
+        align-items: center !important;
+        padding: 8px 10px !important;
+        border-radius: 22px !important;
+      }
+
+      nav#mainNav .nav-logo {
+        width: 44px !important;
+        height: 44px !important;
+      }
+
+      nav#mainNav .nav-logo svg {
+        width: 32px !important;
+        height: 32px !important;
+      }
+
+      nav#mainNav .hamburger {
+        grid-column: 3 !important;
+        justify-self: end !important;
+      }
+
+      .mobile-menu.open {
+        left: 12px !important;
+        right: 12px !important;
+        width: auto !important;
+      }
+
+      .hero {
+        min-height: auto !important;
+        height: auto !important;
+        padding: 92px 18px 34px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        overflow: hidden !important;
+        text-align: center !important;
+      }
+
+      .hero-bg {
+        background-size: cover !important;
+        background-position: 58% top !important;
+        opacity: .9 !important;
+      }
+
+      .hero-bg::after,
+      .hero::before {
+        opacity: .55 !important;
+      }
+
+      .hero-content {
+        position: relative !important;
+        order: 1 !important;
+        inset: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: min(100%, 372px) !important;
+        max-width: 372px !important;
+        margin: 0 auto 4px !important;
+        padding: 0 !important;
+        text-align: center !important;
+        z-index: 8 !important;
+      }
+
+      #heroLogoName {
+        margin: 0 auto 10px !important;
+      }
+
+      #heroLogoName svg {
+        width: clamp(94px, 27vw, 116px) !important;
+      }
+
+      .hero-headline-wrap {
+        width: 100% !important;
+        margin: 0 0 12px !important;
+      }
+
+      .hero-headline {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        font-size: clamp(30px, 10vw, 42px) !important;
+        line-height: .9 !important;
+        letter-spacing: 0 !important;
+        text-align: center !important;
+        overflow-wrap: normal !important;
+      }
+
+      .hero-headline .hero-title-block {
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-items: center !important;
+      }
+
+      .hero-headline .hero-title-line {
+        display: block !important;
+        white-space: nowrap !important;
+        width: auto !important;
+        max-width: 100% !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        margin-bottom: .12em !important;
+      }
+
+      .hero-headline .hero-title-block-accent {
+        width: 100% !important;
+      }
+
+      .hero-headline .hero-title-block-accent .hero-title-line {
+        max-width: 100% !important;
+      }
+
+      .hero-sub {
+        max-width: 330px !important;
+        margin: 0 auto 16px !important;
+        font-size: 12.5px !important;
+        line-height: 1.42 !important;
+        text-align: center !important;
+      }
+
+      .hero-btn-wrapper {
+        justify-content: center !important;
+      }
+
+      .hero-btn {
+        min-height: 46px !important;
+        height: 46px !important;
+        padding-left: 20px !important;
+        padding-right: 52px !important;
+        font-size: 11px !important;
+      }
+
+      .hero-btn svg {
+        width: 38px !important;
+        height: 38px !important;
+      }
+
+      .hero-photo {
+        position: relative !important;
+        order: 2 !important;
+        inset: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        width: min(70vw, 290px) !important;
+        height: auto !important;
+        max-height: 34svh !important;
+        max-width: 290px !important;
+        margin: 2px auto 0 !important;
+        transform: none !important;
+        object-fit: contain !important;
+        opacity: 1 !important;
+        filter: none !important;
+        z-index: 4 !important;
+      }
+
+      .hero-badge-wrap {
+        display: block !important;
+        position: absolute !important;
+        order: 3 !important;
+        width: clamp(74px, 20vw, 88px) !important;
+        height: clamp(74px, 20vw, 88px) !important;
+        right: calc(50% - min(34vw, 132px) + 6px) !important;
+        top: clamp(520px, 66svh, 610px) !important;
+        z-index: 7 !important;
+      }
+
+      .hero-popup {
+        position: relative !important;
+        order: 4 !important;
+        inset: auto !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        display: flex !important;
+        width: min(100%, 330px) !important;
+        min-height: 54px !important;
+        padding: 10px 12px !important;
+        transform: none !important;
+        z-index: 5 !important;
+      }
+
+      .hero-popup + .hero-popup {
+        margin-top: -4px !important;
+      }
+
+      .hero-popup-icon {
+        width: 36px !important;
+        height: 36px !important;
+        flex: 0 0 36px !important;
+      }
+
+      .hero-popup-kicker {
+        font-size: 8px !important;
+      }
+
+      .hero-popup-title {
+        font-size: 11px !important;
+        line-height: 1.15 !important;
+      }
+
+      .hero-scroll {
+        display: none !important;
+      }
+
+      .marquee-wrap {
+        margin-top: 0 !important;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .hero {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(28px, 9.8vw, 38px) !important;
+      }
+
+      .hero-sub {
+        max-width: 300px !important;
+        font-size: 12px !important;
+      }
+
+      .hero-photo {
+        width: min(68vw, 250px) !important;
+        max-height: 30svh !important;
+      }
+
+      .hero-popup {
+        width: min(100%, 312px) !important;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .hero-headline {
+        font-size: 27px !important;
+      }
+
+      .hero-photo {
+        width: 62vw !important;
+      }
+    }
   </style>
 </head>
 
@@ -6458,7 +6834,8 @@
     <div class="hero-ellipse hero-ellipse-3"></div>
 
     <!-- Foto de perfil -->
-    <img class="hero-photo" src="VINI GRAPHICS.png" alt="Vinícius Santos" id="heroPhoto"
+    <img class="hero-photo" src="VINI GRAPHICS.png" alt="Vinícius Santos" id="heroPhoto" width="1229" height="1184"
+      fetchpriority="high" decoding="async"
       style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px);">
 
     <div class="hero-popup hero-popup-1">
@@ -7291,7 +7668,10 @@
     function initHeroLightAndMagnet() {
       const hero = document.querySelector('.hero');
       const canvas = document.getElementById('heroLightCanvas');
-      if (canvas && hero && window.matchMedia('(pointer:fine)').matches) {
+      const canRunHeroCanvas = window.matchMedia('(pointer:fine)').matches
+        && !window.matchMedia('(max-width: 900px)').matches
+        && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (canvas && hero && canRunHeroCanvas) {
         const ctx = canvas.getContext('2d');
         let mouseX = -9999;
         let mouseY = -9999;
@@ -7369,6 +7749,12 @@
 
     // ── CURSOR PERSONALIZADO COM GSAP ──
     const cursor = document.querySelector('.cursor-personalizado');
+    const canRunCustomCursor = cursor
+      && window.matchMedia('(pointer:fine)').matches
+      && !window.matchMedia('(max-width: 900px)').matches
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (canRunCustomCursor) {
 
     let xTo = gsap.quickSetter(cursor, "x", "px");
     let yTo = gsap.quickSetter(cursor, "y", "px");
@@ -7414,6 +7800,10 @@
     });
 
     // ── NAV ──
+    } else if (cursor) {
+      cursor.remove();
+    }
+
     const mainNav = document.getElementById('mainNav');
     let navScrollFrame = 0;
     window.addEventListener('scroll', () => {
@@ -7581,7 +7971,9 @@
     // Anti-gravity background particles
     (function () {
       const canvas = document.getElementById('particles-canvas');
-      if (!canvas || canvas.dataset.effect !== 'antigravity' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!canvas
+        || canvas.dataset.effect !== 'antigravity'
+        || window.matchMedia('(max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches) return;
 
       const ctx = canvas.getContext('2d');
       const mouse = { x: -1000, y: -1000, active: false };
