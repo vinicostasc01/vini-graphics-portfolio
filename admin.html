@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Vini Graphics - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./supabase-config.js"></script>
+  <style>
+    :root {
+      --bg: #050706;
+      --panel: rgba(255, 255, 255, .06);
+      --line: rgba(255, 255, 255, .14);
+      --text: #f5f5f0;
+      --muted: rgba(245, 245, 240, .62);
+      --accent: #d8ff46;
+      --danger: #ff5d5d;
+      font-family: "Space Grotesk", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 70% 10%, rgba(216, 255, 70, .12), transparent 30%),
+        linear-gradient(135deg, rgba(255, 255, 255, .05) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 52px 52px, auto;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar,
+    .panel,
+    .art-card,
+    .notice {
+      border: 1px solid var(--line);
+      background: rgba(10, 14, 12, .72);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 70px;
+      padding: 12px 18px;
+      border-radius: 24px;
+      position: sticky;
+      top: 14px;
+      z-index: 5;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand strong {
+      font-size: 18px;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .brand span,
+    label,
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 38px 0 12px;
+      font-size: clamp(42px, 7vw, 86px);
+    }
+
+    h2 {
+      margin-bottom: 18px;
+      font-size: 22px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .06);
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(216, 255, 70, .68);
+      box-shadow: 0 0 0 3px rgba(216, 255, 70, .1);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: #090b08;
+      background: var(--accent);
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button.secondary,
+    .button.secondary {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .08);
+    }
+
+    button.danger {
+      color: #fff;
+      background: rgba(255, 93, 93, .16);
+      border: 1px solid rgba(255, 93, 93, .36);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .notice {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      color: var(--muted);
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .art-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .art-card {
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .art-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .art-card-body {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .pill {
+      width: fit-content;
+      border: 1px solid rgba(216, 255, 70, .3);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .sql {
+      overflow: auto;
+      max-height: 360px;
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      color: rgba(245, 245, 240, .78);
+      background: rgba(0, 0, 0, .32);
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 860px) {
+      .grid,
+      .row,
+      .art-list {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>Vini Graphics Admin</strong>
+        <span>Cadastro privado das artes do portfolio</span>
+      </div>
+      <div class="actions">
+        <a class="button secondary" href="./index.html">Ver site</a>
+        <button class="secondary hidden" id="logoutBtn" type="button">Sair</button>
+      </div>
+    </header>
+
+    <h1>Painel privado para atualizar as artes.</h1>
+    <p class="muted">Use o login do Supabase. So emails cadastrados em <code>portfolio_admins</code> conseguem salvar ou remover artes.</p>
+
+    <section class="grid">
+      <div class="panel" id="loginPanel">
+        <h2>Entrar</h2>
+        <form id="loginForm">
+          <label>Email
+            <input id="loginEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>Senha
+            <input id="loginPassword" type="password" autocomplete="current-password" required>
+          </label>
+          <button type="submit">Entrar no painel</button>
+        </form>
+        <div class="notice show" id="configNotice">Preencha <code>supabase-config.js</code> com a URL e a anon key do seu projeto.</div>
+      </div>
+
+      <div class="panel hidden" id="artPanel">
+        <h2>Nova arte</h2>
+        <form id="artForm">
+          <label>Titulo
+            <input id="artTitle" type="text" placeholder="Ex: Campanha social media" required>
+          </label>
+          <div class="row">
+            <label>Categoria
+              <select id="artCategory" required>
+                <option value="social-media">Social Media</option>
+                <option value="identidade-visual">Identidade Visual</option>
+                <option value="logotipos">Logotipo</option>
+                <option value="motion-vfx">Motion Design</option>
+                <option value="vfx">VFX</option>
+                <option value="branding">Branding</option>
+                <option value="landing-page">Landing Page</option>
+                <option value="geral">Geral</option>
+              </select>
+            </label>
+            <label>Ordem
+              <input id="artOrder" type="number" min="0" value="0">
+            </label>
+          </div>
+          <label>Imagem por URL
+            <input id="artUrl" type="url" placeholder="https://...">
+          </label>
+          <label>Ou subir arquivo
+            <input id="artFile" type="file" accept="image/*">
+          </label>
+          <label>Link do projeto
+            <input id="artProjectUrl" type="url" placeholder="https://behance.net/...">
+          </label>
+          <label>Observacao interna
+            <textarea id="artNotes" placeholder="Contexto, cliente ou detalhes do projeto"></textarea>
+          </label>
+          <label>
+            <input id="artPublished" type="checkbox" checked>
+            Publicar no site
+          </label>
+          <button id="saveArtBtn" type="submit">Salvar arte</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Artes cadastradas</h2>
+        <div class="art-list" id="artList"></div>
+        <div class="notice show" id="emptyState">Entre para ver as artes do banco.</div>
+      </div>
+
+      <div class="panel">
+        <h2>SQL do Supabase</h2>
+        <pre class="sql">create table if not exists portfolio_admins (
+  email text primary key
+);
+
+create table if not exists portfolio_artes (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  category text not null default 'geral',
+  image_url text not null,
+  project_url text,
+  notes text,
+  published boolean not null default true,
+  sort_order integer not null default 0,
+  created_by uuid default auth.uid(),
+  created_at timestamptz not null default now()
+);
+
+alter table portfolio_admins enable row level security;
+alter table portfolio_artes enable row level security;
+
+create policy "admins can read own allowlist"
+on portfolio_admins for select
+using (email = auth.jwt() ->> 'email');
+
+create policy "public can read published portfolio"
+on portfolio_artes for select
+using (published = true);
+
+create policy "admins can read all portfolio"
+on portfolio_artes for select
+using (exists (
+  select 1 from portfolio_admins
+  where email = auth.jwt() ->> 'email'
+));
+
+create policy "admins can insert portfolio"
+on portfolio_artes for insert
+with check (exists (
+  select 1 from portfolio_admins
+  where email = auth.jwt() ->> 'email'
+));
+
+create policy "admins can update portfolio"
+on portfolio_artes for update
+using (exists (
+  select 1 from portfolio_admins
+  where email = auth.jwt() ->> 'email'
+))
+with check (exists (
+  select 1 from portfolio_admins
+  where email = auth.jwt() ->> 'email'
+));
+
+create policy "admins can delete portfolio"
+on portfolio_artes for delete
+using (exists (
+  select 1 from portfolio_admins
+  where email = auth.jwt() ->> 'email'
+));
+
+insert into portfolio_admins (email)
+values ('SEU_EMAIL_AQUI')
+on conflict (email) do nothing;
+
+insert into storage.buckets (id, name, public)
+values ('portfolio-artes', 'portfolio-artes', true)
+on conflict (id) do nothing;
+
+create policy "public can read portfolio files"
+on storage.objects for select
+using (bucket_id = 'portfolio-artes');
+
+create policy "admins can upload portfolio files"
+on storage.objects for insert
+with check (
+  bucket_id = 'portfolio-artes'
+  and exists (
+    select 1 from portfolio_admins
+    where email = auth.jwt() ->> 'email'
+  )
+);</pre>
+      </div>
+    </section>
+
+    <div class="notice" id="statusBox"></div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const cfg = window.VINI_SUPABASE || {};
+    const configured = cfg.url && cfg.anonKey && !cfg.url.includes('COLE_AQUI') && !cfg.anonKey.includes('COLE_AQUI');
+    const supabase = configured ? createClient(cfg.url, cfg.anonKey) : null;
+    const bucket = cfg.storageBucket || 'portfolio-artes';
+
+    const $ = (id) => document.getElementById(id);
+    const loginPanel = $('loginPanel');
+    const artPanel = $('artPanel');
+    const logoutBtn = $('logoutBtn');
+    const statusBox = $('statusBox');
+    const emptyState = $('emptyState');
+    const artList = $('artList');
+
+    const showStatus = (message, danger = false) => {
+      statusBox.textContent = message;
+      statusBox.classList.add('show');
+      statusBox.style.borderColor = danger ? 'rgba(255, 93, 93, .48)' : 'rgba(216, 255, 70, .36)';
+      statusBox.style.color = danger ? '#ffb4b4' : 'rgba(245,245,240,.78)';
+    };
+
+    const requireConfig = () => {
+      if (configured) return true;
+      showStatus('Configure o Supabase em supabase-config.js antes de usar o painel.', true);
+      return false;
+    };
+
+    async function isAdmin(session) {
+      if (!session?.user?.email) return false;
+      const { data, error } = await supabase
+        .from('portfolio_admins')
+        .select('email')
+        .eq('email', session.user.email)
+        .maybeSingle();
+      if (error) throw error;
+      return Boolean(data);
+    }
+
+    async function setLoggedIn(session) {
+      const allowed = await isAdmin(session);
+      if (!allowed) {
+        await supabase.auth.signOut();
+        showStatus('Este email nao esta liberado em portfolio_admins.', true);
+        return;
+      }
+
+      loginPanel.classList.add('hidden');
+      artPanel.classList.remove('hidden');
+      logoutBtn.classList.remove('hidden');
+      showStatus(`Logado como ${session.user.email}.`);
+      await loadArts();
+    }
+
+    async function loadArts() {
+      const { data, error } = await supabase
+        .from('portfolio_artes')
+        .select('*')
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      artList.innerHTML = '';
+      emptyState.classList.toggle('show', !data?.length);
+      emptyState.textContent = data?.length ? '' : 'Nenhuma arte cadastrada ainda.';
+
+      (data || []).forEach((art) => {
+        const card = document.createElement('article');
+        card.className = 'art-card';
+        card.innerHTML = `
+          <img src="${art.image_url}" alt="${art.title}" loading="lazy">
+          <div class="art-card-body">
+            <span class="pill">${art.category}</span>
+            <strong>${art.title}</strong>
+            <span class="muted">${art.published ? 'Publicado' : 'Oculto'} - ordem ${art.sort_order || 0}</span>
+            <button class="danger" type="button" data-delete="${art.id}">Remover</button>
+          </div>
+        `;
+        artList.appendChild(card);
+      });
+    }
+
+    async function uploadFile(file, userId) {
+      const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+      const path = `${userId}/${Date.now()}-${safeName}`;
+      const { error } = await supabase.storage.from(bucket).upload(path, file, {
+        cacheControl: '31536000',
+        upsert: false
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+      return data.publicUrl;
+    }
+
+    $('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!requireConfig()) return;
+      const email = $('loginEmail').value.trim();
+      const password = $('loginPassword').value;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        showStatus(error.message, true);
+        return;
+      }
+      await setLoggedIn(data.session);
+    });
+
+    $('artForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const btn = $('saveArtBtn');
+      btn.disabled = true;
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const session = sessionData.session;
+        if (!session) throw new Error('Sessao expirada. Entre novamente.');
+
+        const file = $('artFile').files[0];
+        let imageUrl = $('artUrl').value.trim();
+        if (file) imageUrl = await uploadFile(file, session.user.id);
+        if (!imageUrl) throw new Error('Adicione uma URL de imagem ou suba um arquivo.');
+
+        const payload = {
+          title: $('artTitle').value.trim(),
+          category: $('artCategory').value,
+          image_url: imageUrl,
+          project_url: $('artProjectUrl').value.trim() || null,
+          notes: $('artNotes').value.trim() || null,
+          published: $('artPublished').checked,
+          sort_order: Number($('artOrder').value || 0)
+        };
+
+        const { error } = await supabase.from('portfolio_artes').insert(payload);
+        if (error) throw error;
+
+        event.target.reset();
+        $('artPublished').checked = true;
+        showStatus('Arte salva no Supabase e pronta para aparecer no portfolio.');
+        await loadArts();
+      } catch (error) {
+        showStatus(error.message || String(error), true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    artList.addEventListener('click', async (event) => {
+      const btn = event.target.closest('[data-delete]');
+      if (!btn) return;
+      if (!confirm('Remover esta arte?')) return;
+      const { error } = await supabase.from('portfolio_artes').delete().eq('id', btn.dataset.delete);
+      if (error) {
+        showStatus(error.message, true);
+        return;
+      }
+      showStatus('Arte removida.');
+      await loadArts();
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    });
+
+    if (configured) {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) await setLoggedIn(data.session);
+      else $('configNotice').textContent = 'Supabase configurado. Entre com seu email e senha.';
+    }
+  </script>
+</body>
+
+</html>

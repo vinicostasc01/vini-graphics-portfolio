@@ -26,6 +26,7 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./supabase-config.js"></script>
   <style>
     /* ══ RESET & VARS ══ */
     *,
@@ -6764,6 +6765,126 @@
         width: 62vw !important;
       }
     }
+
+    /* Hero typography harmony pass: one axis, optical balance and clear hierarchy */
+    @media (min-width: 769px) {
+      .hero-content {
+        width: min(690px, 50vw) !important;
+        max-width: min(690px, 50vw) !important;
+      }
+
+      .hero-headline-wrap {
+        width: min(690px, 50vw) !important;
+        margin-bottom: clamp(18px, 2.4vh, 26px) !important;
+      }
+
+      .hero-headline {
+        display: grid !important;
+        gap: clamp(8px, 1.1vh, 12px) !important;
+        width: max-content !important;
+        max-width: min(690px, 50vw) !important;
+        font-size: clamp(54px, 5vw, 80px) !important;
+        line-height: .88 !important;
+        letter-spacing: 0 !important;
+        text-align: left !important;
+      }
+
+      .hero-headline .hero-title-block {
+        display: grid !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        justify-items: start !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        padding-bottom: clamp(6px, .8vh, 9px) !important;
+        border-bottom: 1px solid rgba(245, 243, 239, .16) !important;
+      }
+
+      .hero-headline .hero-title-block-accent {
+        color: var(--blueprint-accent, #d8ff46) !important;
+        -webkit-text-fill-color: var(--blueprint-accent, #d8ff46) !important;
+      }
+
+      .hero-headline .hero-title-line {
+        display: block !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+      }
+
+      .hero-headline .hero-title-block-main .hero-title-line:first-child {
+        font-size: .9em !important;
+      }
+
+      .hero-headline .hero-title-block-main .hero-title-line:last-child,
+      .hero-headline .hero-title-block-accent .hero-title-line:first-child {
+        font-size: 1em !important;
+      }
+
+      .hero-headline .hero-title-block-accent .hero-title-line:last-child {
+        font-size: 1.16em !important;
+        line-height: .82 !important;
+      }
+
+      .hero-sub {
+        max-width: min(520px, 38vw) !important;
+        margin-top: 0 !important;
+        padding-left: clamp(16px, 1.7vw, 24px) !important;
+        border-left: 4px solid var(--blueprint-accent, #d8ff46) !important;
+        text-align: left !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content {
+        width: min(100%, 360px) !important;
+        max-width: 360px !important;
+      }
+
+      .hero-headline {
+        display: grid !important;
+        gap: 8px !important;
+        font-size: clamp(31px, 9.3vw, 38px) !important;
+        line-height: .9 !important;
+        text-align: left !important;
+      }
+
+      .hero-headline .hero-title-block {
+        justify-items: start !important;
+        width: max-content !important;
+        max-width: 100% !important;
+      }
+
+      .hero-headline .hero-title-block-main {
+        padding-bottom: 7px !important;
+        border-bottom: 1px solid rgba(245, 243, 239, .16) !important;
+      }
+
+      .hero-headline .hero-title-line {
+        white-space: nowrap !important;
+      }
+
+      .hero-headline .hero-title-block-accent .hero-title-line:last-child {
+        font-size: 1.16em !important;
+        line-height: .82 !important;
+      }
+
+      #heroLogoName,
+      .hero-btn-wrapper {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+      }
+
+      .hero-sub {
+        max-width: 320px !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        padding-left: 14px !important;
+        border-left: 3px solid var(--blueprint-accent, #d8ff46) !important;
+        text-align: left !important;
+      }
+    }
   </style>
 </head>
 
@@ -8202,8 +8323,37 @@
       'motion-vfx': [], 'vfx': [], 'branding': [], 'landing-page': [],
       'geral': ['https://mir-s3-cdn-cf.behance.net/projects/max_808/3adba7162560867.Y3JvcCwxMDgwLDg0NCwwLDI1MQ.png']
     };
+    const portfolioReady = (async () => {
+      const cfg = window.VINI_SUPABASE || {};
+      if (!cfg.url || !cfg.anonKey || cfg.url.includes('COLE_AQUI')) return;
+
+      try {
+        const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+        const supabase = createClient(cfg.url, cfg.anonKey);
+        const { data, error } = await supabase
+          .from('portfolio_artes')
+          .select('category,image_url,title,published,sort_order,created_at')
+          .eq('published', true)
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        if (!Array.isArray(data) || !data.length) return;
+
+        data.forEach((item) => {
+          const category = item.category || 'geral';
+          if (!skillArtes[category]) skillArtes[category] = [];
+          if (item.image_url && !skillArtes[category].includes(item.image_url)) {
+            skillArtes[category].push(item.image_url);
+          }
+        });
+      } catch (error) {
+        console.warn('Supabase portfolio fallback:', error.message || error);
+      }
+    })();
     const ov = document.getElementById('lightboxOverlay'), lt = document.getElementById('lightboxTitle'), lg = document.getElementById('lightboxGrid');
-    function openLightbox(skill, titulo) {
+    async function openLightbox(skill, titulo) {
+      await portfolioReady;
       const artes = skillArtes[skill] || [];
       lt.textContent = titulo; lg.innerHTML = '';
       if (!artes.length) { lg.innerHTML = '<div class="lightbox-empty">Em breve — projetos desta categoria serão adicionados.</div>'; }
