@@ -7273,6 +7273,87 @@
         -webkit-text-fill-color: var(--blueprint-accent, #d8ff46) !important;
       }
     }
+
+    /* Figma crop correction: logo, two-line title, pill below title */
+    #heroLogoName::before {
+      display: none !important;
+      content: none !important;
+    }
+
+    .hero-brand-pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      margin: 10px 0 17px;
+      padding: 5px 9px;
+      border: 1px solid rgba(245, 243, 239, .16);
+      border-radius: 999px;
+      color: var(--blueprint-accent, #d8ff46);
+      background: rgba(7, 7, 7, .46);
+      font-family: var(--font-ui, 'Space Grotesk', sans-serif);
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 769px) {
+      #heroLogoName {
+        margin-bottom: 12px !important;
+      }
+
+      .hero-headline-wrap {
+        margin-bottom: 0 !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(28px, 2.95vw, 42px) !important;
+        transform: scaleX(1.08);
+        transform-origin: left center;
+      }
+
+      .hero-sub {
+        width: min(390px, 28vw) !important;
+        max-width: min(390px, 28vw) !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #heroLogoName {
+        margin-bottom: 10px !important;
+      }
+
+      .hero-content {
+        width: calc(100vw - 48px) !important;
+        max-width: calc(100vw - 48px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+
+      #heroLogoName svg {
+        width: clamp(62px, 15vw, 76px) !important;
+      }
+
+      .hero-headline-wrap {
+        margin-bottom: 0 !important;
+      }
+
+      .hero-headline {
+        font-size: clamp(27px, 7.8vw, 34px) !important;
+        transform: scaleX(1.07);
+        transform-origin: left center;
+      }
+
+      .hero-brand-pill {
+        margin: 10px 0 17px !important;
+        font-size: 7.5px !important;
+      }
+
+      .hero-sub {
+        margin-top: 0 !important;
+      }
+    }
   </style>
 </head>
 
@@ -7471,6 +7552,7 @@
           </span>
         </h1>
       </div>
+      <div class="hero-brand-pill">Vini Graphics / Brand &amp; Visual Design</div>
       <p class="hero-sub" id="heroSub" style="opacity:0">Design estrat&eacute;gico para marcas que precisam parecer mais
         profissionais, comunicar valor em segundos e transformar aten&ccedil;&atilde;o em pedidos de or&ccedil;amento.</p>
       <!-- Botão "Fazer Orçamento" — clonado de designagora.onlineaprender.com -->
