@@ -5333,7 +5333,11 @@
 
     .hero-badge-wrap:hover {
       transform: translateY(-6px) scale(1.05) !important;
-      filter: drop-shadow(0 24px 46px rgba(216,255,70,.18)) drop-shadow(0 18px 40px rgba(0,0,0,.42)) !important;
+      filter: none !important;
+    }
+
+    .hero-badge-wrap:hover::before {
+      box-shadow: 0 24px 46px rgba(216,255,70,.18), 0 18px 40px rgba(0,0,0,.42), 0 5px 16px rgba(255,255,255,.12) inset !important;
     }
 
     .hero-badge-wrap .badge-logo-inner {
@@ -5356,6 +5360,7 @@
       z-index: 1 !important;
       transform-origin: 50% 50% !important;
       will-change: transform !important;
+      clip-path: circle(48% at 50% 50%) !important;
     }
 
     .hero-popup {
@@ -5985,7 +5990,20 @@
     .hero-badge-wrap {
       aspect-ratio: 1 / 1 !important;
       overflow: visible !important;
-      filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .46)) !important;
+      filter: none !important;
+    }
+
+    .hero-badge-wrap::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: 9% !important;
+      border-radius: 50% !important;
+      z-index: 0 !important;
+      pointer-events: none !important;
+      background: radial-gradient(circle at 50% 38%, rgba(255,255,255,.18), rgba(255,255,255,0) 34%),
+        radial-gradient(circle, rgba(0,0,0,.58) 0 58%, rgba(0,0,0,.28) 72%, rgba(0,0,0,0) 100%) !important;
+      box-shadow: 0 20px 28px rgba(0, 0, 0, .46), 0 5px 16px rgba(255, 255, 255, .12) inset !important;
+      transform: none !important;
     }
 
     .hero-badge-wrap .badge-logo-inner {
@@ -6011,6 +6029,7 @@
       inset: -17% !important;
       transform-origin: 50% 50% !important;
       will-change: transform !important;
+      clip-path: circle(48% at 50% 50%) !important;
     }
 
     .hero-badge-wrap .badge-text-ring img {
