@@ -7354,6 +7354,26 @@
         margin-top: 0 !important;
       }
     }
+
+    /* Hero proportional spacing pass: bring the visual cluster closer to the text */
+    @media (min-width: 769px) {
+      .hero-photo {
+        right: clamp(150px, 12vw, 260px) !important;
+      }
+
+      .hero-popup-1,
+      .hero-popup-2 {
+        right: clamp(470px, 43vw, 700px) !important;
+      }
+
+      .hero-popup-3 {
+        right: clamp(170px, 13vw, 250px) !important;
+      }
+
+      .hero-badge-wrap {
+        right: clamp(240px, 18vw, 360px) !important;
+      }
+    }
   </style>
 </head>
 
