@@ -7719,6 +7719,9 @@
       background: transparent !important;
       box-shadow: none !important;
       filter: none !important;
+      cursor: pointer !important;
+      transform: translate3d(0, 0, 0) scale(1) !important;
+      transition: transform .38s cubic-bezier(.22, 1, .36, 1), filter .38s ease !important;
     }
 
     .hero-badge-wrap::before {
@@ -7732,6 +7735,8 @@
       background: radial-gradient(circle, rgba(0,0,0,.34) 0 44%, rgba(0,0,0,.18) 58%, rgba(0,0,0,0) 76%) !important;
       filter: blur(10px) !important;
       transform: translateY(12%) !important;
+      opacity: .72 !important;
+      transition: opacity .38s ease, filter .38s ease, transform .38s cubic-bezier(.22, 1, .36, 1) !important;
     }
 
     .hero-badge-wrap::after {
@@ -7763,10 +7768,33 @@
       transition: fill .35s ease, filter .35s ease !important;
     }
 
+    .hero-badge-inline #Camada_1 .st4 circle.st2,
+    .hero-badge-inline #Camada_2 path.st0 {
+      transition: stroke .35s ease, fill .35s ease, filter .35s ease, opacity .35s ease !important;
+    }
+
+    .hero-badge-wrap:hover,
+    .hero-badge-wrap.badge-hovered {
+      transform: translate3d(0, -8px, 0) scale(1.065) !important;
+      filter: drop-shadow(0 0 18px rgba(216,255,70,.18)) !important;
+    }
+
     .hero-badge-wrap:hover .hero-badge-inline #Camada_1 .st3 path.st0,
     .hero-badge-wrap.badge-hovered .hero-badge-inline #Camada_1 .st3 path.st0 {
       fill: var(--lime, #d8ff46) !important;
       filter: drop-shadow(0 0 8px rgba(216,255,70,.42)) !important;
+    }
+
+    .hero-badge-wrap:hover .hero-badge-inline #Camada_1 .st4 circle.st2,
+    .hero-badge-wrap.badge-hovered .hero-badge-inline #Camada_1 .st4 circle.st2 {
+      stroke: rgba(216,255,70,.68) !important;
+      filter: drop-shadow(0 0 5px rgba(216,255,70,.28)) !important;
+    }
+
+    .hero-badge-wrap:hover .hero-badge-inline #Camada_2 path.st0,
+    .hero-badge-wrap.badge-hovered .hero-badge-inline #Camada_2 path.st0 {
+      fill: rgba(255,255,255,1) !important;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,.22)) !important;
     }
 
     .hero-badge-wrap:hover .hero-badge-image {
@@ -7775,8 +7803,9 @@
 
     .hero-badge-wrap:hover::before,
     .hero-badge-wrap.badge-hovered::before {
-      filter: blur(13px) !important;
-      opacity: .95 !important;
+      filter: blur(15px) !important;
+      opacity: .92 !important;
+      transform: translateY(18%) scale(1.08) !important;
     }
 
     @media (max-width: 768px) {
