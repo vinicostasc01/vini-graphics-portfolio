@@ -7721,25 +7721,91 @@
       filter: none !important;
     }
 
-    .hero-badge-wrap::before,
+    .hero-badge-wrap::before {
+      content: "" !important;
+      display: block !important;
+      position: absolute !important;
+      inset: 9% !important;
+      border-radius: 50% !important;
+      z-index: 0 !important;
+      pointer-events: none !important;
+      background: radial-gradient(circle, rgba(0,0,0,.34) 0 44%, rgba(0,0,0,.18) 58%, rgba(0,0,0,0) 76%) !important;
+      filter: blur(10px) !important;
+      transform: translateY(12%) !important;
+    }
+
     .hero-badge-wrap::after {
-      content: none !important;
-      display: none !important;
+      content: "" !important;
+      display: block !important;
+      position: absolute !important;
+      inset: 27% !important;
+      border-radius: 50% !important;
+      z-index: 2 !important;
+      pointer-events: none !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,.08) 24%, rgba(255,255,255,0) 48%),
+        radial-gradient(circle at 35% 22%, rgba(255,255,255,.26), rgba(255,255,255,0) 36%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12)) !important;
+      border: 1px solid rgba(255,255,255,.18) !important;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.3),
+        inset 0 -10px 20px rgba(0,0,0,.22),
+        0 8px 22px rgba(0,0,0,.22) !important;
+      mix-blend-mode: screen !important;
+      backdrop-filter: blur(1.5px) saturate(1.25) !important;
+      -webkit-backdrop-filter: blur(1.5px) saturate(1.25) !important;
+      opacity: .72 !important;
+      transition: opacity .35s ease, transform .35s ease, box-shadow .35s ease !important;
     }
 
     .hero-badge-image {
+      position: relative !important;
+      z-index: 1 !important;
       display: block !important;
       width: 100% !important;
       height: 100% !important;
       object-fit: contain !important;
       transform: none !important;
-      filter: drop-shadow(0 18px 20px rgba(0,0,0,.52)) !important;
+      filter: none !important;
       pointer-events: none !important;
       user-select: none !important;
     }
 
+    .hero-badge-inline svg {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      overflow: visible !important;
+    }
+
+    .hero-badge-inline #Camada_1 .st3 path.st0 {
+      transition: fill .35s ease, filter .35s ease !important;
+    }
+
+    .hero-badge-wrap:hover .hero-badge-inline #Camada_1 .st3 path.st0,
+    .hero-badge-wrap.badge-hovered .hero-badge-inline #Camada_1 .st3 path.st0 {
+      fill: var(--lime, #d8ff46) !important;
+      filter: drop-shadow(0 0 8px rgba(216,255,70,.42)) !important;
+    }
+
     .hero-badge-wrap:hover .hero-badge-image {
-      filter: drop-shadow(0 22px 30px rgba(0,0,0,.58)) drop-shadow(0 0 18px rgba(216,255,70,.14)) !important;
+      filter: none !important;
+    }
+
+    .hero-badge-wrap:hover::before,
+    .hero-badge-wrap.badge-hovered::before {
+      filter: blur(13px) !important;
+      opacity: .95 !important;
+    }
+
+    .hero-badge-wrap:hover::after,
+    .hero-badge-wrap.badge-hovered::after {
+      opacity: .9 !important;
+      transform: scale(1.035) !important;
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,.38),
+        inset 0 -10px 20px rgba(0,0,0,.18),
+        0 0 18px rgba(216,255,70,.18) !important;
     }
 
     @media (max-width: 768px) {
@@ -7866,7 +7932,8 @@
 
     <!-- Badge / Selo original -->
     <div class="hero-badge-wrap" id="heroBadge" aria-label="Selo Vini Graphics">
-      <img class="hero-badge-image" src="selo-vini.svg" alt="Domine o seu mercado com design estratégico">
+      <span class="hero-badge-image hero-badge-inline" id="heroBadgeSvg"
+        aria-label="Domine o seu mercado com design estratégico"></span>
     </div>
     <!-- Hero nome e texto (posiÃ§Ã£o exata do Figma: left 54px, top 544px) -->
     <div class="hero-content" style="position:absolute;left:56px;bottom:72px;z-index:5;max-width:620px"
@@ -8784,6 +8851,50 @@
     }, { passive: true });
     function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); document.getElementById('hamburger').classList.toggle('open'); }
     function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('hamburger').classList.remove('open'); }
+
+    // Selo: o scroll gira somente o texto circular dentro do SVG.
+    const heroBadge = document.getElementById('heroBadge');
+    const heroBadgeSvgSlot = document.getElementById('heroBadgeSvg');
+    if (heroBadgeSvgSlot) {
+      let badgeTextRing = null;
+      let badgeScrollFrame = 0;
+
+      const updateBadgeTextRotation = () => {
+        badgeScrollFrame = 0;
+        if (!badgeTextRing) return;
+        const rotation = window.scrollY * 0.28;
+        badgeTextRing.style.transform = `rotate(${rotation}deg)`;
+      };
+
+      const bindBadgeTextRing = () => {
+        badgeTextRing = heroBadgeSvgSlot.querySelector('#Camada_2');
+        if (badgeTextRing) {
+          badgeTextRing.style.transformBox = 'view-box';
+          badgeTextRing.style.transformOrigin = '50% 50%';
+          updateBadgeTextRotation();
+        }
+      };
+
+      fetch('selo-vini.svg')
+        .then(response => response.text())
+        .then(svg => {
+          heroBadgeSvgSlot.innerHTML = svg;
+          bindBadgeTextRing();
+        })
+        .catch(() => {
+          heroBadgeSvgSlot.innerHTML = '<img src="selo-vini.svg" alt="Domine o seu mercado com design estratégico">';
+        });
+
+      window.addEventListener('scroll', () => {
+        if (badgeScrollFrame) return;
+        badgeScrollFrame = requestAnimationFrame(updateBadgeTextRotation);
+      }, { passive: true });
+
+      if (heroBadge) {
+        heroBadge.addEventListener('pointerenter', () => heroBadge.classList.add('badge-hovered'));
+        heroBadge.addEventListener('pointerleave', () => heroBadge.classList.remove('badge-hovered'));
+      }
+    }
 
     // â”€â”€ GSAP HERO ENTRANCE â”€â”€
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });

@@ -24,6 +24,11 @@
       .st4 {
         clip-path: url(#clippath);
       }
+
+      #Camada_2 {
+        transform-box: view-box;
+        transform-origin: 50% 50%;
+      }
     </style>
     <clipPath id="clippath">
       <rect class="st1" width="1080" height="1080"/>
