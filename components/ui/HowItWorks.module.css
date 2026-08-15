@@ -1,0 +1,197 @@
+/* ═══════════════════════════════════════════════════════════
+   COMO FUNCIONA — cards "alfinetados"
+   Versão adaptada do card com pin + trilha pontilhada para o
+   tema escuro do site (sem Tailwind, tokens de globals.css).
+   ═══════════════════════════════════════════════════════════ */
+
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trail {
+  display: none;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+}
+
+/* Camada separada só para o giro/zoom: o framer-motion controla o transform
+   do .card na entrada, então a inclinação precisa viver em outro elemento. */
+.tilt {
+  transition: transform 0.45s var(--ease);
+}
+
+.pane {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  padding: 10px;
+  transition: border-color 0.5s var(--ease), background 0.5s var(--ease);
+}
+
+.card:hover .pane {
+  border-color: var(--line-2);
+  background: var(--card-2);
+}
+
+.pin {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 8px auto 16px;
+  color: var(--blue-soft);
+  filter: drop-shadow(0 0 14px var(--blue-glow));
+  transition: transform 0.45s var(--ease);
+}
+
+.card:hover .pin {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.inner {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--blue-wash);
+  border: 1px solid var(--blue-line);
+}
+
+/* Traço azul correndo no topo do painel interno, igual aos outros cards */
+.inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.9s var(--ease);
+}
+
+.card:hover .inner::before {
+  transform: translateX(100%);
+}
+
+.num {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--blue-soft);
+  margin-bottom: 18px;
+}
+
+.tag {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  color: var(--fg);
+}
+
+.body {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--fg-2);
+}
+
+/* ── Desktop: cards espalhados, girados e ligados pela trilha ── */
+@media (min-width: 900px) {
+  .stage {
+    display: block;
+    height: var(--stage-h);
+  }
+
+  .trail {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    color: var(--blue-line);
+  }
+
+  .card {
+    position: absolute;
+    width: 280px;
+  }
+
+  .tilt {
+    transform: rotate(var(--rot));
+  }
+
+  .card:hover {
+    z-index: 3;
+  }
+
+  .card:hover .tilt {
+    transform: rotate(var(--rot)) scale(1.05);
+  }
+
+  .p0 {
+    top: 0;
+    left: 15%;
+    --rot: 8deg;
+  }
+
+  .p1 {
+    top: 120px;
+    right: 15%;
+    --rot: -8deg;
+  }
+
+  .p2 {
+    top: 450px;
+    left: 15%;
+    --rot: 8deg;
+  }
+
+  .p3 {
+    top: 570px;
+    right: 10%;
+    --rot: -8deg;
+  }
+
+  .p4 {
+    top: 850px;
+    left: 15%;
+    --rot: 8deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt,
+  .card:hover .tilt,
+  .pin,
+  .card:hover .pin {
+    transition: none;
+  }
+}

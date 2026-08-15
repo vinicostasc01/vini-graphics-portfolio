@@ -1,0 +1,500 @@
+/* ═══════════════════════════════════════════════════════════
+   TOKENS — preto, branco e traços em azul
+   ═══════════════════════════════════════════════════════════ */
+/* Preto puro e branco puro: a página não tem cor nenhuma para que as artes
+   do portfólio sejam a única fonte de cor do site. O azul entra só como
+   traço — régua, sublinhado, ponto de status. Nunca como preenchimento
+   grande. */
+:root {
+  --bg: #000000;
+  --bg-2: #060606;
+  --card: #0a0a0a;
+  --card-2: #101010;
+
+  --fg: #ffffff;
+  --fg-2: rgba(255, 255, 255, 0.6);
+  --fg-3: rgba(255, 255, 255, 0.38);
+  --fg-4: rgba(255, 255, 255, 0.2);
+
+  --line: rgba(255, 255, 255, 0.1);
+  --line-2: rgba(255, 255, 255, 0.2);
+
+  --blue: #1b4dff;
+  --blue-soft: #6f92ff;
+  --blue-line: rgba(27, 77, 255, 0.55);
+  --blue-wash: rgba(27, 77, 255, 0.1);
+  --blue-glow: rgba(27, 77, 255, 0.35);
+
+  /* Seção clara: a referência alterna preto e off-white em full-bleed, e
+     esse respiro quebra o preto infinito. */
+  --paper-bg: #f2f0ec;
+  --paper-fg: #101010;
+  --paper-fg-2: rgba(16, 16, 16, 0.66);
+  --paper-fg-3: rgba(16, 16, 16, 0.42);
+  --paper-line: rgba(16, 16, 16, 0.14);
+
+  --col: 1080px;
+  --wide: 1560px;
+  --gut: clamp(20px, 5vw, 40px);
+  --sec: clamp(96px, 13vw, 176px);
+  --r-sm: 12px;
+  --r: 20px;
+  --r-lg: 28px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Precisa estar no html, não só no body: os marquees e o wordmark da emenda
+     sangram de propósito, e overflow-x apenas no body não impede o documento
+     de ganhar barra de rolagem horizontal. */
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sora), system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue-soft);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT — coluna central estreita
+   ═══════════════════════════════════════════════════════════ */
+.col {
+  width: 100%;
+  max-width: var(--col);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.col-wide {
+  width: 100%;
+  max-width: var(--wide);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+/* Archivo esticada a 125% de largura: energia de placar e transmissão
+   esportiva, que é o mundo do trabalho dele. Expandida pede tracking quase
+   neutro — o negativo forte que a Sora aguentava aqui empastaria. */
+.display {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 125%;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.012em;
+  line-height: 0.94;
+}
+
+.tag {
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+section {
+  position: relative;
+  padding-block: var(--sec);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TIPOGRAFIA
+   ═══════════════════════════════════════════════════════════ */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.t-hero {
+  font-size: clamp(30px, 4.6vw, 56px);
+  font-weight: 300;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+}
+
+.t-hero strong {
+  font-weight: 600;
+}
+
+/* Títulos de seção herdam a face de display, mas em caixa baixa e largura
+   normal — presentes sem competir com o hero. */
+.t-xl {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 112%;
+  font-size: clamp(32px, 5vw, 62px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1;
+}
+
+.t-lg {
+  font-size: clamp(26px, 3.4vw, 42px);
+}
+
+.t-md {
+  font-size: clamp(19px, 2vw, 25px);
+  letter-spacing: -0.02em;
+}
+
+.t-num {
+  font-size: clamp(40px, 6vw, 76px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  font-size: clamp(14.5px, 1.05vw, 16.5px);
+  line-height: 1.75;
+  color: var(--fg-2);
+}
+
+.body-lg {
+  font-size: clamp(16px, 1.35vw, 20px);
+  line-height: 1.7;
+  color: var(--fg-2);
+}
+
+.mono {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+.blue {
+  color: var(--blue-soft);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PILL — etiqueta pequena arredondada
+   ═══════════════════════════════════════════════════════════ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 0 0 var(--blue-glow);
+  animation: ping 2.4s var(--ease) infinite;
+}
+
+@keyframes ping {
+  0% {
+    box-shadow: 0 0 0 0 var(--blue-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(47, 107, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 107, 255, 0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTÕES
+   ═══════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  transition: background 0.45s var(--ease), border-color 0.45s var(--ease),
+    color 0.45s var(--ease);
+  will-change: transform;
+}
+
+.btn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.45s var(--ease);
+}
+
+.btn:hover svg {
+  transform: translate(3px, -3px);
+}
+
+.btn-blue {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.btn-blue:hover {
+  background: #1b56ea;
+  border-color: #1b56ea;
+}
+
+.btn-ghost:hover {
+  border-color: var(--blue-line);
+  background: var(--blue-wash);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CARD — base compartilhada
+   ═══════════════════════════════════════════════════════════ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  transition: border-color 0.5s var(--ease), background 0.5s var(--ease);
+}
+
+.card:hover {
+  border-color: var(--line-2);
+  background: var(--card-2);
+}
+
+/* Traço azul que corre no topo do card no hover */
+.card-rule {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-rule::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.9s var(--ease);
+}
+
+.card-rule:hover::before {
+  transform: translateX(100%);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GRÃO — a referência tem textura em todas as seções escuras.
+   Um SVG de ruído inline, sem requisição de rede.
+   ═══════════════════════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.34'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CABEÇALHO DE SEÇÃO
+   ═══════════════════════════════════════════════════════════ */
+.sec-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* Régua em gradiente: azul saturado à esquerda, dissolvendo à direita.
+   É o divisor que aparece sob cada título na referência. */
+.sec-head::after {
+  content: '';
+  height: 2px;
+  width: 180px;
+  background: linear-gradient(90deg, var(--blue), var(--fg) 45%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEÇÃO CLARA
+   ═══════════════════════════════════════════════════════════ */
+.paper {
+  background: var(--paper-bg);
+  color: var(--paper-fg);
+}
+
+.paper .body,
+.paper .body-lg {
+  color: var(--paper-fg-2);
+}
+
+.paper .tag,
+.paper .mono {
+  color: var(--paper-fg-3);
+}
+
+.paper .sec-head::after {
+  background: linear-gradient(90deg, var(--blue), var(--paper-fg) 45%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MARQUEE
+   ═══════════════════════════════════════════════════════════ */
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM
+   ═══════════════════════════════════════════════════════════ */
+.field {
+  position: relative;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 21px 18px 11px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-size: 14.5px;
+  font-weight: 300;
+  transition: border-color 0.35s ease, background 0.35s ease;
+  resize: vertical;
+}
+
+.field textarea {
+  min-height: 130px;
+}
+
+.field label {
+  position: absolute;
+  left: 18px;
+  top: 17px;
+  font-size: 14px;
+  color: var(--fg-3);
+  pointer-events: none;
+  transition: 0.3s var(--ease);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--blue-line);
+  background: var(--card-2);
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field textarea:focus + label,
+.field textarea:not(:placeholder-shown) + label {
+  top: 7px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACESSIBILIDADE
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

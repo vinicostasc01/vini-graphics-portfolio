@@ -1,0 +1,22 @@
+.wrap {
+  position: relative;
+  width: clamp(180px, 22vw, 260px);
+  aspect-ratio: 1200 / 520;
+}
+
+.video,
+.still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.4s ease;
+}
+
+/* O SVG é branco no arquivo original; na seção clara precisa virar tinta
+   preta. O vídeo já sai renderizado em #101010, então não leva filtro. */
+.still {
+  filter: invert(1);
+  opacity: 0.8;
+}

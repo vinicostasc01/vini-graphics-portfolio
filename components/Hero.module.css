@@ -1,0 +1,344 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(72px, 7vw, 92px) clamp(12px, 1.6vw, 28px) 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAINEL
+   O shape entra como máscara, não como imagem de fundo: assim o
+   conteúdo real (tipografia, selo, marquees) fica dentro dele e o
+   entalhe recorta o painel de verdade. A proporção 461/350 é a do
+   arquivo — esticar distorceria o raio dos cantos e o entalhe.
+   ═══════════════════════════════════════════════════════════ */
+.panel {
+  position: relative;
+  /*
+   * Sem proporção fixa: o shape é gerado no tamanho medido (ver PanelShape),
+   * então o painel pode preencher a tela sem achatar cantos nem entalhe.
+   * O clip-path é aplicado inline, com o id do clipPath gerado.
+   */
+  width: 100%;
+  height: min(74svh, 900px);
+  overflow: hidden;
+  background: var(--bg-2);
+  /* A tipografia é medida contra o painel, não contra a viewport. */
+  container-type: inline-size;
+}
+
+/* ── Papel de parede ── */
+.paper {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 14px;
+}
+
+.column {
+  height: 100%;
+}
+
+.tile {
+  display: block;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.tile img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Véu: o trabalho é textura aqui, não protagonista — a tipografia
+   precisa de contraste para ler por cima. */
+/* Véu: o trabalho tem que continuar legível como trabalho. Escuro o
+   bastante para a tipografia ler por cima, claro o bastante para as capas
+   não virarem mancha. */
+.veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(66% 56% at 50% 46%, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.5) 72%),
+    rgba(0, 0, 0, 0.24);
+}
+
+/* ── Pills ── */
+.pill {
+  position: absolute;
+  top: 5.4%;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.pillLeft {
+  left: 4%;
+}
+
+.pillRight {
+  right: 4%;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: ping 2.4s var(--ease) infinite;
+}
+
+/* ── Tipografia ──
+   O arranjo da referência: palavra monumental ao centro, e as duas
+   metades da frase como sobrescritos nos cantos superiores dela. */
+.type {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  /* Centraliza na área acima do entalhe e da faixa de rodapé do painel. */
+  padding-bottom: 120px;
+}
+
+/* Bloco de referência dos kickers: eles se ancoram nos cantos superiores
+   da palavra, como os sobrescritos da referência. */
+.wordWrap {
+  position: relative;
+  display: block;
+}
+
+.word {
+  position: relative;
+  /* Medido, não estimado: "tamanho;" ocupa 6,85em em Archivo expandida.
+     12cqi deixa a palavra em ~82% da largura do painel. */
+  font-size: clamp(30px, 12cqi, 260px);
+  line-height: 0.84;
+  margin: 0;
+}
+
+.wordMask {
+  display: block;
+  overflow: hidden;
+  padding-top: 0.1em;
+  margin-top: -0.1em;
+}
+
+.wordMask > span {
+  display: block;
+  white-space: nowrap;
+}
+
+.kickerA,
+.kickerB {
+  position: absolute;
+  font-size: clamp(10px, 1.7cqi, 21px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.kickerA {
+  bottom: 100%;
+  left: 0.1em;
+  margin-bottom: 0.3em;
+}
+
+.kickerB {
+  bottom: 100%;
+  right: 0.1em;
+  margin-bottom: 0.3em;
+}
+
+.rule {
+  display: block;
+  width: 86%;
+  height: 3px;
+  margin-top: 0.12em;
+  background: var(--blue);
+  transform-origin: left;
+}
+
+/* ── Rodapé do painel ── */
+/* ATENÇÃO à borda real do shape: nas laterais o painel termina antes da base
+   — só o entalhe central desce até embaixo. Estes dois precisam ficar acima
+   dessa linha (profundidade do entalhe + folga), senão o clip os recorta. */
+.handle {
+  position: absolute;
+  left: 3.4%;
+  bottom: 86px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 12.5px;
+  color: var(--fg-2);
+  transition: border-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.handle svg {
+  width: 12px;
+  height: 12px;
+  color: var(--blue-soft);
+}
+
+.handle:hover {
+  border-color: var(--blue-line);
+  color: var(--fg);
+}
+
+/* Cápsula escura igual à do pill do @: sem ela a barra era branca sobre as
+   capas claras do papel de parede e desaparecia em metade das posições. */
+.progress {
+  position: absolute;
+  right: 3.4%;
+  bottom: 88px;
+  z-index: 5;
+  width: min(260px, 20%);
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.track {
+  display: block;
+  height: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--blue);
+  transform-origin: left;
+}
+
+/* ── Entalhe ──
+   O arquivo põe o vale entre 82,6% e 96,3% da altura, centrado em 50%.
+   O selo é ancorado nesse ponto para ocupar o recorte. */
+.panelWrap {
+  position: relative;
+  width: min(1800px, 100%);
+}
+
+/* Ancorado no wrapper, não no painel: o selo transborda o entalhe e o
+   clip-path do painel o cortaria. O grid centraliza sem transform — o
+   wrapper magnético escreve o próprio e desalinharia. */
+.notch {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.notchLink {
+  display: block;
+  border-radius: 50%;
+  pointer-events: auto;
+}
+
+.selo {
+  width: 108px;
+}
+
+/* ── Fora do painel ── */
+.sub {
+  max-width: 58ch;
+  margin: clamp(28px, 4vw, 44px) auto 0;
+  text-align: center;
+  font-size: clamp(14px, 1.05vw, 16.5px);
+  line-height: 1.7;
+  color: var(--fg-2);
+}
+
+/* Mesma largura do painel, para a régua do topo alinhar com as bordas dele
+   em vez de sangrar pela página. */
+.ticker {
+  width: min(1800px, 100%);
+  margin-top: clamp(26px, 3.4vw, 40px);
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.client {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  font-size: clamp(12.5px, 1.05vw, 15px);
+  font-weight: 300;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+
+.client i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex: none;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 860px) {
+  /* Abaixo disso a proporção deitada do shape espreme o conteúdo; o
+     painel passa a ser mais alto e a máscara acompanha. */
+  .panel {
+    width: 100%;
+    height: min(86svh, 720px);
+  }
+
+  .paper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kickerA,
+  .kickerB {
+    top: -0.8em;
+  }
+
+  .progress {
+    width: 34%;
+  }
+
+  .handle {
+    font-size: 11.5px;
+    padding: 8px 14px;
+  }
+}

@@ -1,0 +1,34 @@
+.wrap {
+  position: relative;
+  /* Altura zero para não empurrar as seções vizinhas, e overflow visível para
+     a palavra poder sangrar pelas laterais — o corte horizontal fica por
+     conta do overflow-x: hidden do body. */
+  height: 0;
+  overflow: visible;
+  z-index: 3;
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.half {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(58px, 13vw, 210px);
+  line-height: 0.8;
+  white-space: nowrap;
+  user-select: none;
+  /* Metade de cima: fica sobre a seção escura. */
+  clip-path: inset(0 0 50% 0);
+}
+
+.lower {
+  /* Metade de baixo: fica sobre a seção clara. */
+  clip-path: inset(50% 0 0 0);
+}

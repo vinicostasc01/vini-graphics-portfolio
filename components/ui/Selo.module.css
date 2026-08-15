@@ -1,0 +1,26 @@
+.selo {
+  position: relative;
+  width: clamp(104px, 12vw, 150px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.anel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.anel img {
+  width: 100%;
+  height: auto;
+}
+
+/* Mark parado no centro, dimensionado para caber no vazio do anel. */
+.mark {
+  position: relative;
+  width: 26%;
+  height: auto;
+}
